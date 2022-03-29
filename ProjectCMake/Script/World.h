@@ -4,11 +4,13 @@
 
 class World
 {
+	friend GameObject;
 public:
 	~World();
 	void Update();
 	static World* world;
-private:
+protected:
+	void AddObject(GameObject* _object);
 	World()
 	{
 

@@ -45,6 +45,12 @@ int main()
 	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	GameObject* bille = new	GameObject();
+	GameObject* bille1 = new GameObject();
+	bille->GetMesh()->LoadMesh("les2.obj", "uvmap.DDS");
+	bille1->GetMesh()->LoadMesh("les2.obj", "uvmap.DDS");
+	bille->GetMesh()->MoveVertex(vec3(10,0,0));
+	bille1->GetMesh()->MoveVertex(vec3(-10, 0, 0));
 	World::world->Update();
 	glDeleteProgram(programID);
 	glDeleteVertexArrays(1, &VertexArrayID);
