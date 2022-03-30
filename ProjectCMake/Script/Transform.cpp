@@ -1,22 +1,32 @@
 #include "Transform.h"
+#include <glm\ext\matrix_transform.hpp>
 
 Transform::Transform()
 {
+	matrix = glm::mat4(1);
+	position = glm::vec3(0);
+	rotation = glm::vec3(0);
+	scale = glm::vec3(1);
 }
 
 void Transform::SetPosition(glm::vec3 _pos)
 {
-	position = _pos;
-	OnPositionChange.Invoke(position);
+	matrix = glm::translate(matrix, _pos);
+	position = matrix[3];
 }
 
-void Transform::SetRotation(glm::vec3 _rotation)
+void Transform::SetRotation(float _angle,glm::vec3 _axis)
 {
-	rotation = _rotation;
+	matrix = glm::rotate(matrix, _angle, _axis);
+	rotation.x = matrix[0][3];
+	rotation.y = matrix[1][3];
+	rotation.z = matrix[2][3];
 }
 
 void Transform::SetScale(glm::vec3 _scale)
 {
-	scale = _scale;
-	OnScaleChange.Invoke(scale);
+	matrix = glm::scale(matrix, _scale);
+	scale.x = matrix[0][0];
+	scale.y = matrix[1][1];
+	scale.z = matrix[2][2];
 }

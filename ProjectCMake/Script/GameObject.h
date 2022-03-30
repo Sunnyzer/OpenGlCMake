@@ -11,7 +11,7 @@ public:
 	GameObject();
 	~GameObject();
 	virtual void Update();
-	inline Mesh* GetMesh() const { return mesh; };
+	inline Mesh* GetMesh() { return mesh; };
 	inline Transform* GetTransform() { return transform; };
 private:
 	Mesh* mesh;

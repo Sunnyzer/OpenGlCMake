@@ -1,12 +1,20 @@
 #include "Mesh.h"
+#include "World.h"
 #include <common/texture.hpp>
 #include <common/objloader.hpp>
+#include "ObjectStorage.h"
+
+//#include <GL\glew.h>
+//#include <glm/glm.hpp>
+
+using namespace glm;
 
 Mesh::Mesh()
 {
 	texture = 0;
 	uvbuffer = 0;
 	vertexbuffer = 0;
+	modelMatrix = new glm::mat4(1);
 }
 Mesh::~Mesh()
 {
@@ -16,6 +24,8 @@ Mesh::~Mesh()
 }
 void Mesh::MeshDraw()
 {
+	glm::mat4 MVP = World::world->GetProjectionMatrix() * World::world->GetViewMatrix() * *modelMatrix;
+	glUniformMatrix4fv(World::world->GetMatrixID(), 1, GL_FALSE, &MVP[0][0]);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glEnableVertexAttribArray(0);
@@ -24,27 +34,33 @@ void Mesh::MeshDraw()
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glDrawArrays(GL_TRIANGLES, 0, sizeVertices);
+	GLsizei _count = (GLsizei)vertices.size();
+	glDrawArrays(GL_TRIANGLES, 0, _count);
 }
-void Mesh::LoadMesh(const char* _mesh, const char* _texture)
+void Mesh::SetMatrix(glm::mat4* _modelMatrix)
 {
-	bool res = loadOBJ(_mesh, vertices, uvs, normals);
-	sizeVertices = vertices.size();
-	texture = loadDDS(_texture);
+	modelMatrix = _modelMatrix;
+}
+void Mesh::LoadMesh(const char* _path, const char* _texturePath)
+{
+	ObjectStorage::mesh _mesh = ObjectStorage::LoadObject(_path);// loadOBJ(_mesh, vertices, uvs, normals);
+	ObjectStorage::texture _texture = ObjectStorage::LoadTexture(_texturePath);//loadDDS(_texture);
+	vertices = _mesh.vertices;
+	uvs = _mesh.uvs;
+	normals = _mesh.normals;
+	texture = _texture.texture;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeVertices * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 	glGenBuffers(1, &uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 }
 void Mesh::MoveVertex(glm::vec3 _pos)
 {
-	for (size_t i = 0; i < sizeVertices; i++)
-		vertices[i] += _pos;
+	*modelMatrix = glm::translate(*modelMatrix, _pos);
 }
 void Mesh::ScaleVertex(glm::vec3 _scale)
 {
-	for (size_t i = 0; i < sizeVertices; i++)
-		vertices[i] *= _scale;
+	*modelMatrix = glm::scale(*modelMatrix, _scale);
 }
