@@ -1,24 +1,23 @@
 #include <vector>
+#include "WindowGL.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <common/shader.hpp>
-
 #include "Mesh.h"
-#include "WindowGL.h"
 #include "World.h"
 #include <time.h>
 
 using namespace glm;
 
-void SetBille(GameObject& _bille)
+void SetMarble(GameObject& _bille)
 {
 	_bille.GetMesh()->LoadMesh("les2.obj", "uvmap.DDS");
-	float _x = rand() % 10 + (rand() % 100) / 100.0 - 5;
-	float _y = rand() % 10 + (rand() % 100) / 100.0 - 5;
+	float _x = rand() % 9 + (rand() % 100) / 100.0 - 5;
+	float _y = rand() % 9 + (rand() % 100) / 100.0 - 5;
 	vec3 scale(0.25f);
-	_bille.GetTransform()->SetPosition(vec3(_x, scale.x, _y));
+	_bille.GetTransform()->AddPosition(vec3(_x, scale.x, _y));
 	_bille.GetTransform()->SetScale(scale);
-	_bille.GetTransform()->SetRotation(rand() % 180, vec3(0,1,0));
+	//_bille.GetTransform()->SetRotation(rand() % 180, vec3(0,1,0));
 }
 
 int main()
@@ -32,7 +31,7 @@ int main()
 	}
 	WindowGL windowGL;
 	windowGL.CreateWindow("Ma Game", 1920, 1080);
-	glewExperimental = true; // Needed for core profile
+	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		getchar();
@@ -54,22 +53,13 @@ int main()
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 	
-	GameObject billard;
-	/*GameObject bille;
-	GameObject bille1;
-	GameObject bille2;
-	GameObject bille3;*/
-
-	billard.GetMesh()->LoadMesh("billard.obj", "Oui.DDS");
+	GameObject pool;
+	pool.GetMesh()->LoadMesh("billard.obj", "oui.dds");
 	for (size_t i = 0; i < 10; i++)
 	{
-		GameObject* bille = new	GameObject();
-		SetBille(*bille);
+		GameObject* _marble = new GameObject();
+		SetMarble(*_marble);
 	}
-	/*}
-	SetBille(bille1);
-	SetBille(bille2);
-	SetBille(bille3);*/
 	
 	World::world->Update(programID, MatrixID, TextureID);
 	

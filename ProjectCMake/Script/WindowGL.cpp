@@ -1,9 +1,11 @@
 #include "WindowGL.h"
 #include <cstdio>
+#include <GLFW\glfw3.h>
 
 GLFWwindow* WindowGL::window = nullptr;
 int WindowGL::width = 0;
 int WindowGL::height = 0;
+
 WindowGL::WindowGL()
 {
 	

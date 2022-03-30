@@ -1,14 +1,11 @@
 // Include GLFW
 #include <GLFW/glfw3.h>
- // The "extern" keyword here is to access the variable "window" declared in tutorialXXX.cpp. This is a hack to keep the tutorials simple. Please avoid this.
-
-// Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
 #include "controls.hpp"
-#include <Script\WindowGL.h>
+//#include <Script\WindowGL.h>
 
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
@@ -44,14 +41,14 @@ void computeMatricesFromInputs(){
 
 	// Get mouse position
 	double xpos, ypos;
-	glfwGetCursorPos(WindowGL::window, &xpos, &ypos);
+	//glfwGetCursorPos(WindowGL::window, &xpos, &ypos);
 
 	// Reset mouse position for next frame
-	glfwSetCursorPos(WindowGL::window, WindowGL::GetWidth() /2, WindowGL::GetHeight() /2);
+	//glfwSetCursorPos(WindowGL::window, WindowGL::GetWidth() /2, WindowGL::GetHeight() /2);
 
 	// Compute new orientation
-	horizontalAngle += mouseSpeed * float(WindowGL::GetWidth() /2 - xpos );
-	verticalAngle   += mouseSpeed * float(WindowGL::GetHeight() /2 - ypos );
+	//horizontalAngle += mouseSpeed * float(WindowGL::GetWidth() /2 - xpos );
+	//verticalAngle   += mouseSpeed * float(WindowGL::GetHeight() /2 - ypos );
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	glm::vec3 direction(cos(verticalAngle) * sin(horizontalAngle), 
@@ -65,7 +62,7 @@ void computeMatricesFromInputs(){
 		cos(horizontalAngle - 3.14f/2.0f)
 	);
 	glm::vec3 up = glm::cross( right, direction );
-	if (KeyPressed(GLFW_KEY_W)){
+	/*if (KeyPressed(GLFW_KEY_W)){
 		position += direction * deltaTime * speed;
 	}
 	if (KeyPressed(GLFW_KEY_S)){
@@ -82,7 +79,7 @@ void computeMatricesFromInputs(){
 	}
 	if (KeyPressed(GLFW_KEY_Q)) {
 		position -= glm::vec3(0, 1, 0) * deltaTime * speed;
-	}
+	}*/
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units

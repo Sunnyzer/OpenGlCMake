@@ -9,7 +9,7 @@ Transform::Transform()
 	scale = glm::vec3(1);
 }
 
-void Transform::SetPosition(glm::vec3 _pos)
+void Transform::AddPosition(glm::vec3 _pos)
 {
 	matrix = glm::translate(matrix, _pos);
 	position = matrix[3];
