@@ -13,6 +13,7 @@ public:
 	virtual void Update();
 	inline Mesh* GetMesh() { return mesh; };
 	inline Transform* GetTransform() { return transform; };
+	void Test(int i);
 private:
 	Mesh* mesh;
 	Transform* transform;

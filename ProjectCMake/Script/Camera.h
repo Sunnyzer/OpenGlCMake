@@ -8,17 +8,11 @@ public:
 	Camera();
 	void ComputeMatricesFromInputs();
 	
-	glm::mat4 GetViewMatrix()
-	{
-		return *viewMatrix;
-	}
-	glm::mat4 GetProjectionMatrix()
-	{
-		return *projectionMatrix;
-	}
-	
-	glm::mat4* viewMatrix;
-	glm::mat4* projectionMatrix;
+	inline glm::mat4 GetViewMatrix() { return viewMatrix; }
+	inline glm::mat4 GetProjectionMatrix() { return projectionMatrix; }
+private:
+	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
 
 	float mouseSpeed = 0.004f;
 	float speed = 10.0f;

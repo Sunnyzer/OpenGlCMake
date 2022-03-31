@@ -23,3 +23,8 @@ void GameObject::Update()
 {
 	mesh->MeshDraw();
 }
+
+void GameObject::Test(int i)
+{
+	std::cout << "Test " << i << std::endl;
+}

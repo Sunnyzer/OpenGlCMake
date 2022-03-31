@@ -1,16 +1,11 @@
-#include <vector>
-#include <cstring>
-
-#include <GL/glew.h>
+#include "Script/ObjectStorage.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-using namespace glm;
-
 #include "shader.hpp"
-#include "texture.hpp"
-
 #include "text2D.hpp"
+
+using namespace glm;
 
 unsigned int Text2DTextureID;
 unsigned int Text2DVertexBufferID;
@@ -21,7 +16,7 @@ unsigned int Text2DUniformID;
 void initText2D(const char * texturePath){
 
 	// Initialize texture
-	Text2DTextureID = loadDDS(texturePath);
+	Text2DTextureID = LoadDDS(texturePath);
 
 	// Initialize VBO
 	glGenBuffers(1, &Text2DVertexBufferID);

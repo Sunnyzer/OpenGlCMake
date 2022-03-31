@@ -1,11 +1,6 @@
 #include "Mesh.h"
 #include "World.h"
-#include <common/texture.hpp>
-#include <common/objloader.hpp>
 #include "ObjectStorage.h"
-
-//#include <GL\glew.h>
-//#include <glm/glm.hpp>
 
 using namespace glm;
 

@@ -1,6 +1,12 @@
 #pragma once
+#include <GL\glew.h>
 #include <vector>
-#include <Script/Mesh.h>
+#include <glm\ext\vector_float3.hpp>
+#include <glm\ext\vector_float2.hpp>
+
+bool LoadOBJ(const char* path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec2>& out_uvs, std::vector<glm::vec3>& out_normals);
+GLuint LoadBMP_custom(const char* imagepath);
+GLuint LoadDDS(const char* imagepath);
 
 class ObjectStorage
 {
@@ -9,7 +15,7 @@ public:
 	{
 		friend ObjectStorage;
 	private:
-		const char* pathName;
+		const char* pathName = "";
 	public:
 		std::vector<glm::vec3> vertices;
 		std::vector<glm::vec2> uvs;
@@ -19,7 +25,7 @@ public:
 	{
 		friend ObjectStorage;
 	private:
-		const char* pathName;
+		const char* pathName = "";
 	public:
 		GLuint texture;
 	};

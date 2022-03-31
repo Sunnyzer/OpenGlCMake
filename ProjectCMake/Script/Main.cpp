@@ -54,7 +54,7 @@ int main()
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 	
 	GameObject pool;
-	pool.GetMesh()->LoadMesh("billard.obj", "oui.dds");
+	pool.GetMesh()->LoadMesh("billard.obj", "uvmap.dds");
 	for (size_t i = 0; i < 10; i++)
 	{
 		GameObject* _marble = new GameObject();
