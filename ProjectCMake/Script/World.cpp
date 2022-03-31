@@ -28,6 +28,11 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 	bool _pressed = false;
 	Camera camera;
 	MovementMarble movement;
+	bool test = false;
+	for (size_t i = 0; i < 100; i++)
+	{
+		Input::BindInput(GLFW_KEY_SPACE, objects[0], &GameObject::Test, 5);
+	}
 	do {
 		static double lastTime = glfwGetTime();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -40,18 +45,18 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 			objects[i]->Update();
 
 		movement.InputMovement(objects[_i], (lastTime/10.0f) * Input::FlipFlop(GLFW_KEY_LEFT_SHIFT, 5.0f, 1.0f));//glfwGetKey(WindowGL::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? 5 : 1)
-		Input::UseKey(GLFW_KEY_SPACE, objects[0], &GameObject::Test, 5);
 		if (!_pressed && KeyPressed(GLFW_KEY_SPACE))
-		{  
+		{
 			_pressed = true;
 			++_i;
 			if (_i >= objects.size())
 				_i = 1;
 		}
-		if (!KeyPressed(GLFW_KEY_SPACE))
+		if (KeyReleased(GLFW_KEY_SPACE))
 		{
 			_pressed = false;
 		}
+		Input::UpdateInput();
 		glUniform1i(_textureID, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -59,9 +64,6 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 		glfwPollEvents();
 	}
 	while (!KeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(WindowGL::window) == 0);
-	std::function<void(void)> lambda = [&]() { std::invoke(&GameObject::Test, objects[0], 5); };
-	std::vector<std::function<void(void)>> actionKey;
-	actionKey.push_back(lambda);
 	glDeleteProgram(_programID);
 }
 
