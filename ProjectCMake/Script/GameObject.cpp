@@ -11,7 +11,6 @@ GameObject::GameObject()
 	World::world->AddObject(this);
 	amountMonoBehaviour = 0;
 }
-
 GameObject::~GameObject()
 {
 	OnDestroy();

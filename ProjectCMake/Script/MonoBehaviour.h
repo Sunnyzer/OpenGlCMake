@@ -2,7 +2,7 @@
 
 class GameObject;
 
-class MonoBehaviour 
+class MonoBehaviour
 {
 	friend GameObject;
 public:

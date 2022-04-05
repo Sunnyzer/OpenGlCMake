@@ -1,7 +1,7 @@
 #include "Mesh.h"
 #include "World.h"
 #include "ObjectStorage.h"
-#include <Script\Camera.h>
+#include "Camera.h"
 
 using namespace glm;
 

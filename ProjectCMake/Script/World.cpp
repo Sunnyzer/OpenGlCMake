@@ -28,7 +28,6 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs();
 		glUseProgram(_programID);
-
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
 			GameObject* _object = objects[i];

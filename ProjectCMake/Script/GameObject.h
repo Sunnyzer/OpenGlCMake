@@ -38,6 +38,13 @@ public:
 		}
 		return nullptr;
 	}
+	template<class T>
+	static T* Instanciate()
+	{
+		GameObject* _gameObject = new GameObject();
+		T* _behaviour = _gameObject->AddComponent<T>();
+		return _behaviour;
+	}
 private:
 	virtual void Update(float deltaTime);
 	virtual void OnDestroy();
