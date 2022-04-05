@@ -5,6 +5,9 @@
 
 #define KeyPressed(glfwKey) glfwGetKey(WindowGL::window, glfwKey) == GLFW_PRESS
 
+glm::mat4 Camera::viewMatrix = glm::mat4(1);
+glm::mat4 Camera::projectionMatrix = glm::mat4(1);
+
 Camera::Camera()
 {
 	projectionMatrix = glm::mat4(1);

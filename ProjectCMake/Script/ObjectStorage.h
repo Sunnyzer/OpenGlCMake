@@ -11,7 +11,7 @@ GLuint LoadDDS(const char* imagepath);
 class ObjectStorage
 {
 public:
-	struct mesh
+	struct MeshData
 	{
 		friend ObjectStorage;
 	private:
@@ -21,17 +21,17 @@ public:
 		std::vector<glm::vec2> uvs;
 		std::vector<glm::vec3> normals;
 	};
-	struct texture
+	struct TextureData
 	{
 		friend ObjectStorage;
 	private:
 		const char* pathName = "";
 	public:
-		GLuint texture;
+		GLuint texture = 0;
 	};
-	static std::vector<mesh> meshs;
-	static std::vector<texture> textures;
-	static mesh LoadObject(const char* _path);
-	static texture LoadTexture(const char* _texture);
+	static std::vector<MeshData> meshDatas;
+	static std::vector<TextureData> textureDatas;
+	static MeshData LoadObject(const char* _path);
+	static TextureData LoadTexture(const char* _texture);
 };
 

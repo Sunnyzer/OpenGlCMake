@@ -13,7 +13,7 @@ public:
 	{
 
 	}
-	void InputMovement(GameObject* _object, float _moveSpeed);
+	void InputMovement(GameObject* _object, double _moveSpeed);
 private:
 
 };

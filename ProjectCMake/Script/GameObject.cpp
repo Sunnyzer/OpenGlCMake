@@ -7,24 +7,27 @@ using namespace glm;
 
 GameObject::GameObject()
 {
-	mesh = new Mesh();
 	transform = new	Transform();
-	mesh->SetMatrix(&transform->matrix);
 	World::world->AddObject(this);
+	amountMonoBehaviour = 0;
 }
 
 GameObject::~GameObject()
 {
-	delete mesh;
+	OnDestroy();
 	delete transform;
 }
 
-void GameObject::Update()
+void GameObject::Update(float deltaTime)
 {
-	mesh->MeshDraw();
+	for (size_t i = 0; i < amountMonoBehaviour; i++)
+	{
+		MonoBehaviour* _mono = monoBehaviours[i];
+		if (!_mono)continue;
+		_mono->Update(deltaTime);
+	}
 }
 
-void GameObject::Test(int i)
+void GameObject::OnDestroy()
 {
-	std::cout << "Test " << i << std::endl;
 }

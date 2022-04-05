@@ -4,18 +4,21 @@
 #include <GL\glew.h>
 #include <glm/glm.hpp>
 #include "Transform.h"
+#include "MonoBehaviour.h"
 
-class Mesh
+class Mesh : public MonoBehaviour
 {
 public:
 	Mesh();
 	~Mesh();
 	void MeshDraw();
-	void SetMatrix(glm::mat4* _modelMatrix);
 	void LoadMesh(const char* _path, const char* _texturePath);
 	void MoveVertex(glm::vec3 _pos);
 	void ScaleVertex(glm::vec3 _scale);
-private:
+protected:
+	void SetMatrix(glm::mat4* _modelMatrix);
+	void Update(float deltaTime) override;
+	void SetOwner(GameObject* _gameObject) override;
 	GLuint texture;
 	GLuint vertexbuffer;
 	GLuint uvbuffer;

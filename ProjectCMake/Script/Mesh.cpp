@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "World.h"
 #include "ObjectStorage.h"
+#include <Script\Camera.h>
 
 using namespace glm;
 
@@ -19,7 +20,7 @@ Mesh::~Mesh()
 }
 void Mesh::MeshDraw()
 {
-	glm::mat4 MVP = World::world->GetProjectionMatrix() * World::world->GetViewMatrix() * *modelMatrix;
+	glm::mat4 MVP = Camera::GetProjectionMatrix() * Camera::GetViewMatrix() * *modelMatrix;
 	glUniformMatrix4fv(World::world->GetMatrixID(), 1, GL_FALSE, &MVP[0][0]);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -32,14 +33,19 @@ void Mesh::MeshDraw()
 	GLsizei _count = (GLsizei)vertices.size();
 	glDrawArrays(GL_TRIANGLES, 0, _count);
 }
+void Mesh::Update(float deltaTime)
+{
+	MeshDraw();
+}
 void Mesh::SetMatrix(glm::mat4* _modelMatrix)
 {
+	delete modelMatrix;
 	modelMatrix = _modelMatrix;
 }
 void Mesh::LoadMesh(const char* _path, const char* _texturePath)
 {
-	ObjectStorage::mesh _mesh = ObjectStorage::LoadObject(_path);// loadOBJ(_mesh, vertices, uvs, normals);
-	ObjectStorage::texture _texture = ObjectStorage::LoadTexture(_texturePath);//loadDDS(_texture);
+	ObjectStorage::MeshData _mesh = ObjectStorage::LoadObject(_path);// loadOBJ(_mesh, vertices, uvs, normals);
+	ObjectStorage::TextureData _texture = ObjectStorage::LoadTexture(_texturePath);//loadDDS(_texture);
 	vertices = _mesh.vertices;
 	uvs = _mesh.uvs;
 	normals = _mesh.normals;
@@ -58,4 +64,9 @@ void Mesh::MoveVertex(glm::vec3 _pos)
 void Mesh::ScaleVertex(glm::vec3 _scale)
 {
 	*modelMatrix = glm::scale(*modelMatrix, _scale);
+}
+void Mesh::SetOwner(GameObject* _gameObject)
+{
+	gameObject = _gameObject;
+	SetMatrix(&gameObject->GetTransform()->matrix);
 }

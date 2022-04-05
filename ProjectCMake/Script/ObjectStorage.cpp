@@ -1,32 +1,32 @@
 #include "ObjectStorage.h"
 #include <string>
 
-std::vector<ObjectStorage::mesh> ObjectStorage::meshs;
-std::vector<ObjectStorage::texture> ObjectStorage::textures;
+std::vector<ObjectStorage::MeshData> ObjectStorage::meshDatas;
+std::vector<ObjectStorage::TextureData> ObjectStorage::textureDatas;
 
-ObjectStorage::mesh ObjectStorage::LoadObject(const char* _path)
+ObjectStorage::MeshData ObjectStorage::LoadObject(const char* _path)
 {
-	int _size = meshs.size();
+	size_t _size = meshDatas.size();
 	for (size_t i = 0; i < _size; i++)
-		if(meshs[i].pathName == _path)
-			return meshs[i];
-	mesh _meshOut;
+		if(meshDatas[i].pathName == _path)
+			return meshDatas[i];
+	MeshData _meshOut;
 	_meshOut.pathName = _path;
 	LoadOBJ(_path, _meshOut.vertices, _meshOut.uvs, _meshOut.normals);
-	meshs.push_back(_meshOut);
+	meshDatas.push_back(_meshOut);
 	return _meshOut;
 }
 
-ObjectStorage::texture ObjectStorage::LoadTexture(const char* _texture)
+ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture)
 {
-	int _size = textures.size();
+	size_t _size = textureDatas.size();
 	for (size_t i = 0; i < _size; i++)
-		if (textures[i].pathName == _texture)
-			return textures[i];
-	ObjectStorage::texture _textureOut;
+		if (textureDatas[i].pathName == _texture)
+			return textureDatas[i];
+	ObjectStorage::TextureData _textureOut;
 	_textureOut.pathName = _texture;
 	_textureOut.texture = LoadDDS(_texture);
-	textures.push_back(_textureOut);
+	textureDatas.push_back(_textureOut);
 	return _textureOut;
 }
 

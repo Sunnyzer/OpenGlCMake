@@ -32,7 +32,7 @@ void initText2D(const char * texturePath){
 
 void printText2D(const char * text, int x, int y, int size){
 
-	unsigned int length = strlen(text);
+	unsigned int length = (unsigned int)strlen(text);
 
 	// Fill buffers
 	std::vector<glm::vec2> vertices;
@@ -96,7 +96,7 @@ void printText2D(const char * text, int x, int y, int size){
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Draw call
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vertices.size() );
 
 	glDisable(GL_BLEND);
 

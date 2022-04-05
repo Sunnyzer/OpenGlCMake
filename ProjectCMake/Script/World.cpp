@@ -11,8 +11,6 @@ World* World::world = new World();
 
 World::World()
 {
-	viewMatrix = glm::mat4(1);
-	projectionMatrix = glm::mat4(1);
 	matrixID = 0;
 }
 
@@ -24,37 +22,18 @@ World::~World()
 void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 {
 	matrixID = _matrixID;
-	int _i = 1;
-	bool _pressed = false;
 	Camera camera;
-	MovementMarble movement;
-	bool test = false;
-	for (size_t i = 0; i < 100; i++)
-	{
-		Input::BindInput(GLFW_KEY_SPACE, objects[0], &GameObject::Test, 5);
-	}
 	do {
 		static double lastTime = glfwGetTime();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs();
-		projectionMatrix = camera.GetProjectionMatrix();
-		viewMatrix = camera.GetViewMatrix();
 		glUseProgram(_programID);
 
 		for (size_t i = 0; i < objects.size(); ++i)
-			objects[i]->Update();
-
-		movement.InputMovement(objects[_i], (lastTime/10.0f) * Input::FlipFlop(GLFW_KEY_LEFT_SHIFT, 5.0f, 1.0f));//glfwGetKey(WindowGL::window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? 5 : 1)
-		if (!_pressed && KeyPressed(GLFW_KEY_SPACE))
 		{
-			_pressed = true;
-			++_i;
-			if (_i >= objects.size())
-				_i = 1;
-		}
-		if (KeyReleased(GLFW_KEY_SPACE))
-		{
-			_pressed = false;
+			GameObject* _object = objects[i];
+			if (!_object)continue;
+			_object->Update((float)lastTime);
 		}
 		Input::UpdateInput();
 		glUniform1i(_textureID, 0);
