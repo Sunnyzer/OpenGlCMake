@@ -8,13 +8,11 @@ Marble::Marble()
 {
 	mesh = nullptr;
 	rigidbody = nullptr;
+	collider = nullptr;
 }
 
 void Marble::Start()
 {
-	//glm::vec3 scale(0.25f);
-	//gameObject->GetTransform()->AddPosition(glm::vec3(0, scale.x, 0));
-	//gameObject->GetTransform()->SetScale(scale);
 	mesh = gameObject->AddComponent<Mesh>();
 	collider = gameObject->AddComponent<SphereCollider>();
 	rigidbody = gameObject->AddComponent<RigidBody>();

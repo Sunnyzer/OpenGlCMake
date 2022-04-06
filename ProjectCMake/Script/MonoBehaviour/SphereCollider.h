@@ -7,6 +7,8 @@ public:
 	SphereCollider();
 	void CheckCollider();
 	virtual void UpdateCollider() override;
+	void SetRadius(float _radius);
 private:
-	float radius;
+	virtual void Start() override;
+	float* radius;
 };

@@ -19,5 +19,5 @@ void RigidBody::AddImpulse(glm::vec3 _velocity)
 void RigidBody::Update(float deltaTime)
 {
 	gameObject->GetTransform()->AddPosition(velocity * deltaTime);
-	velocity *= 0.98;
+	velocity *= 0.985;
 }

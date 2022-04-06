@@ -52,7 +52,6 @@ void MarbleControl::ChangeBall()
 	++currentIndex;
 	if (currentIndex >= marbles.size())
 		currentIndex = 0;
-	//whiteMarble = marbles[currentIndex];
 }
 
 void MarbleControl::AddBall(Marble* _object)
@@ -62,6 +61,5 @@ void MarbleControl::AddBall(Marble* _object)
 
 void MarbleControl::Shoot()
 {
-	std::cout << "test";
-	whiteMarble->GetRididBody()->AddImpulse(glm::vec3(Camera::forward.x,0, Camera::forward.z));
+	whiteMarble->GetRididBody()->AddImpulse(glm::normalize(glm::vec3(Camera::forward.x, 0, Camera::forward.z)));
 }
