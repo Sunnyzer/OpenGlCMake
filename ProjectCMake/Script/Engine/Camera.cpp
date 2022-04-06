@@ -7,7 +7,7 @@
 
 glm::mat4 Camera::viewMatrix = glm::mat4(1);
 glm::mat4 Camera::projectionMatrix = glm::mat4(1);
-
+glm::vec3 Camera::forward = glm::vec3(0);
 Camera::Camera()
 {
 	projectionMatrix = glm::mat4(1);
@@ -50,5 +50,6 @@ void Camera::ComputeMatricesFromInputs()
 	// Camera matrix
 	viewMatrix = glm::lookAt(position,/*Camera is here*/position + direction, /*and looks here : at the same position, plus "direction"*/up /*Head is up (set to 0,-1,0 to look upside-down*/);
 	// For the next frame, the "last time" will be "now"
+	forward = direction;
 	lastTime = currentTime;
 }

@@ -10,10 +10,11 @@ public:
 	MarbleControl();
 	void ChangeBall();
 	void AddBall(Marble* _object);
+	void Shoot();
 protected:
 	virtual void Start() override;
 	virtual void Update(float deltaTime) override;
 	std::vector<Marble*> marbles;
 	int currentIndex;
-	Marble* currentMarble;
+	Marble* whiteMarble;
 };

@@ -1,12 +1,12 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "Action.h"
 
 class Transform
 {
 public:
 	Transform();
 	void AddPosition(glm::vec3 _pos);
+	void SetPosition(glm::vec3 _pos);
 	void SetRotation(float _angle, glm::vec3 _rotation);
 	void SetScale(glm::vec3 _scale);
 	glm::vec3 position;

@@ -1,11 +1,9 @@
 #include "World.h"
 #include <iostream>
-#include "Camera.h"
-#include "MovementMarble.h"
 #include <GLFW\glfw3.h>
+#include "Camera.h"
 #include "Input.h"
-#include <functional>
-
+#include "CollisionManager.h"
 
 World* World::world = new World();
 
@@ -13,12 +11,10 @@ World::World()
 {
 	matrixID = 0;
 }
-
 World::~World()
 {
 
 }
-
 void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 {
 	matrixID = _matrixID;
@@ -35,6 +31,7 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 			_object->Update((float)lastTime);
 		}
 		Input::UpdateInput();
+		CollisionManager::collisionManager->UpdateCollision();
 		glUniform1i(_textureID, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -44,7 +41,6 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 	while (!KeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(WindowGL::window) == 0);
 	glDeleteProgram(_programID);
 }
-
 void World::AddObject(GameObject* _object)
 {
 	objects.push_back(_object);

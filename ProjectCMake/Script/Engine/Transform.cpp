@@ -15,6 +15,13 @@ void Transform::AddPosition(glm::vec3 _pos)
 	position = matrix[3];
 }
 
+void Transform::SetPosition(glm::vec3 _pos)
+{
+	matrix[3][0] = _pos.x;
+	matrix[3][1] = _pos.y;
+	matrix[3][2] = _pos.z;
+}
+
 void Transform::SetRotation(float _angle,glm::vec3 _axis)
 {
 	matrix = glm::rotate(matrix, _angle, _axis);

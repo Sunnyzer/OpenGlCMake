@@ -11,7 +11,7 @@ class GameObject
 	friend World;
 public:
 	GameObject();
-	~GameObject();
+	virtual ~GameObject();
 	inline Transform* GetTransform() { return transform; };
 	template<class T>
 	T* AddComponent()
@@ -25,7 +25,7 @@ public:
 		}
 		_monoBehaviour->SetOwner(this);
 		monoBehaviours.push_back(_monoBehaviour);
-		amountMonoBehaviour++;
+		++amountMonoBehaviour;
 		return _behaviour;
 	}
 	template<class T>

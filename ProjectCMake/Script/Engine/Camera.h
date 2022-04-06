@@ -7,7 +7,7 @@ class Camera
 public:
 	Camera();
 	void ComputeMatricesFromInputs();
-	
+	static glm::vec3 forward;
 	inline static glm::mat4 GetViewMatrix() { return viewMatrix; }
 	inline static glm::mat4 GetProjectionMatrix() { return projectionMatrix; }
 private:

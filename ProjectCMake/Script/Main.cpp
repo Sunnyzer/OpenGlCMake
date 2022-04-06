@@ -7,7 +7,7 @@
 #include "World.h"
 #include <time.h>
 #include "MarbleControl.h"
-#include <Script/Marble.h>
+#include "Marble.h"
 
 using namespace glm;
 
