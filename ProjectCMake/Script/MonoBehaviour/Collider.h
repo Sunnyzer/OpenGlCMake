@@ -2,6 +2,7 @@
 #include "MonoBehaviour.h"
 
 class CollisionManager;
+class RigidBody;
 
 class Collider : public MonoBehaviour
 {
@@ -12,4 +13,5 @@ public:
 protected:
 	virtual void Start() override;
 	virtual void UpdateCollider();
+	RigidBody* rigidBody;
 };

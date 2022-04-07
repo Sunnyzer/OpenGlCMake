@@ -3,6 +3,7 @@
 
 Collider::Collider()
 {
+	rigidBody = nullptr;
 }
 
 void Collider::Start()

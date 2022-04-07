@@ -19,16 +19,18 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 {
 	matrixID = _matrixID;
 	Camera camera;
+	//GameObject::Instanciate();
 	do {
 		static double lastTime = glfwGetTime();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs();
 		glUseProgram(_programID);
+		deltaTime = (float)lastTime;
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
 			GameObject* _object = objects[i];
 			if (!_object)continue;
-			_object->Update((float)lastTime);
+			_object->Update(deltaTime);
 		}
 		Input::UpdateInput();
 		CollisionManager::collisionManager->UpdateCollision();

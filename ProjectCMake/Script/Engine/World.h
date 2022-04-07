@@ -14,6 +14,7 @@ public:
 	void Update(GLuint _programID, GLuint _matrixID, GLuint _textureID);
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
+	float deltaTime;
 protected:
 	World();
 	void AddObject(GameObject* _object);
