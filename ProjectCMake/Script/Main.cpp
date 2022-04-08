@@ -46,8 +46,8 @@ int main()
 	
 	GameObject _pool;
 	MarbleControl* _marbleControl = _pool.AddComponent<MarbleControl>();
-	Mesh* _mesh = _pool.AddComponent<Mesh>();
-	_mesh->LoadMesh("billard.obj", "uvmap.dds");
+	//Mesh* _mesh = _pool.AddComponent<Mesh>();
+	//_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	World::world->Update(programID, MatrixID, TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glfwTerminate();

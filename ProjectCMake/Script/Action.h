@@ -1,39 +1,70 @@
 #pragma once
 #include <vector>
+#include <functional>
 
 template<typename ...args>
 class Action
 {
-	typedef void(*action)(...);
 public:
-	Action()
+	template<class object>
+	void Add(object*& _object, void (object::*func)(args...))
 	{
-
-	}
-	void operator +=(action _action)
-	{
-		actions.push_back(_action);
-	}
-	void operator -=(action _action)
-	{
-		std::vector<action>::iterator end = actions.end();
-		for (std::vector<action>::iterator it = actions.begin(); it < end; it++)
+		std::function<void(args...)> _func([&_object, func](args... _args)
 		{
-			if (*it == _action)
+			std::invoke(func, _object, _args...);
+		});
+		actions.push_back(_func);
+	}
+	template<class object>
+	void Add(object* _object, void (object::* func)(args...))
+	{
+		std::function<void(args...)> _func([_object, func](args... _args)
+		{
+			std::invoke(func, _object, _args...);
+		});
+		actions.push_back(_func);
+	}
+	void operator +=(std::function<void(args...)> _add)
+	{
+		actions.push_back(_add);
+	}
+	void operator -=(std::function<void(args...)> _remove)
+	{
+		size_t _size = actions.size();
+		typename std::vector<std::function<void(args...)>>::iterator it;
+		for (it = actions.begin(); it != actions.end(); it++)
+		{
+			const type_info& func1 = _remove.target_type();
+			const type_info& func2 = (*it).target_type();
+			if(func1 == func2)
 			{
 				actions.erase(it);
 				return;
 			}
 		}
 	}
+	void operator  =(Action<args...>* _action)
+	{
+		if (!_action)
+		{
+			int _size = actions.size();
+			for (size_t i = 0; i < _size; i++)
+			{
+				actions.pop_back();
+			}
+		}
+			return;
+		*this = *_action;
+	}
 	void Invoke(args ...ar)
 	{
-		int _size = actions.size();
+		size_t _size = actions.size();
 		for (size_t i = 0; i < _size; i++)
 		{
 			actions[i](ar...);
 		}
 	}
 private:
-	std::vector<action> actions;
+	std::vector<std::function<void(args...)>> actions;
 };
+

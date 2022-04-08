@@ -30,7 +30,7 @@ void MarbleControl::Start()
 	_marble->gameObject->GetTransform()->SetScale(_scale);
 	_marble->gameObject->GetTransform()->SetPosition(_basePos);
 	AddBall(_marble);
-	for (size_t i = 2; i < 6; i++)
+	for (size_t i = 2; i < 12; i++)
 	{
 		for (size_t j = 0; j < i; j++)
 		{
@@ -43,14 +43,27 @@ void MarbleControl::Start()
 	BoxCollider* _boxCollider = GameObject::Instanciate<BoxCollider>();
 	Mesh* _mesh = _boxCollider->gameObject->AddComponent<Mesh>();
 	_mesh->LoadMesh("cube.obj","uvmap.DDS");
-	_boxCollider->gameObject->GetTransform()->SetScale(vec3(1, 1, 1));
-	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(15.0f, 0, 0));
-	/*BoxCollider* _boxCollider1 = GameObject::Instanciate<BoxCollider>();
-	_boxCollider1->gameObject->GetTransform()->SetScale(vec3(1,1,10));
-	BoxCollider* _boxCollider2 = GameObject::Instanciate<BoxCollider>();
-	_boxCollider2->gameObject->GetTransform()->SetScale(vec3(10,1,1));
-	BoxCollider* _boxCollider3 = GameObject::Instanciate<BoxCollider>();
-	_boxCollider3->gameObject->GetTransform()->SetScale(vec3(10,1,1));*/
+	_boxCollider->gameObject->GetTransform()->SetScale(vec3(2, 1, 30));
+	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(10, 0, 0));
+
+	_boxCollider = GameObject::Instanciate<BoxCollider>();
+	_mesh = _boxCollider->gameObject->AddComponent<Mesh>();
+	_mesh->LoadMesh("cube.obj", "uvmap.DDS");
+	_boxCollider->gameObject->GetTransform()->SetScale(vec3(2, 1, 30));
+	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(-10, 0, 0));
+
+	_boxCollider = GameObject::Instanciate<BoxCollider>();
+	_mesh = _boxCollider->gameObject->AddComponent<Mesh>();
+	_mesh->LoadMesh("cube.obj", "uvmap.DDS");
+	_boxCollider->gameObject->GetTransform()->SetScale(vec3(30, 1, 2));
+	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(0.0f, 0, 5.5));
+
+	_boxCollider = GameObject::Instanciate<BoxCollider>();
+	_mesh = _boxCollider->gameObject->AddComponent<Mesh>();
+	_mesh->LoadMesh("cube.obj", "uvmap.DDS");
+	_boxCollider->gameObject->GetTransform()->SetScale(vec3(30, 1, 2));
+	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(0.0f, 0, -5.5));
+
 }
 
 void MarbleControl::Update(float deltaTime)

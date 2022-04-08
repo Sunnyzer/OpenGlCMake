@@ -42,10 +42,10 @@ void Mesh::SetMatrix(glm::mat4* _modelMatrix)
 	delete modelMatrix;
 	modelMatrix = _modelMatrix;
 }
-void Mesh::LoadMesh(const char* _path, const char* _texturePath)
+void Mesh::LoadMesh(const char* _path, const char* _texturePath, bool _uvmap)
 {
 	ObjectStorage::MeshData _mesh = ObjectStorage::LoadObject(_path);// loadOBJ(_mesh, vertices, uvs, normals);
-	ObjectStorage::TextureData _texture = ObjectStorage::LoadTexture(_texturePath);//loadDDS(_texture);
+	ObjectStorage::TextureData _texture = ObjectStorage::LoadTexture(_texturePath, _uvmap);//loadDDS(_texture);
 	vertices = _mesh.vertices;
 	uvs = _mesh.uvs;
 	normals = _mesh.normals;

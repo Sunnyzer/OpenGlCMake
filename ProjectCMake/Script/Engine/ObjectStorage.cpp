@@ -17,7 +17,7 @@ ObjectStorage::MeshData ObjectStorage::LoadObject(const char* _path)
 	return _meshOut;
 }
 
-ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture)
+ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture, bool _uvmap)
 {
 	size_t _size = textureDatas.size();
 	for (size_t i = 0; i < _size; i++)
@@ -25,7 +25,11 @@ ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture)
 			return textureDatas[i];
 	ObjectStorage::TextureData _textureOut;
 	_textureOut.pathName = _texture;
-	_textureOut.texture = LoadDDS(_texture);
+	if(_uvmap)
+		_textureOut.texture = LoadDDS(_texture);
+	else
+		_textureOut.texture = LoadBMP_custom(_texture);
+		
 	textureDatas.push_back(_textureOut);
 	return _textureOut;
 }

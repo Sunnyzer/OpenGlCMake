@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "MonoBehaviour.h"
+#include "../Action.h"
 
 class World;
 class Mesh;
@@ -26,6 +27,7 @@ public:
 		_monoBehaviour->SetOwner(this);
 		monoBehaviours.push_back(_monoBehaviour);
 		++amountMonoBehaviour;
+		OnAddMonoBehaviour.Invoke(_monoBehaviour);
 		return _behaviour;
 	}
 	template<class T>
@@ -45,6 +47,7 @@ public:
 		T* _behaviour = _gameObject->AddComponent<T>();
 		return _behaviour;
 	}
+	Action<MonoBehaviour*> OnAddMonoBehaviour;
 private:
 	virtual void Update(float deltaTime);
 	virtual void OnDestroy();

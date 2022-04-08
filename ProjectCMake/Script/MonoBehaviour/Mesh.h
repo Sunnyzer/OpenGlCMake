@@ -12,7 +12,7 @@ public:
 	Mesh();
 	~Mesh();
 	void MeshDraw();
-	void LoadMesh(const char* _path, const char* _texturePath);
+	void LoadMesh(const char* _path, const char* _texturePath, bool _uvmap = true);
 	void MoveVertex(glm::vec3 _pos);
 	void ScaleVertex(glm::vec3 _scale);
 protected:

@@ -32,6 +32,6 @@ public:
 	static std::vector<MeshData> meshDatas;
 	static std::vector<TextureData> textureDatas;
 	static MeshData LoadObject(const char* _path);
-	static TextureData LoadTexture(const char* _texture);
+	static TextureData LoadTexture(const char* _texture, bool _uvmap);
 };
 

@@ -16,5 +16,5 @@ void Marble::Start()
 	mesh = gameObject->AddComponent<Mesh>();
 	collider = gameObject->AddComponent<SphereCollider>();
 	rigidbody = gameObject->AddComponent<RigidBody>();
-	mesh->LoadMesh("les2.obj", "uvmap.DDS");
+	mesh->LoadMesh("les2.obj", "Ball01_UV.bmp", false);
 }

@@ -14,6 +14,7 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	OnDestroy();
+	OnAddMonoBehaviour = nullptr;
 	delete transform;
 	for (size_t i = 0; i < amountMonoBehaviour; i++)
 		delete monoBehaviours[i];
