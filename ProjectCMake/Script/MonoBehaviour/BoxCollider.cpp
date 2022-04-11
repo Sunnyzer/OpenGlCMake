@@ -18,9 +18,9 @@ BoxCollider::BoxCollider()
 
 void BoxCollider::CheckCollider()
 {
-	int x = 0;
 	vector<Collider*> _colliders = CollisionManager::collisionManager->GetColliders();
 	size_t _size = _colliders.size();
+	vec3 _currentPosition = gameObject->GetTransform()->position;
 	for (size_t i = 0; i < _size; i++)
 	{
 		Collider* _collider = _colliders[i];
@@ -28,41 +28,36 @@ void BoxCollider::CheckCollider()
 		if (_collider == this) continue;
 		if (!_rbCollider || _rbCollider->GetVelocity() == vec3(0, 0, 0))continue;
 		SphereCollider* _sphereCollider = (SphereCollider*)_collider;
-		if (length(_rbCollider->GetVelocity()) > 15)
-		{
-			x++;
-		}
 		if (Collision(_sphereCollider))
 		{
 			vec3 _ballPos = _sphereCollider->gameObject->GetTransform()->position;
-			vec3 _currentPosition = gameObject->GetTransform()->position;
 			float _radius = _sphereCollider->GetRadius();
- 			float _maxX = _currentPosition.x + (GetBound().x/2);
-			float _minX = _currentPosition.x - (GetBound().x/2);
+			float halfBoundX = GetBound().x / 2;
+ 			float _maxX = _currentPosition.x + halfBoundX;
+			float _minX = _currentPosition.x - halfBoundX;
 			bool _posX = _ballPos.x + _radius < _maxX && _ballPos.x + _radius > _minX;
 			bool _posXN = _ballPos.x - _radius < _maxX && _ballPos.x - _radius > _minX;
 			vec3 _velo = _rbCollider->GetVelocity();
-			if (_posX|| _posXN)
+			if (_posX || _posXN)
 			{
-				vec3 _vel(_velo * vec3(1, 1, -1));
+				vec3 _vel(_velo * vec3(1, 1, -1) * 0.98f);
 				_rbCollider->SetVelocity(_vel);
 				continue;
 			}
-			float _maxZ = _currentPosition.z + (GetBound().z/2);
-			float _minZ = _currentPosition.z - (GetBound().z/2);
+			float halfBoundZ = GetBound().z / 2;
+			float _maxZ = _currentPosition.z + halfBoundZ;
+			float _minZ = _currentPosition.z - halfBoundZ;
 			bool _posZ = _ballPos.z + _radius < _maxZ && _ballPos.z + _radius > _minZ;
 			bool _posZN = _ballPos.z - _radius < _maxZ && _ballPos.z - _radius > _minZ;
 			if (_posZ || _posZN)
 			{
-				vec3 _vel(_velo * vec3(-1, 1, 1));
+				vec3 _vel(_velo * vec3(-1, 1, 1) * 0.98f);
 				_rbCollider->SetVelocity(_vel);
 				continue;
 			}
-			_rbCollider->SetVelocity(_rbCollider->GetVelocity() * -1.0f);
+			_rbCollider->SetVelocity(_rbCollider->GetVelocity() * -0.98f);
 		}
 	}
-	if(x != 0)
-		cout << "x : " << x << endl;
 }
 
 void BoxCollider::UpdateCollider()
@@ -77,7 +72,7 @@ bool BoxCollider::Collision(SphereCollider* _sphereCollider)
 {
 	if (!_sphereCollider) return false;
 	vec3 center(_sphereCollider->gameObject->GetTransform()->position );
-	vec3 aabb_half_extents(GetBound());
+	vec3 aabb_half_extents(GetBound() * 1.05f);
 	vec3 aabb_center = gameObject->GetTransform()->position;
 	
 	vec3 difference = center - aabb_center;

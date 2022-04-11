@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "CollisionManager.h"
+#include "World.h"
 
 RigidBody::RigidBody()
 {
@@ -10,9 +11,6 @@ RigidBody::RigidBody()
 
 void RigidBody::AddImpulse(glm::vec3 _velocity)
 {
-	//(1,0,0) + (0,1,0) = (0.5,0.5,0)
-	//(1,0,0) + (0,1,0) = (1,0.5,0)
-	//(1,0,0) + (0,1,0) = (1,0.5,0)
 	velocity += _velocity;
 }
 
@@ -24,5 +22,5 @@ void RigidBody::SetVelocity(glm::vec3 _velocity)
 void RigidBody::Update(float deltaTime)
 {
 	gameObject->GetTransform()->AddPosition(velocity * deltaTime);
-	velocity *= 0.93;
+	velocity *= 0.98;
 }

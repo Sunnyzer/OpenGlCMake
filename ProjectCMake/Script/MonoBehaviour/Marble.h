@@ -16,4 +16,5 @@ private:
 	Mesh* mesh;
 	RigidBody* rigidbody;
 	SphereCollider* collider;
+	static int marbleInstance;
 };

@@ -5,9 +5,9 @@
 #include <common/shader.hpp>
 #include "Mesh.h"
 #include "World.h"
-#include <time.h>
 #include "MarbleControl.h"
 #include "Marble.h"
+#include <time.h>
 
 using namespace glm;
 
@@ -45,9 +45,10 @@ int main()
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 	
 	GameObject _pool;
+	_pool.GetTransform()->SetPosition(vec3(0, -0.5f, 0));
 	MarbleControl* _marbleControl = _pool.AddComponent<MarbleControl>();
-	//Mesh* _mesh = _pool.AddComponent<Mesh>();
-	//_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
+	Mesh* _mesh = _pool.AddComponent<Mesh>();
+	_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	World::world->Update(programID, MatrixID, TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glfwTerminate();

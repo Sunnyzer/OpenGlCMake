@@ -47,7 +47,7 @@ public:
 	{
 		if (!_action)
 		{
-			int _size = actions.size();
+			size_t _size = actions.size();
 			for (size_t i = 0; i < _size; i++)
 			{
 				actions.pop_back();

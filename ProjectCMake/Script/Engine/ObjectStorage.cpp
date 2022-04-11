@@ -24,7 +24,8 @@ ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture, bool
 		if (textureDatas[i].pathName == _texture)
 			return textureDatas[i];
 	ObjectStorage::TextureData _textureOut;
-	_textureOut.pathName = _texture;
+	std::string _t = _texture;
+	_textureOut.pathName = _t.c_str();
 	if(_uvmap)
 		_textureOut.texture = LoadDDS(_texture);
 	else

@@ -14,9 +14,11 @@ add_definitions(
 
 add_subdirectory (glfw-3.3.2)
 add_subdirectory (glm)
+add_subdirectory (enet-1.3.17)
 include_directories(
 	glfw-3.3.2/include/GLFW/
 	glew-2.1.0/include/
+	enet-1.3.17/include/
 )
 
 ### GLEW ###
@@ -24,6 +26,7 @@ include_directories(
 set(GLEW_SOURCE
 	glfw-3.3.2/include/GLFW/
 	glew-2.1.0/src/glew.c
+	enet-1.3.17/include
 )
 
 add_library( GLEW_210 STATIC
