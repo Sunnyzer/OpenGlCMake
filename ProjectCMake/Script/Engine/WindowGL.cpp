@@ -11,7 +11,7 @@ WindowGL::WindowGL()
 	
 }
 
-bool WindowGL::CreateWindow(const char* _name, int _width, int _height)
+bool WindowGL::CreateMyWindow(const char* _name, int _width, int _height)
 {
 	if (window) return false;
 	width = _width;

@@ -41,9 +41,11 @@ void SphereCollider::CheckCollider()
 			{
 				vec3 _test = (norm + _vel) / 2.0f;
 				_colliderRb->SetVelocity(_test);
+				//_colliderRb->SetRVelocity(vec3(norm.z, norm.x, norm.y));
 			}
 			vec3 _test1 =(_vel - norm) / 2.0f;
 			rigidBody->SetVelocity(_test1);
+			//rigidBody->SetRVelocity(-vec3(norm.z, norm.x, norm.y));
 		}
 	}	
 }

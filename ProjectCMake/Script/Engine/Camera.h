@@ -15,9 +15,9 @@ private:
 	static glm::mat4 projectionMatrix;
 
 	float mouseSpeed = 0.004f;
-	float speed = 10.0f;
-	float initialFoV = 45.0f;
+	float speed = 15.0f;
+	float initialFoV = 90.0f;
 	float verticalAngle = 0.0f;
-	float horizontalAngle = 3.14f;
-	glm::vec3 position = glm::vec3(0, 0, 5);
+	float horizontalAngle = 1.6f;
+	glm::vec3 position = glm::vec3(-10, 3, 0);
 };

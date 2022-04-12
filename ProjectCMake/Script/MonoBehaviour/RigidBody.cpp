@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "CollisionManager.h"
 #include "World.h"
+#include <iostream>
 
 RigidBody::RigidBody()
 {
@@ -14,13 +15,24 @@ void RigidBody::AddImpulse(glm::vec3 _velocity)
 	velocity += _velocity;
 }
 
+void RigidBody::AddRImpulse(glm::vec3 _velocity)
+{
+	rVelocity += _velocity;
+}
+
 void RigidBody::SetVelocity(glm::vec3 _velocity)
 {
 	velocity = _velocity;
 }
 
+void RigidBody::SetRVelocity(glm::vec3 _velocity)
+{
+	rVelocity = _velocity;
+}
+
 void RigidBody::Update(float deltaTime)
 {
-	gameObject->GetTransform()->AddPosition(velocity * deltaTime);
-	velocity *= 0.98;
+	gameObject->GetTransform()->AddPosition(velocity);
+	velocity *= 98.0/100.0;
+	rVelocity *= 98.0/100.0;
 }

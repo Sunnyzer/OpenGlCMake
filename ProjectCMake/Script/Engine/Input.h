@@ -62,6 +62,17 @@ public:
 		});
 		actionKey.push_back(_input);
 	}
+	template<typename ...args>
+	static void BindInput(int _key, std::function<void(void)> _add, args... arg)
+	{
+		InputAction* _input = new InputAction();
+		_input->keyInput = _key;
+		_input->funcInvoke = std::function<void(void)>([_add, arg...]()
+		{
+			_add(arg...);
+		});
+		actionKey.push_back(_input);
+	}
 private:
 	static std::vector<InputAction*> actionKey;
 };

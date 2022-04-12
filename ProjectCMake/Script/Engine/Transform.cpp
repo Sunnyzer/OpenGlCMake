@@ -15,6 +15,14 @@ void Transform::AddPosition(glm::vec3 _pos)
 	position = matrix[3];
 }
 
+void Transform::AddRotation(float _angle, glm::vec3 _axis)
+{
+	matrix = glm::rotate(matrix, _angle, _axis);
+	rotation.x = matrix[0][3];
+	rotation.y = matrix[1][3];
+	rotation.z = matrix[2][3];
+}
+
 void Transform::SetPosition(glm::vec3 _pos)
 {
 	matrix[3][0] = _pos.x;
@@ -23,12 +31,12 @@ void Transform::SetPosition(glm::vec3 _pos)
 	position = matrix[3];
 }
 
-void Transform::SetRotation(float _angle,glm::vec3 _axis)
+void Transform::SetRotation(glm::vec3 _rot)
 {
-	matrix = glm::rotate(matrix, _angle, _axis);
-	rotation.x = matrix[0][3];
-	rotation.y = matrix[1][3];
-	rotation.z = matrix[2][3];
+	matrix[0][3] = _rot.x;
+	matrix[1][3] = _rot.y;
+	matrix[2][3] = _rot.z;
+	rotation = _rot;
 }
 
 void Transform::SetScale(glm::vec3 _scale)

@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <string>
 #include <enet\enet.h>
+#include "../Action.h"
 
 class ENet
 {
@@ -9,8 +10,7 @@ public:
     ~ENet();
     static int Initialize();
     virtual void Update() = 0;
-    virtual void SendMessageNet(ENetEvent _event,int _id) = 0;
-    virtual void Menu(int _key, std::string* _message) = 0;
     ENetHost* host;
-    ENetEvent event;
+    Action<char*> OnReceive;
+    ENetEvent event = ENetEvent();
 };

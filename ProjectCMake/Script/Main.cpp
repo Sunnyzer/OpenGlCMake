@@ -8,6 +8,10 @@
 #include "MarbleControl.h"
 #include "Marble.h"
 #include <time.h>
+#include <ClientENet.h>
+#include <ServerENet.h>
+#include <conio.h>
+#include "Input.h"
 
 using namespace glm;
 
@@ -21,7 +25,7 @@ int main()
 		return -1;
 	}
 	WindowGL windowGL;
-	windowGL.CreateWindow("Ma Game", 1920, 1080);
+	windowGL.CreateMyWindow("Ma Game", 1080, 720);
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
@@ -50,6 +54,7 @@ int main()
 	Mesh* _mesh = _pool.AddComponent<Mesh>();
 	_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	World::world->Update(programID, MatrixID, TextureID);
+	
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glfwTerminate();
 	return 0;

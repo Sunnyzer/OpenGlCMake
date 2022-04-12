@@ -112,12 +112,10 @@ namespace json
                     operator[]( i->ToString() ) = *std::next( i );
             }
 
-            JSON( JSON&& other )
-                : Internal( other.Internal )
-                , Type( other.Type )
-            { other.Type = Class::Null; other.Internal.Map = nullptr; }
+            JSON( JSON&& other ) noexcept : Internal( other.Internal ), Type( other.Type )
+            { other.Type = Class::Null; other.Internal.Map = nullptr; } 
 
-            JSON& operator=( JSON&& other ) 
+            JSON& operator=( JSON&& other ) noexcept
             {
                 ClearInternal();
                 Internal = other.Internal;
@@ -256,7 +254,7 @@ namespace json
                 SetType( Class::Object ); return Internal.Map->operator[]( key );
             }
 
-            JSON& operator[]( unsigned index ) {
+            JSON& operator[]( size_t index ) {
                 SetType( Class::Array );
                 if( index >= Internal.List->size() ) Internal.List->resize( index + 1 );
                 return Internal.List->operator[]( index );

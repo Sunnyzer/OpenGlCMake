@@ -6,26 +6,33 @@
 #include "CollisionManager.h"
 
 World* World::world = new World();
+ENet* World::networkLayer = nullptr;
 
 World::World()
 {
 	matrixID = 0;
+	deltaTime = 0;
 }
 World::~World()
 {
-
+	size_t _size = objects.size();
+	for (size_t i = 0; i < _size; i++)
+		delete objects[i];
 }
 void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 {
+	ENet::Initialize();
+	Input::BindInput(GLFW_KEY_1, [this]() { networkLayer = new ClientENet("192.168.10.69", 1234); OnNetworkSet.Invoke(); });
+	Input::BindInput(GLFW_KEY_2, [this]() { networkLayer = new ServerENet(1234); OnNetworkSet.Invoke(); });
 	matrixID = _matrixID;
 	Camera camera;
-	//GameObject::Instanciate();
 	do {
-		static double lastTime = glfwGetTime();
+		double lastTime = glfwGetTime();
+		double currentTime = glfwGetTime();
+		float deltaTime = float(currentTime - lastTime);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs();
 		glUseProgram(_programID);
-		deltaTime = (float)lastTime;
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
 			GameObject* _object = objects[i];
@@ -34,6 +41,7 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 		}
 		Input::UpdateInput();
 		CollisionManager::collisionManager->UpdateCollision();
+		if (networkLayer) networkLayer->Update();
 		glUniform1i(_textureID, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

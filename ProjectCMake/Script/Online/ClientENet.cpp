@@ -21,6 +21,7 @@ void ClientENet::SetupClient()
         cout << "Client Create" << endl;
     }
 }
+
 void ClientENet::ConnectClient(const char* _ip, int _port)
 {
     ENetAddress address;
@@ -31,14 +32,11 @@ void ClientENet::ConnectClient(const char* _ip, int _port)
     {
         cout << "No available peers for initiating an ENet connection" << endl;
     }
-    cout << "PSEUDO: ";
-    string _pseudo;
-    cin >> _pseudo;
     int hostService = enet_host_service(host, &event, 5000);
     if (hostService > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
     {
         cout << "Connection succeeded." << endl;
-        SendPseudo(false, _pseudo.c_str());
+        SendPseudo(false, "Nassim");
     }
     else
     {
@@ -69,11 +67,6 @@ void ClientENet::SendPseudo(bool _reliable, const char* _pseudo)
     enet_peer_send(peer, 0, packet);
     enet_host_flush(host);
 }
-void ClientENet::SendMessageNet(ENetEvent _event, int _id)
-{
-    cout << ((_event.peer->host == host) ? "Server : " : " ") << _event.packet->data << endl;
-    enet_packet_destroy(_event.packet);
-}
 
 void ClientENet::SendPacket(bool _reliable, const char* _dataStr)
 {
@@ -82,38 +75,10 @@ void ClientENet::SendPacket(bool _reliable, const char* _dataStr)
     enet_peer_send(peer, 0, packet);
     enet_host_flush(host);
 }
-void ClientENet::Menu(int _key, std::string* _message)
-{
-    bool bContinue = true;
-    string myMsg;
-    size_t size = _message->size();
-    Update();
-    _key = toupper(_key);
-    switch (_key)
-    {
-    case VK_ESCAPE:
-        bContinue = false;
-        break;
-    case VK_RETURN:
-        if (size >= 100 || size <= 0) return;
-        SendPacket(false, _message->c_str());
-        cout << endl << "Message : ";
-        break;
-    case VK_F1:
-        DisconnectClient();
-        break;
-    case VK_F2:
-        string ip;
-        cout << "IP: ";
-        cin >> ip;
-        ConnectClient(ip.c_str(), 1233);
-        break;
-    }
-}
 
 void ClientENet::Update()
 {
-    enet_host_service(host, &event, 100);
+    enet_host_service(host, &event, 16);
     switch (event.type)
     {
     case ENET_EVENT_TYPE_CONNECT:
@@ -123,8 +88,8 @@ void ClientENet::Update()
         switch (event.packet->flags)
         {
         case 0:
-            cout << endl;
-            SendMessageNet(event, event.peer->connectID);
+            OnReceive.Invoke((char*)event.packet->data);
+            cout << event.packet->data << endl;
             break;
         case 1:
             cout << endl << event.packet->data << " Logged" << endl;

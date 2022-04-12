@@ -3,6 +3,9 @@
 #include <vector>
 #include <GL\glew.h>
 #include <glm\ext\matrix_transform.hpp>
+#include "ClientENet.h"
+#include "ServerENet.h"
+#include "../Action.h"
 
 typedef unsigned int GLuint;
 
@@ -14,7 +17,9 @@ public:
 	void Update(GLuint _programID, GLuint _matrixID, GLuint _textureID);
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
+	static ENet* networkLayer;
 	float deltaTime;
+	Action<> OnNetworkSet;
 protected:
 	World();
 	void AddObject(GameObject* _object);

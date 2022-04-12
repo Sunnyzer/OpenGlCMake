@@ -33,7 +33,7 @@ void ServerENet::BroadcastPacket(bool _reliable, const char* _dataStr)
 
 void ServerENet::Update()
 {
-    enet_host_service(host, &event, 100);
+    enet_host_service(host, &event, 16);
     string _message;
     switch (event.type)
     {
@@ -46,8 +46,9 @@ void ServerENet::Update()
         switch (event.packet->flags)
         {
         case 0:
-            cout << endl;
-            SendMessageNet(event, event.peer->connectID);
+            OnReceive.Invoke((char*)event.packet->data);
+            cout << event.packet->data << endl;
+            enet_packet_destroy(event.packet);
             break;
         case 1:
             ServerENet::Profil _profil;
@@ -73,37 +74,6 @@ void ServerENet::Update()
             }
         }
         event.peer->data = NULL;
-        break;
-    }
-}
-
-void ServerENet::SendMessageNet(ENetEvent _event, int _id)
-{
-    for (size_t i = 0; i < profils.size(); i++)
-    {
-        if (profils[i].id == _id)
-        {
-            cout << profils[i].pseudo << " : " << _event.packet->data << endl;
-            std::string _pseudo = profils[i].pseudo;
-            std::string _message = _pseudo.insert(_pseudo.size(), " : ");
-            _message = _message.insert(_message.size(), (const char*)_event.packet->data);
-            BroadcastPacket(false , _message.c_str());
-            enet_packet_destroy(_event.packet);
-            return;
-        }
-    }
-}
-
-void ServerENet::Menu(int _key, string* _message)
-{
-    Update();
-    _key = toupper(_key);
-    switch (_key)
-    {
-    case VK_RETURN:
-        if (_message->size() >= 100) return;
-        BroadcastPacket(false, _message->c_str());
-        cout << endl << "Message : ";
         break;
     }
 }
