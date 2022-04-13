@@ -8,7 +8,6 @@ class MarbleControl : public MonoBehaviour
 {
 public:
 	MarbleControl();
-	void ChangeBall();
 	void AddBall(Marble* _object);
 	void Shoot();
 protected:
@@ -17,4 +16,5 @@ protected:
 	std::vector<Marble*> marbles;
 	int currentIndex;
 	Marble* whiteMarble;
+	bool shoot = true;
 };

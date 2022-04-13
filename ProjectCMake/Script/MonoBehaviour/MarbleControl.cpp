@@ -10,6 +10,7 @@
 #include "BoxCollider.h"
 #include "World.h"
 #include "json.hpp"
+//#include <enet\enet.h>
 
 using namespace glm;
 using json::JSON;
@@ -28,6 +29,7 @@ void MarbleControl::Start()
 	whiteMarble = GameObject::Instanciate<Marble>();
 	whiteMarble->gameObject->GetTransform()->SetScale(_scale);
 	whiteMarble->gameObject->GetTransform()->SetPosition(_basePos + vec3(-10, 0, 0));
+	AddBall(whiteMarble);
 	Marble* _marble = GameObject::Instanciate<Marble>();
 	_marble->gameObject->GetTransform()->SetScale(_scale);
 	_marble->gameObject->GetTransform()->SetPosition(_basePos);
@@ -59,27 +61,61 @@ void MarbleControl::Start()
 	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(0, 0, -21));
 	World::world->OnNetworkSet += [this]()
 	{
-		World::networkLayer->OnReceive += [this](const char* _receive)
+		World::networkLayer->OnReceive += [this](ENetPacket* _receive)
 		{
 			JSON myJson;
-			myJson = myJson.Load(_receive);
-			tvec3<double> vel(myJson["velocity"]["x"].ToFloat(), myJson["velocity"]["y"].ToFloat(), myJson["velocity"]["z"].ToFloat());
-			whiteMarble->GetRididBody()->AddImpulse(vel);
+			myJson = myJson.Load((char*)_receive->data);
+			size_t _size = marbles.size();
+			switch (_receive->flags)
+			{
+			case 0:
+				tvec3<double> vel(myJson["velocity"]["x"].ToFloat(), myJson["velocity"]["y"].ToFloat(), myJson["velocity"]["z"].ToFloat());
+				whiteMarble->GetRididBody()->AddImpulse(vel);
+				shoot = false;
+				break;
+			case 2:
+				for (size_t i = 0; i < _size; i++)
+				{
+					glm::vec3 _pos; 
+					for (size_t j = 0; j < 3; j++)
+					{
+						float _posValue = myJson["position" + std::to_string(i)].at(j).ToFloat();
+						_pos[j] = _posValue;
+					}
+					marbles[i]->gameObject->GetTransform()->SetPosition(_pos);
+				}
+				break;
+			default:
+				break;
+			}
 		};
 	};
 }
 
 void MarbleControl::Update(float deltaTime)
 {
-	
-}
-
-
-void MarbleControl::ChangeBall()
-{
-	++currentIndex;
-	if (currentIndex >= marbles.size())
-		currentIndex = 0;
+	if (shoot) return;
+	JSON myJson;
+	size_t _size = marbles.size();
+	for (size_t i = 0; i < _size; i++)
+	{
+		Marble* _marble = marbles[i];
+		if (length(_marble->GetRididBody()->GetVelocity()) > 0.005f)
+		{
+			shoot = false;
+			return;
+		}
+		myJson["position" + std::to_string(i)] = json::Array(_marble->gameObject->GetTransform()->position.x , _marble->gameObject->GetTransform()->position.y, _marble->gameObject->GetTransform()->position.z);
+		_marble->GetRididBody()->SetVelocity(glm::vec3(0));
+	}
+	shoot = true;
+	if (!World::networkLayer)return;
+	ServerENet* _server = dynamic_cast<ServerENet*>(World::networkLayer);
+	if (_server)
+	{
+		_server->BroadcastPacket(false, 2, myJson.dump().c_str());
+		std::cout << myJson.dump().c_str() << std::endl;
+	}
 }
 
 void MarbleControl::AddBall(Marble* _object)
@@ -89,15 +125,16 @@ void MarbleControl::AddBall(Marble* _object)
 
 void MarbleControl::Shoot()
 {
+	if(!shoot) return;
+	shoot = false;
 	vec3 _impulse = normalize(vec3(Camera::forward.x, 0, Camera::forward.z));
 	_impulse = vec3(_impulse.x, 0, _impulse.z) * 2.5f;
 	whiteMarble->GetRididBody()->AddImpulse(_impulse);
 	JSON myJson({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
-	std::cout << myJson.dump().c_str() << std::endl;
 	if (!World::networkLayer)return;
 	ClientENet* _client = dynamic_cast<ClientENet*>(World::networkLayer);
 	if (_client)
 		_client->SendPacket(false, myJson.dump().c_str());
 	else
-		((ServerENet*)World::networkLayer)->BroadcastPacket(false, myJson.dump().c_str());
+		((ServerENet*)World::networkLayer)->BroadcastPacket(false, 0, myJson.dump().c_str());
 }

@@ -88,11 +88,16 @@ void ClientENet::Update()
         switch (event.packet->flags)
         {
         case 0:
-            OnReceive.Invoke((char*)event.packet->data);
-            cout << event.packet->data << endl;
+            OnReceive.Invoke(event.packet);
+            enet_packet_destroy(event.packet);
             break;
         case 1:
             cout << endl << event.packet->data << " Logged" << endl;
+            enet_packet_destroy(event.packet);
+            break;
+        case 2:
+            OnReceive.Invoke(event.packet);
+            enet_packet_destroy(event.packet);
             break;
         }
         break;

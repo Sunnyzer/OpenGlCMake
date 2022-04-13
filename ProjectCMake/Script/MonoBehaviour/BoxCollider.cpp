@@ -71,7 +71,7 @@ void BoxCollider::SetBox(glm::vec3 _box)
 bool BoxCollider::Collision(SphereCollider* _sphereCollider)
 {
 	if (!_sphereCollider) return false;
-	vec3 center(_sphereCollider->gameObject->GetTransform()->position );
+	vec3 center(_sphereCollider->gameObject->GetTransform()->position + _sphereCollider->GetRigidBody()->GetVelocity());
 	vec3 aabb_half_extents(GetBound() * 1.05f);
 	vec3 aabb_center = gameObject->GetTransform()->position;
 	

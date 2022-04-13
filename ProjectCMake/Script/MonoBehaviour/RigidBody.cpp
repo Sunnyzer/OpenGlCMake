@@ -32,7 +32,9 @@ void RigidBody::SetRVelocity(glm::vec3 _velocity)
 
 void RigidBody::Update(float deltaTime)
 {
-	gameObject->GetTransform()->AddPosition(velocity);
+	gameObject->GetTransform()->AddPosition(velocity + gameObject->GetTransform()->rotation);
+	//if(length(rVelocity) > 0.05f)
+		//gameObject->GetTransform()->AddRotation(0.1f, rVelocity);
 	velocity *= 98.0/100.0;
 	rVelocity *= 98.0/100.0;
 }

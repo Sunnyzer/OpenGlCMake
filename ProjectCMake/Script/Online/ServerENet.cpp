@@ -15,18 +15,15 @@ void ServerENet::SetupServer(int _port)
     address.port = _port;
     host = enet_host_create(&address, 32, 2, 0, 0);
     if (host == NULL)
-    {
         cout << "An error occurred while trying to create a server host" << endl;
-    }
     else
-    {
         cout << "Server Create" << endl;
-    }
 }
 
-void ServerENet::BroadcastPacket(bool _reliable, const char* _dataStr)
+void ServerENet::BroadcastPacket(bool _reliable, int _flags, const char* _dataStr)
 {
     ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+    packet->flags = _flags;
     enet_host_broadcast(host, 0, packet);
     enet_host_flush(host);
 }
@@ -46,19 +43,22 @@ void ServerENet::Update()
         switch (event.packet->flags)
         {
         case 0:
-            OnReceive.Invoke((char*)event.packet->data);
-            cout << event.packet->data << endl;
+            OnReceive.Invoke(event.packet);
             enet_packet_destroy(event.packet);
             break;
         case 1:
             ServerENet::Profil _profil;
             _profil.id = event.peer->connectID;
-            string _message = (const char*)event.packet->data;
+            _message = (const char*)event.packet->data;
             _profil.pseudo = (const char*)event.packet->data;
             profils.push_back(_profil);
             _message = _message.insert(_message.size()," Logged !!!");
             cout << endl << _message << endl;
-            BroadcastPacket(false, _message.c_str());
+            BroadcastPacket(false, 0,_message.c_str());
+            break;
+        case 2:
+            OnReceive.Invoke(event.packet);
+            enet_packet_destroy(event.packet);
             break;
         }
         break;
@@ -70,7 +70,7 @@ void ServerENet::Update()
                 string _messageDisconnected = profils[i].pseudo;
                 _messageDisconnected = _messageDisconnected.insert(_message.size(), " disconnected");
                 cout << endl << _messageDisconnected << endl;
-                BroadcastPacket(false, _messageDisconnected.c_str());
+                BroadcastPacket(false, 0, _messageDisconnected.c_str());
             }
         }
         event.peer->data = NULL;
