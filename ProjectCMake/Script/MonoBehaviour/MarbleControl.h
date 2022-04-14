@@ -3,6 +3,7 @@
 #include <vector>
 
 class Marble;
+class ServerENet;
 
 class MarbleControl : public MonoBehaviour
 {
@@ -12,9 +13,10 @@ public:
 	void Shoot();
 protected:
 	virtual void Start() override;
-	virtual void Update(float deltaTime) override;
+	inline virtual void Update(float deltaTime) override;
 	std::vector<Marble*> marbles;
 	int currentIndex;
 	Marble* whiteMarble;
 	bool shoot = true;
+	ServerENet* server;
 };

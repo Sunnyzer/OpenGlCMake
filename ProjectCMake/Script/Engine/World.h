@@ -1,10 +1,10 @@
 #pragma once
 #include "GameObject.h"
 #include <vector>
+#include "ServerENet.h"
+#include "ClientENet.h"
 #include <GL\glew.h>
 #include <glm\ext\matrix_transform.hpp>
-#include "ClientENet.h"
-#include "ServerENet.h"
 #include "../Action.h"
 
 typedef unsigned int GLuint;

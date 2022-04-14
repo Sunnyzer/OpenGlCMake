@@ -10,7 +10,8 @@ public:
     ~ENet();
     static int Initialize();
     virtual void Update() = 0;
-    ENetHost* host;
+    virtual void SendBroadcastPacket(bool _reliable, int _flags, const char* _dataStr) = 0;
+    ENetHost* host = nullptr;
     Action<ENetPacket*> OnReceive;
     ENetEvent event = ENetEvent();
 };

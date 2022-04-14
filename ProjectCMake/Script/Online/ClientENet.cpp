@@ -33,6 +33,7 @@ void ClientENet::ConnectClient(const char* _ip, int _port)
         cout << "No available peers for initiating an ENet connection" << endl;
     }
     int hostService = enet_host_service(host, &event, 5000);
+
     if (hostService > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
     {
         cout << "Connection succeeded." << endl;
@@ -66,6 +67,11 @@ void ClientENet::SendPseudo(bool _reliable, const char* _pseudo)
     packet->flags = 1;
     enet_peer_send(peer, 0, packet);
     enet_host_flush(host);
+}
+
+void ClientENet::SendBroadcastPacket(bool _reliable, int _flags, const char* _pseudo)
+{
+    SendPacket(_reliable, _pseudo);
 }
 
 void ClientENet::SendPacket(bool _reliable, const char* _dataStr)

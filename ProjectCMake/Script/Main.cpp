@@ -25,7 +25,7 @@ int main()
 		return -1;
 	}
 	WindowGL windowGL;
-	windowGL.CreateMyWindow("Ma Game", 1080, 720);
+	windowGL.CreateMyWindow("Ma Game", 720, 480);
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
@@ -33,6 +33,7 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+	ENet::Initialize();
 	glfwSetInputMode(WindowGL::window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetInputMode(WindowGL::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glClearColor(0.0f, 0.0f, 0.2f, 0.0f);

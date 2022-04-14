@@ -10,6 +10,7 @@
 #include <initializer_list>
 #include <ostream>
 #include <iostream>
+#include <glm/glm.hpp>
 
 namespace json 
 {
@@ -53,6 +54,7 @@ namespace json
             BackingData( bool   b ) : Bool( b ){}
             BackingData( string s ) : String( new string( s ) ){}
             BackingData()           : Int( 0 ){}
+            BackingData( glm::vec3 vec) : Vec3( vec ){}
 
             deque<JSON>        *List;
             map<string,JSON>   *Map;
@@ -60,9 +62,14 @@ namespace json
             double              Float;
             long                Int;
             bool                Bool;
+            glm::vec3           Vec3;
         } Internal;
-
         public:
+            JSON(const glm::vec3& vec) noexcept 
+            {
+                Type = Class::Vector3; 
+                Internal.Vec3 = vec;
+            }
             enum class Class 
             {
                 Null,
@@ -71,7 +78,8 @@ namespace json
                 String,
                 Floating,
                 Integral,
-                Boolean
+                Boolean,
+                Vector3
             };
 
             template <typename Container>
@@ -253,7 +261,6 @@ namespace json
             JSON& operator[]( const string &key ) {
                 SetType( Class::Object ); return Internal.Map->operator[]( key );
             }
-
             JSON& operator[]( size_t index ) {
                 SetType( Class::Array );
                 if( index >= Internal.List->size() ) Internal.List->resize( index + 1 );
@@ -326,6 +333,11 @@ namespace json
                 ok = (Type == Class::Boolean);
                 return ok ? Internal.Bool : false;
             }
+            glm::vec3 ToVec() const { bool b; return ToVec(b); }
+            glm::vec3 ToVec(bool& ok) const {
+                ok = (Type == Class::Vector3);
+                return ok ? Internal.Vec3 : glm::vec3(0,0,0);
+            }
 
             JSONWrapper<map<string,JSON>> ObjectRange() {
                 if( Type == Class::Object )
@@ -389,6 +401,9 @@ namespace json
                         return std::to_string( Internal.Int );
                     case Class::Boolean:
                         return Internal.Bool ? "true" : "false";
+                    case Class::Vector3:
+                        //return " { ""x"" : " + std::to_string(Internal.Vec3.x) + ", ""y"" : " + std::to_string(Internal.Vec3.y) + ", ""z"" : " + std::to_string(Internal.Vec3.z) + "}";
+                        return "{ " + std::to_string(Internal.Vec3.x) + ", " + std::to_string(Internal.Vec3.y) + ", " + std::to_string(Internal.Vec3.z) + " }";
                     default:
                         return "";
                 }
@@ -407,11 +422,12 @@ namespace json
                 switch( type ) {
                 case Class::Null:      Internal.Map    = nullptr;                break;
                 case Class::Object:    Internal.Map    = new map<string,JSON>(); break;
-                case Class::Array:     Internal.List   = new deque<JSON>();     break;
+                case Class::Array:     Internal.List   = new deque<JSON>();      break;
                 case Class::String:    Internal.String = new string();           break;
                 case Class::Floating:  Internal.Float  = 0.0;                    break;
                 case Class::Integral:  Internal.Int    = 0;                      break;
                 case Class::Boolean:   Internal.Bool   = false;                  break;
+                case Class::Vector3:   Internal.Vec3   = glm::vec3(0);       break;
                 }
 
                 Type = type;

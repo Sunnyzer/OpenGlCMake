@@ -22,6 +22,7 @@ void ServerENet::SetupServer(int _port)
 
 void ServerENet::BroadcastPacket(bool _reliable, int _flags, const char* _dataStr)
 {
+    if (!host)return;
     ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
     packet->flags = _flags;
     enet_host_broadcast(host, 0, packet);
@@ -30,6 +31,7 @@ void ServerENet::BroadcastPacket(bool _reliable, int _flags, const char* _dataSt
 
 void ServerENet::Update()
 {
+    if (!host)return;
     enet_host_service(host, &event, 16);
     string _message;
     switch (event.type)
@@ -76,4 +78,9 @@ void ServerENet::Update()
         event.peer->data = NULL;
         break;
     }
+}
+
+void ServerENet::SendBroadcastPacket(bool _reliable, int _flags, const char* _dataStr)
+{
+    BroadcastPacket(_reliable, _flags, _dataStr);
 }

@@ -5,6 +5,8 @@
 #include "Input.h"
 #include "CollisionManager.h"
 
+#define MAXFPS 60.0
+
 World* World::world = new World();
 ENet* World::networkLayer = nullptr;
 
@@ -21,10 +23,10 @@ World::~World()
 }
 void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 {
-	ENet::Initialize();
 	Input::BindInput(GLFW_KEY_1, [this]() { networkLayer = new ClientENet("192.168.10.69", 1234); OnNetworkSet.Invoke(); });
 	Input::BindInput(GLFW_KEY_2, [this]() { networkLayer = new ServerENet(1234); OnNetworkSet.Invoke(); });
 	matrixID = _matrixID;
+	double period = 1.0 / MAXFPS;
 	Camera camera;
 	do {
 		double lastTime = glfwGetTime();
@@ -47,6 +49,8 @@ void World::Update(GLuint _programID, GLuint _matrixID, GLuint _textureID)
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(WindowGL::window);
 		glfwPollEvents();
+		if(period > deltaTime)
+			Sleep((period - deltaTime) * 1000.0);
 	}
 	while (!KeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(WindowGL::window) == 0);
 	glDeleteProgram(_programID);

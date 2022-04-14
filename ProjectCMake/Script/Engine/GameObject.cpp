@@ -18,7 +18,7 @@ GameObject::~GameObject()
 	delete transform;
 	for (size_t i = 0; i < amountMonoBehaviour; i++)
 		delete monoBehaviours[i];
-	monoBehaviours.empty();
+	//monoBehaviours.empty();
 }
 
 void GameObject::Update(float deltaTime)
