@@ -1260,8 +1260,8 @@ GLFWAPI int glfwGetGamepadState(int jid, GLFWgamepadstate* state)
         if (e->type == _GLFW_JOYSTICK_AXIS)
         {
             const float value = js->axes[e->index] * e->axisScale + e->axisOffset;
-            // HACK: This should be baked into the value transform
-            // TODO: Bake into transform when implementing output modifiers
+            // HACK: This should be baked into the value GetTransform()
+            // TODO: Bake into GetTransform() when implementing output modifiers
             if (e->axisOffset < 0 || (e->axisOffset == 0 && e->axisScale > 0))
             {
                 if (value >= 0.f)

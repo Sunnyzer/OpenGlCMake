@@ -1,9 +1,9 @@
 #pragma once
-#include "GameObject.h"
+#include <GL\glew.h>
 #include <vector>
+#include "GameObject.h"
 #include "ServerENet.h"
 #include "ClientENet.h"
-#include <GL\glew.h>
 #include <glm\ext\matrix_transform.hpp>
 #include "../Action.h"
 
@@ -14,7 +14,7 @@ class World
 	friend GameObject;
 public:
 	~World();
-	void Update(GLuint _programID, GLuint _matrixID, GLuint _textureID);
+	void Update();
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
 	static ENet* networkLayer;
@@ -23,6 +23,8 @@ public:
 protected:
 	World();
 	void AddObject(GameObject* _object);
+	void RemoveObject(GameObject* _object);
 	std::vector<GameObject*> objects;
 	GLuint matrixID;
+	size_t gameObjectAmount;
 };

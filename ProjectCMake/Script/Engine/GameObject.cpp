@@ -5,9 +5,12 @@
 
 using namespace glm;
 
+int GameObject::amountMonoCreate = 0;
+
 GameObject::GameObject()
 {
-	transform = new	Transform();
+	name = "GameObject" + World::world->gameObjectAmount;
+	transform = new Transform();
 	World::world->AddObject(this);
 	amountMonoBehaviour = 0;
 }
@@ -18,7 +21,6 @@ GameObject::~GameObject()
 	delete transform;
 	for (size_t i = 0; i < amountMonoBehaviour; i++)
 		delete monoBehaviours[i];
-	//monoBehaviours.empty();
 }
 
 void GameObject::Update(float deltaTime)
@@ -26,7 +28,6 @@ void GameObject::Update(float deltaTime)
 	for (size_t i = 0; i < amountMonoBehaviour; i++)
 	{
 		MonoBehaviour* _mono = monoBehaviours[i];
-		if (!_mono)continue;
 		_mono->Update(deltaTime);
 	}
 }

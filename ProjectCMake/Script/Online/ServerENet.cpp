@@ -5,6 +5,7 @@ using namespace std;
 
 ServerENet::ServerENet(int _port)
 {
+    netType = NetType::Server;
     SetupServer(_port);
 }
 
@@ -17,7 +18,7 @@ void ServerENet::SetupServer(int _port)
     if (host == NULL)
         cout << "An error occurred while trying to create a server host" << endl;
     else
-        cout << "Server Create" << endl;
+        cout << "Les deux" << endl;
 }
 
 void ServerENet::BroadcastPacket(bool _reliable, int _flags, const char* _dataStr)
@@ -80,7 +81,8 @@ void ServerENet::Update()
     }
 }
 
-void ServerENet::SendBroadcastPacket(bool _reliable, int _flags, const char* _dataStr)
+void ServerENet::SendBroadcastPacket(bool _reliable, NetType _send,  int _flags, const char* _dataStr)
 {
-    BroadcastPacket(_reliable, _flags, _dataStr);
+    if (_send == NetType::Server || _send == NetType::Both)
+        BroadcastPacket(_reliable, _flags, _dataStr);
 }

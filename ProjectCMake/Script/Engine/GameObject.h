@@ -13,7 +13,6 @@ class GameObject
 public:
 	GameObject();
 	virtual ~GameObject();
-	inline Transform* GetTransform() { return transform; };
 	template<class T>
 	T* AddComponent()
 	{
@@ -24,6 +23,8 @@ public:
 			std::cout << "impossible de cast en monobehaviour" << std::endl;
 			return nullptr;
 		}
+		_monoBehaviour->name = "Mono" + std::to_string(amountMonoCreate);
+		amountMonoCreate++;
 		_monoBehaviour->SetOwner(this);
 		monoBehaviours.push_back(_monoBehaviour);
 		++amountMonoBehaviour;
@@ -48,9 +49,13 @@ public:
 		return _behaviour;
 	}
 	Action<MonoBehaviour*> OnAddMonoBehaviour;
-private:
+	inline Transform* GetTransform() const { return transform; };
+protected:
+	static int amountMonoCreate;
 	virtual void Update(float deltaTime);
 	virtual void OnDestroy();
+private:
+	std::string name;
 	Transform* transform;
 	std::vector<MonoBehaviour*> monoBehaviours;
 	size_t amountMonoBehaviour;

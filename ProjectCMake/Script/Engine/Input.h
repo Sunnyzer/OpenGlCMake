@@ -7,7 +7,6 @@
 
 #define KeyPressed(glfwKey) glfwGetKey(WindowGL::window, glfwKey) == GLFW_PRESS
 #define KeyReleased(glfwKey) glfwGetKey(WindowGL::window, glfwKey) == GLFW_RELEASE
-//#define KeyValue(glfwKey, _pressedValue, _notPressedValue) KeyPressed(_key) ? _pressedValue : _notPressedValue;
 
 class Input
 {
@@ -20,6 +19,11 @@ private:
 		bool pressed = false;
 	};
 public:
+	~Input()
+	{
+		for (size_t i = 0; i < size; i++)
+			delete actionKey[i];
+	}
 	template<class T>
 	static T FlipFlop(int _key, T _pressedValue, T _releasedValue)
 	{
@@ -27,8 +31,7 @@ public:
 	}
 	static void UpdateInput()
 	{
-		size_t _size = actionKey.size();
-		for (size_t i = 0; i < _size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
 			InputAction* _input = actionKey[i];
 			if (!_input->pressed && KeyPressed(_input->keyInput))
@@ -41,17 +44,6 @@ public:
 		}
 	}
 	template<class object, typename ...args>
-	static void BindInput(int _key, object*& _object, void (object::*function)(args...), args... arg)
-	{
-		InputAction* _input = new InputAction();
-		_input->keyInput = _key;
-		_input->funcInvoke = std::function<void(void)>([&_object,function,arg...]()
-		{
-			std::invoke(function, _object, arg...);
-		});
-		actionKey.push_back(_input);
-	}
-	template<class object, typename ...args>
 	static void BindInput(int _key, object* _object, void (object::* function)(args...), args... arg)
 	{
 		InputAction* _input = new InputAction();
@@ -61,6 +53,7 @@ public:
 			std::invoke(function, _object, arg...);
 		});
 		actionKey.push_back(_input);
+		size++;
 	}
 	template<typename ...args>
 	static void BindInput(int _key, std::function<void(void)> _add, args... arg)
@@ -72,7 +65,9 @@ public:
 			_add(arg...);
 		});
 		actionKey.push_back(_input);
+		size++;
 	}
 private:
 	static std::vector<InputAction*> actionKey;
+	static size_t size;
 };

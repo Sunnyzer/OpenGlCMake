@@ -5,6 +5,7 @@ using namespace std;
 
 ClientENet::ClientENet(const char* _ip, int _port)
 {
+    netType = NetType::Client;
     SetupClient();
     ConnectClient(_ip, _port);
 }
@@ -69,9 +70,10 @@ void ClientENet::SendPseudo(bool _reliable, const char* _pseudo)
     enet_host_flush(host);
 }
 
-void ClientENet::SendBroadcastPacket(bool _reliable, int _flags, const char* _pseudo)
+void ClientENet::SendBroadcastPacket(bool _reliable, NetType _send, int _flags, const char* _pseudo)
 {
-    SendPacket(_reliable, _pseudo);
+    if(_send == NetType::Client || _send == NetType::Both)
+        SendPacket(_reliable, _pseudo);
 }
 
 void ClientENet::SendPacket(bool _reliable, const char* _dataStr)
