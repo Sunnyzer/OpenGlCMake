@@ -1,20 +1,20 @@
 #include "Collider.h"
-#include "CollisionManager.h"
 #include "GameObject.h"
+#include "Physics.h"
 #include "RigidBody.h"
 
 Collider::Collider()
 {
 	rigidBody = nullptr;
+	formCollider = FormCollider::None;
+	Physics::AddCollider(this);
 }
-
 void Collider::AddRigidbody(RigidBody* _rb)
 {
 	if (rigidBody || !_rb)
 		return;
 	rigidBody = _rb;
 }
-
 void Collider::Start()
 {
 	rigidBody = gameObject->GetComponent<RigidBody>();
@@ -22,10 +22,4 @@ void Collider::Start()
 	{
 		AddRigidbody(dynamic_cast<RigidBody*>(_rb));
 	};
-	CollisionManager::collisionManager->AddCollision(this);
-}
-
-void Collider::UpdateCollider()
-{
-
 }

@@ -47,13 +47,13 @@ bool LoadOBJ(const char* path,	std::vector<glm::vec3>& out_vertices, std::vector
 	FILE* file = fopen(path, "r");
 	if (file == NULL) {
 		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		getchar();
+		char _r = getchar();
 		return false;
 	}
 
 	while (1) {
 
-		char lineHeader[128];
+		char lineHeader[128] = { '\0' };
 		// read the first word of the line
 		int res = fscanf(file, "%s", lineHeader);
 		if (res == EOF)
@@ -63,18 +63,18 @@ bool LoadOBJ(const char* path,	std::vector<glm::vec3>& out_vertices, std::vector
 
 		if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;
-			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			char _r = fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
 		}
 		else if (strcmp(lineHeader, "vt") == 0) {
 			glm::vec2 uv;
-			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			char _r = fscanf(file, "%f %f\n", &uv.x, &uv.y);
 			uv.y = -uv.y; // Invert V coordinate since we will only use DDS texture, which are inverted. Remove if you want to use TGA or BMP loaders.
 			temp_uvs.push_back(uv);
 		}
 		else if (strcmp(lineHeader, "vn") == 0) {
 			glm::vec3 normal;
-			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			char _r = fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
 			temp_normals.push_back(normal);
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
@@ -143,7 +143,7 @@ GLuint LoadBMP_custom(const char* imagepath) {
 	FILE* file = fopen(imagepath, "rb");
 	if (!file) {
 		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath);
-		getchar();
+		char _r = getchar();
 		return 0;
 	}
 
@@ -224,16 +224,21 @@ GLuint LoadDDS(const char* imagepath)
 	/* try to open the file */
 	fp = fopen(imagepath, "rb");
 	if (fp == NULL) {
-		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar();
+		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); 
+		char _r = getchar();
 		return 0;
 	}
 
 	/* verify the type of file */
-	char filecode[4];
+	char filecode[4] = { '\0' };
 	fread(filecode, 1, 4, fp);
-	if (strncmp(filecode, "DDS ", 4) != 0) {
-		fclose(fp);
-		return 0;
+	if (filecode)
+	{
+		if (strncmp(filecode, "DDS ", 4) != 0) 
+		{
+			fclose(fp);
+			return 0;
+		}
 	}
 
 	/* get the surface desc */
@@ -251,7 +256,8 @@ GLuint LoadDDS(const char* imagepath)
 	/* how big is it going to be including all mipmaps? */
 	bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
 	buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char));
-	fread(buffer, 1, bufsize, fp);
+	if(buffer != 0)
+		fread(buffer, 1, bufsize, fp);
 	/* close the file pointer */
 	fclose(fp);
 

@@ -3,6 +3,7 @@
 
 class RigidBody;
 class SphereCollider;
+class Mesh;
 
 class Marble : public MonoBehaviour
 {

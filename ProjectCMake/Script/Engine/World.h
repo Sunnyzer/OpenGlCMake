@@ -1,13 +1,9 @@
 #pragma once
-#include <GL\glew.h>
-#include <vector>
-#include "GameObject.h"
 #include "ServerENet.h"
 #include "ClientENet.h"
-#include <glm\ext\matrix_transform.hpp>
-#include "../Action.h"
 
 typedef unsigned int GLuint;
+class GameObject;
 
 class World
 {

@@ -1,7 +1,6 @@
 #include "GameObject.h"
 #include "World.h"
 #include "Mesh.h"
-#include "Transform.h"
 
 using namespace glm;
 

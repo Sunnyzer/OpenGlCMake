@@ -4,10 +4,10 @@
 #include "Mesh.h"
 #include "World.h"
 #include "MarbleControl.h"
-#include "Marble.h"
+#include "ENet.h"
 #include <time.h>
-#include <conio.h>
-#include "Input.h"
+#include "GameObject.h"
+#include "Transform.h"
 
 using namespace glm;
 
@@ -18,18 +18,16 @@ int main()
 	if (!glfwInit())
 	{
 		fprintf(stderr, "Failed to initialize GLFW\n");
-		getchar();
+		char _r = getchar();
 		return -1;
 	}
-	
 	WindowGL windowGL;
 	windowGL.CreateMyWindow("Ma Game", 1080, 720);
-
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
 		fprintf(stderr, "Failed to initialize GLEW\n");
-		getchar();
+		char _r = getchar();
 		glfwTerminate();
 		return -1;
 	}

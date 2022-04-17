@@ -1,6 +1,5 @@
 #pragma once
 #include "Collider.h"
-#include <glm\ext\vector_float3.hpp>
 
 class SphereCollider;
 
@@ -8,12 +7,14 @@ class BoxCollider : public Collider
 {
 public:
 	BoxCollider();
-	void CheckCollider();
-	virtual void UpdateCollider() override;
+	virtual bool CheckCollision(Collider* _collider) override;
+	virtual void CollisionResult(Collider* _collider) override;
+
 	void SetBox(glm::vec3 _radius);
+
 	inline glm::vec3 GetBound() { return *box; };
-	bool Collision(SphereCollider* sphereCollider);
 private:
 	virtual void Start() override;
+	virtual void UpdatePhysics() override;
 	glm::vec3* box;
 };

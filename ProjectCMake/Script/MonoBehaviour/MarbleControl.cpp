@@ -1,13 +1,10 @@
-#include "Mesh.h"
 #include "MarbleControl.h"
-#include "Input.h"
-#include "GameObject.h"
+#include "Mesh.h"
 #include "Marble.h"
-#include "Transform.h"
 #include "RigidBody.h"
-#include "Camera.h"
 #include "BoxCollider.h"
 #include "World.h"
+#include "GameObject.h"
 
 using namespace glm;
 using json::JSON;
@@ -21,7 +18,7 @@ MarbleControl::MarbleControl()
 }
 void MarbleControl::Start()
 {
-	Input::BindInput(GLFW_KEY_SPACE, this, &MarbleControl::Shoot);
+	Input::BindInput(GLFW_KEY_SPACE, InputType::Pressed, this, &MarbleControl::Shoot);
 	glm::vec3 _scale(0.75);
 	glm::vec3 _basePos(1, _scale.y, 0);
 	whiteMarble = GameObject::Instanciate<Marble>();
@@ -78,7 +75,7 @@ void MarbleControl::Update(float deltaTime)
 	bool _verif = VerifAllMarbleStop(myJson);
 	ServerReplicated(World::networkLayer);
 	if(_verif && World::networkLayer)
-		World::networkLayer->SendBroadcastPacket(false, NetType::Server,2, myJson.dump().c_str());
+		World::networkLayer->SendBroadcastPacket(false, NetType::Server, 2, myJson.dump().c_str());
 }
 
 void MarbleControl::AddBall(Marble* _object)
@@ -90,13 +87,13 @@ void MarbleControl::Shoot()
 {
 	if(!shoot) return;
 	shoot = false;
-	vec3 _impulse = normalize(vec3(Camera::forward.x, 0, Camera::forward.z));
+	vec3 _impulse = normalize(vec3(Camera::currentCamera->forward.x, 0, Camera::currentCamera->forward.z));
 	_impulse = vec3(_impulse.x, 0, _impulse.z) * 2.5f;
 	whiteMarble->GetRididBody()->AddImpulse(_impulse);
 	BothReplicated(World::networkLayer);
 	JSON myJson({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
 	if(World::networkLayer)
-		World::networkLayer->SendBroadcastPacket(false, NetType::Both,0, myJson.dump().c_str());
+		World::networkLayer->SendBroadcastPacket(false, NetType::Both, 0, myJson.dump().c_str());
 }
 
 void MarbleControl::SetMarble()

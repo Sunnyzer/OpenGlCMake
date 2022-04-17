@@ -1,8 +1,8 @@
 #pragma once
-#include <glm/glm.hpp>
-#include "MonoBehaviour.h"
+#include <glm\ext\vector_float3.hpp>
+#include "PhysicComponent.h"
 
-class RigidBody : public MonoBehaviour
+class RigidBody : public PhysicComponent
 {
 public:
 	RigidBody();
@@ -11,7 +11,7 @@ public:
 	void AddRImpulse(glm::vec3 _velocity);
 	void SetVelocity(glm::vec3 _velocity);
 	void SetRVelocity(glm::vec3 _velocity);
-	void Update(float deltaTime) override;
+	virtual void UpdatePhysics() override;
 private:
 	glm::vec3 velocity = glm::vec3(0, 0, 0);
 	glm::vec3 rVelocity = glm::vec3(0, 0, 0);

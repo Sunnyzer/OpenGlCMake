@@ -5,12 +5,14 @@ class SphereCollider : public Collider
 {
 public:
 	SphereCollider();
-	void CheckCollider();
-	bool Collision(Collider* _collider);
-	virtual void UpdateCollider() override;
+	virtual bool CheckCollision(Collider* _collider) override;
+	virtual void CollisionResult(Collider* _collider) override;
+
 	void SetRadius(float _radius);
+
 	inline float GetRadius() { return *radius; };
 private:
+	virtual void UpdatePhysics() override;
 	virtual void Start() override;
 	float* radius;
 };

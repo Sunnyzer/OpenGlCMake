@@ -3,7 +3,6 @@
 #include <iostream>
 #include <GL\glew.h>
 #include <glm/glm.hpp>
-#include "Transform.h"
 #include "MonoBehaviour.h"
 
 class Mesh : public MonoBehaviour

@@ -1,7 +1,5 @@
 #pragma once
-#include <vector>
 #include "MonoBehaviour.h"
-#include "../Action.h"
 
 class World;
 class Mesh;
@@ -49,14 +47,15 @@ public:
 		return _behaviour;
 	}
 	Action<MonoBehaviour*> OnAddMonoBehaviour;
+
 	inline Transform* GetTransform() const { return transform; };
 protected:
 	static int amountMonoCreate;
 	virtual void Update(float deltaTime);
 	virtual void OnDestroy();
 private:
+	size_t amountMonoBehaviour;
 	std::string name;
 	Transform* transform;
 	std::vector<MonoBehaviour*> monoBehaviours;
-	size_t amountMonoBehaviour;
 };

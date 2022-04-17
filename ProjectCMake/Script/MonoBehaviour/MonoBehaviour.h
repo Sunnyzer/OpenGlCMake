@@ -1,8 +1,10 @@
 #pragma once
-#include <cstdio>
-#include <cstdlib>
-#include <new>
 #include <string>
+#include <GL\glew.h>
+#include "Input.h"
+#include "Action.h"
+#include "Camera.h"
+#include "Transform.h"
 
 class GameObject;
 
@@ -19,7 +21,7 @@ protected:
 	std::string name = "";
 private:
 	static int instanceMono;
-	void* operator new(size_t _count)
+	/*void* operator new(size_t _count)
 	{
 		if (_count == 0)
 			_count++;
@@ -28,6 +30,6 @@ private:
 			return ptr;
 
 		throw std::bad_alloc{};
-	}
+	}*/
 	virtual void SetOwner(GameObject* _gameObject);
 };

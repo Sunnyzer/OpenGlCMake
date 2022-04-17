@@ -2,6 +2,9 @@
 #include "World.h"
 #include "ObjectStorage.h"
 #include "Camera.h"
+#include <glm/ext/matrix_transform.hpp>
+#include "GameObject.h"
+#include "Transform.h"
 
 using namespace glm;
 
@@ -10,7 +13,7 @@ Mesh::Mesh()
 	texture = 0;
 	uvbuffer = 0;
 	vertexbuffer = 0;
-	modelMatrix = new glm::mat4(1);
+	modelMatrix = new mat4(1);
 }
 Mesh::~Mesh()
 {
@@ -20,7 +23,7 @@ Mesh::~Mesh()
 }
 void Mesh::MeshDraw()
 {
-	glm::mat4 MVP = Camera::GetProjectionMatrix() * Camera::GetViewMatrix() * *modelMatrix;
+	glm::mat4 MVP = Camera::currentCamera->GetProjectionMatrix() * Camera::currentCamera->GetViewMatrix() * *modelMatrix;
 	glUniformMatrix4fv(World::world->GetMatrixID(), 1, GL_FALSE, &MVP[0][0]);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -35,9 +38,13 @@ void Mesh::MeshDraw()
 }
 void Mesh::Update(float deltaTime)
 {
+	vec3 _cameraF = Camera::currentCamera->forward;
+	vec3 _objectF = normalize(gameObject->GetTransform()->position - Camera::currentCamera->GetPosition());
+	float _angle = dot(_cameraF, _objectF);
+	if (_angle < 0.3) return;
 	MeshDraw();
 }
-void Mesh::SetMatrix(glm::mat4* _modelMatrix)
+void Mesh::SetMatrix(mat4* _modelMatrix)
 {
 	delete modelMatrix;
 	modelMatrix = _modelMatrix;
@@ -57,11 +64,11 @@ void Mesh::LoadMesh(const char* _path, const char* _texturePath, bool _uvmap)
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 }
-void Mesh::MoveVertex(glm::vec3 _pos)
+void Mesh::MoveVertex(vec3 _pos)
 {
 	*modelMatrix = glm::translate(*modelMatrix, _pos);
 }
-void Mesh::ScaleVertex(glm::vec3 _scale)
+void Mesh::ScaleVertex(vec3 _scale)
 {
 	*modelMatrix = glm::scale(*modelMatrix, _scale);
 }
