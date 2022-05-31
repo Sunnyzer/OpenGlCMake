@@ -24,11 +24,9 @@ void MarbleControl::Start()
 	glm::vec3 _scale(0.75);
 	glm::vec3 _basePos(1, _scale.y, 0);
 	whiteMarble = GameObject::Instanciate<Marble>();
-	whiteMarble->gameObject->GetTransform()->SetScale(_scale);
 	whiteMarble->gameObject->GetTransform()->SetPosition(_basePos + vec3(-10, 0, 0));
 	AddBall(whiteMarble);
 	Marble* _marble = GameObject::Instanciate<Marble>();
-	_marble->gameObject->GetTransform()->SetScale(_scale);
 	_marble->gameObject->GetTransform()->SetPosition(_basePos);
 	AddBall(_marble);
 
@@ -106,7 +104,6 @@ void MarbleControl::SetMarble()
 		for (size_t j = 0; j < i; j++)
 		{
 			Marble* _marble = GameObject::Instanciate<Marble>();
-			_marble->gameObject->GetTransform()->SetScale(_scale);
 			_marble->gameObject->GetTransform()->SetPosition(_basePos + vec3((i - 2) * _scale.y * 2 + _scale.y * 2, 0, ((i - 1) * -_scale.y) + _scale.y * 2 * j));
 			AddBall(_marble);
 		}
@@ -116,18 +113,22 @@ void MarbleControl::SetWall()
 {
 	BoxCollider* _boxCollider = GameObject::Instanciate<BoxCollider>();
 	_boxCollider->gameObject->GetTransform()->SetScale(vec3(5, 1, 100));
+	_boxCollider->SetBox(vec3(5, 1, 100));
 	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(33, 0, 0));
 
 	_boxCollider = GameObject::Instanciate<BoxCollider>();
 	_boxCollider->gameObject->GetTransform()->SetScale(vec3(5, 1, 100));
+	_boxCollider->SetBox(vec3(5, 1, 100));
 	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(-33, 0, 0));
 
 	_boxCollider = GameObject::Instanciate<BoxCollider>();
 	_boxCollider->gameObject->GetTransform()->SetScale(vec3(100, 1, 5));
+	_boxCollider->SetBox(vec3(100, 1, 5));
 	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(0, 0, 21));
 
 	_boxCollider = GameObject::Instanciate<BoxCollider>();
 	_boxCollider->gameObject->GetTransform()->SetScale(vec3(100, 1, 5));
+	_boxCollider->SetBox(vec3(100, 1, 5));
 	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(0, 0, -21));
 }
 bool MarbleControl::VerifAllMarbleStop(JSON& json)

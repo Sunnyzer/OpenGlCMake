@@ -8,7 +8,7 @@ using namespace glm;
 
 SphereCollider::SphereCollider()
 {
-	bounds.radius = 0.25f;
+	bounds.radius = 0.5f;
 	formCollider = FormCollider::Sphere;
 }
 

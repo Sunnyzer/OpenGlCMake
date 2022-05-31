@@ -14,20 +14,21 @@ QuadTree::~QuadTree()
 void QuadTree::AddObject(Collider* _collider)
 {
 	glm::vec3 _position = _collider->gameObject->GetTransform()->position;
-	int x = _position.x / offset + 5000;
-	int y = _position.y / offset + 5000;
-	int z = _position.z / offset + 5000;
+	int x = _position.x / offset + 50;
+	int y = _position.y / offset + 50;
+	int z = _position.z / offset + 50;
 	std::cout << x << " " << y << " " << z << std::endl;
-	quadTree[x][y][z].contains.push_back(_collider);
+	//quadTree[x][y][z].contains.push_back(_collider);
 }
 
 void QuadTree::RemoveObject(Collider* _collider)
 {
 	glm::vec3 _position = _collider->gameObject->GetTransform()->position;
-	int x = _position.x / offset + 5000;
-	int y = _position.y / offset + 5000;
-	int z = _position.z / offset + 5000;
+	int x = _position.x / offset + 50;
+	int y = _position.y / offset + 50;
+	int z = _position.z / offset + 50;
 	std::vector<Collider*> _gameObjects = quadTree[x][y][z].contains;
+	return;
 	size_t _size = _gameObjects.size();
 	std::vector<Collider*>::iterator _it = _gameObjects.begin();
 	std::vector<Collider*>::iterator _end = _gameObjects.end();

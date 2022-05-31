@@ -46,7 +46,7 @@ int main()
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-
+	std::cout << sizeof(std::string) << std::endl;
 	GameObject _pool;
 	_pool.GetTransform()->SetPosition(vec3(0, -0.5f, 0));
 	MarbleControl* _marbleControl = _pool.AddComponent<MarbleControl>();
