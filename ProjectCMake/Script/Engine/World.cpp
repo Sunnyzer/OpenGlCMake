@@ -2,11 +2,15 @@
 #include <Common\shader.hpp>
 #include "Physics.h"
 #include "GameObject.h"
+#include "OnlineNetwork.h"
+#include <Windows.h>
+#include <iostream>
 
-#define MAXFPS 60.0
-
+#define NK_ZERO_COMMAND_MEMORY
+#define NK_IMPLEMENTATION
+#include <external/glfw-3.3.2/deps/nuklear.h>
+#include <external/glfw-3.3.2/deps/nuklear_glfw_gl2.h>
 World* World::world = new World();
-ENet* World::networkLayer = nullptr;
 
 World::World()
 {
@@ -16,8 +20,6 @@ World::World()
 }
 World::~World()
 {
-	if(networkLayer)
-		delete networkLayer;
 	for (size_t i = 0; i < gameObjectAmount; i++)
 		delete objects[i];
 }
@@ -28,33 +30,49 @@ void World::Update()
 	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
 	matrixID = glGetUniformLocation(programID, "MVP");
 	GLuint textureID = glGetUniformLocation(programID, "myTextureSampler");
-	Input::BindInput(GLFW_KEY_1, InputType::Pressed, [this]() { networkLayer = new ClientENet("127.0.0.1", 1234); OnNetworkSet.Invoke(); });
-	Input::BindInput(GLFW_KEY_2, InputType::Pressed, [this]() { networkLayer = new ServerENet(1234); OnNetworkSet.Invoke(); });
 	Input::BindInput(GLFW_KEY_ESCAPE, InputType::Pressed, [&]() { _exit = true; });
-	double period = 1.0 / MAXFPS;
+	Input::BindInput(GLFW_KEY_1, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadClient);
+	Input::BindInput(GLFW_KEY_2, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadServer);
 	Camera camera;
-	do {
-		double lastTime = glfwGetTime();
-		double currentTime = glfwGetTime();
-		deltaTime = float(currentTime - lastTime);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		camera.ComputeMatricesFromInputs();
-		glUseProgram(programID);
-		if (networkLayer) networkLayer->Update();
-		for (size_t i = 0; i < gameObjectAmount; ++i)
+	double waitTime = 0;
+	double lastTime = glfwGetTime();
+	double currentTime = 0;
+	
+	do 
+	{
+		currentTime = glfwGetTime();
+		deltaTime = float(currentTime - lastTime) * 500;
+		waitTime += deltaTime;
+		bool _tick = waitTime >= PERIOD;
+
+		if (_tick)
 		{
-			GameObject* _object = objects[i];
-			_object->Update(deltaTime);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			camera.ComputeMatricesFromInputs();
+			glUseProgram(programID);
+			OnlineNetwork::onlineNetwork->Update();
+			for (size_t i = 0; i < gameObjectAmount; ++i)
+			{
+				GameObject* _object = objects[i];
+				_object->Update(deltaTime);
+			}
 		}
-		Input::UpdateInput();
-		Physics::UpdatePhysics();
-		glUniform1i(textureID, 0);
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glfwSwapBuffers(WindowGL::window);
+		TimerManager::UpdateTimer(deltaTime);
 		glfwPollEvents();
-		if(period > deltaTime)
-			Sleep(DWORD((period - deltaTime) * 1000.0));
+		Input::UpdateInput();
+
+		if (_tick)
+		{
+			Physics::UpdatePhysics();
+			glUniform1i(textureID, 0);
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glfwSwapBuffers(WindowGL::window);
+			waitTime = 0;
+		}
+		lastTime = glfwGetTime();
+		//if(period > deltaTime)
+		//	Sleep(DWORD((period - deltaTime) * 1000.0));
 	}
 	while (!_exit && glfwWindowShouldClose(WindowGL::window) == 0);
 	glDeleteProgram(programID);

@@ -40,6 +40,7 @@ public:
 	{
 		for (size_t i = 0; i < size; i++)
 		{
+
 			InputAction* _input = actionKey[i];
 			switch (_input->inputType)
 			{
@@ -48,19 +49,29 @@ public:
 				{
 					_input->pressed = true;
 					_input->funcInvoke();
+					return;
 				}
-				if (KeyReleased(_input->keyInput))
+				else if (KeyReleased(_input->keyInput))
+				{
 					_input->pressed = false;
+				}
 				break;
 			case InputType::Released:
 				if (KeyReleased(_input->keyInput))
+				{
 					_input->funcInvoke();
+				}
 				break;
 			case InputType::Repeat:
-				if (KeyPressed(_input->keyInput))
+				if (_input->pressed || KeyPressed(_input->keyInput))
+				{
+					_input->pressed = true;
 					_input->funcInvoke();
-				break;
-			default:
+				}
+				if (KeyReleased(_input->keyInput))
+				{
+					_input->pressed = false;
+				}
 				break;
 			}
 		}
@@ -76,7 +87,7 @@ public:
 			std::invoke(function, _object, arg...);
 		});
 		actionKey.push_back(_input);
-		size++;
+		++size;
 	}
 	template<typename ...args>
 	static void BindInput(int _key, InputType _inputType, std::function<void(void)> _add, args... arg)
@@ -89,7 +100,7 @@ public:
 			_add(arg...);
 		});
 		actionKey.push_back(_input);
-		size++;
+		++size;
 	}
 private:
 	static std::vector<InputAction*> actionKey;

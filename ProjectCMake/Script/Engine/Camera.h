@@ -14,7 +14,7 @@ public:
 	inline glm::vec3 GetPosition() { return position; }
 private:
 	float mouseSpeed = 0.004f;
-	float speed = 1000005.0f;
+	float speed = 15.0f;
 	float initialFoV = 90.0f;
 	float verticalAngle = 0.0f;
 	float horizontalAngle = 1.6f;

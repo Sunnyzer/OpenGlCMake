@@ -5,6 +5,7 @@
 #include "Action.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "TimerManager.h"
 
 class GameObject;
 

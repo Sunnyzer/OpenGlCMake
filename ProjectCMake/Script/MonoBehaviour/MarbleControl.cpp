@@ -5,6 +5,8 @@
 #include "BoxCollider.h"
 #include "World.h"
 #include "GameObject.h"
+#include <OnlineNetwork.h>
+#include "ENet.h"
 
 using namespace glm;
 using json::JSON;
@@ -33,9 +35,9 @@ void MarbleControl::Start()
 	SetMarble();
 	SetWall();
 
-	World::world->OnNetworkSet += [this]()
+	OnlineNetwork::onlineNetwork->OnNetworkSet += [this]()
 	{
-		World::networkLayer->OnReceive += [this](ENetPacket* _receive)
+		OnlineNetwork::onlineNetwork->networkLayer->OnReceive += [this](ENetPacket* _receive)
 		{
 			JSON myJson;
 			myJson = myJson.Load((char*)_receive->data);
@@ -73,9 +75,9 @@ void MarbleControl::Update(float deltaTime)
 	if (shoot) return;
 	JSON myJson;
 	bool _verif = VerifAllMarbleStop(myJson);
-	ServerReplicated(World::networkLayer);
-	if(_verif && World::networkLayer)
-		World::networkLayer->SendBroadcastPacket(false, NetType::Server, 2, myJson.dump().c_str());
+	ServerReplicated(OnlineNetwork::onlineNetwork->networkLayer);
+	if(_verif)
+		OnlineNetwork::onlineNetwork->SendPacket(NetType::Server, 2, myJson.dump());
 }
 
 void MarbleControl::AddBall(Marble* _object)
@@ -88,12 +90,11 @@ void MarbleControl::Shoot()
 	if(!shoot) return;
 	shoot = false;
 	vec3 _impulse = normalize(vec3(Camera::currentCamera->forward.x, 0, Camera::currentCamera->forward.z));
-	_impulse = vec3(_impulse.x, 0, _impulse.z) * 2.5f;
+	_impulse = vec3(_impulse.x, 0, _impulse.z) * float(75.0f * PERIOD);
 	whiteMarble->GetRididBody()->AddImpulse(_impulse);
-	BothReplicated(World::networkLayer);
+	BothReplicated(OnlineNetwork::onlineNetwork->networkLayer);
 	JSON myJson({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
-	if(World::networkLayer)
-		World::networkLayer->SendBroadcastPacket(false, NetType::Both, 0, myJson.dump().c_str());
+	OnlineNetwork::onlineNetwork->SendPacket(NetType::Both, 0, myJson.dump());
 }
 
 void MarbleControl::SetMarble()

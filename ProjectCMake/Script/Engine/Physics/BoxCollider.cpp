@@ -9,7 +9,7 @@ using namespace std;
 
 BoxCollider::BoxCollider()
 {
-	box = new vec3(0);
+	bounds.extends = vec3(1);
 	formCollider = FormCollider::Box;
 }
 
@@ -40,7 +40,7 @@ void BoxCollider::CollisionResult(Collider* _collider)
 		vec3 _currentPosition = gameObject->GetTransform()->position;
 		vec3 _ballPos = _collider->gameObject->GetTransform()->position;
 		float _radius = _sphereCollider->GetRadius();
-		float halfBoundX = GetBound().x / 2;
+		float halfBoundX = bounds.extends.x / 2;
 		float _maxX = _currentPosition.x + halfBoundX;
 		float _minX = _currentPosition.x - halfBoundX;
 		bool _posX = _ballPos.x + _radius < _maxX&& _ballPos.x + _radius > _minX;
@@ -52,7 +52,7 @@ void BoxCollider::CollisionResult(Collider* _collider)
 			_sphereCollider->GetRigidBody()->SetVelocity(_vel);
 			return;
 		}
-		float halfBoundZ = GetBound().z / 2;
+		float halfBoundZ = bounds.extends.z / 2;
 		float _maxZ = _currentPosition.z + halfBoundZ;
 		float _minZ = _currentPosition.z - halfBoundZ;
 		bool _posZ = _ballPos.z + _radius < _maxZ&& _ballPos.z + _radius > _minZ;
@@ -70,13 +70,12 @@ void BoxCollider::CollisionResult(Collider* _collider)
 
 void BoxCollider::SetBox(glm::vec3 _box)
 {
-	box = new vec3(_box);
+	bounds.extends = _box;
 }
 
 void BoxCollider::Start()
 {
 	Collider::Start();
-	box = &gameObject->GetTransform()->scale;
 }
 void BoxCollider::UpdatePhysics()
 {

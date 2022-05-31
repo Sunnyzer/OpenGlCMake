@@ -15,6 +15,7 @@ include_directories(
 	Script/Engine/Physics/
 	Script/MonoBehaviour/
 	Script/Online/
+	Script/src/
 	Script/
 	.
 )

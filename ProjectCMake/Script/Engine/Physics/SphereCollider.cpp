@@ -8,7 +8,7 @@ using namespace glm;
 
 SphereCollider::SphereCollider()
 {
-	radius = new float(1);
+	bounds.radius = 0.25f;
 	formCollider = FormCollider::Sphere;
 }
 
@@ -20,17 +20,17 @@ bool SphereCollider::CheckCollision(Collider* _collider)
 	{
 	case FormCollider::Box:
 		vec3 center(_currentLoc + rigidBody->GetVelocity());
-		vec3 aabb_half_extents(((BoxCollider*)_collider)->GetBound() * 1.05f);
+		vec3 aabb_half_extents(_collider->GetBounds().extends * 1.05f);
 		vec3 aabb_center = _colliderLoc;
 		vec3 difference = center - aabb_center;
 		vec3 clamped = glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
 		vec3 closest = aabb_center + clamped;
 		difference = closest - center;
-		return length(difference) < *radius;
+		return length(difference) < bounds.radius;
 	case FormCollider::Sphere:
 		glm::vec3 _direction = _colliderLoc - _currentLoc;
 		float _distance = glm::length(_colliderLoc - _currentLoc);
-		return _distance < *radius + *((SphereCollider*)_collider)->radius;
+		return _distance < _collider->GetBounds().radius + _collider->GetBounds().radius;
 	}
 	return false;
 }
@@ -59,14 +59,12 @@ void SphereCollider::CollisionResult(Collider* _collider)
 
 void SphereCollider::SetRadius(float _radius)
 {
-	delete radius;
-	radius = new float(_radius);
+	bounds.radius = _radius;
 }
 
 void SphereCollider::Start()
 {
 	Collider::Start();
-	radius = &gameObject->GetTransform()->scale.y;
 }
 void SphereCollider::UpdatePhysics()
 {

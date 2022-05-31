@@ -20,6 +20,9 @@ void Collider::Start()
 	rigidBody = gameObject->GetComponent<RigidBody>();
 	gameObject->OnAddMonoBehaviour += [&](MonoBehaviour* _rb)
 	{
-		AddRigidbody(dynamic_cast<RigidBody*>(_rb));
+		if (rigidBody)return;
+		RigidBody* _rbD = dynamic_cast<RigidBody*>(_rb);
+		if (!_rbD)return;
+		AddRigidbody(_rbD);
 	};
 }

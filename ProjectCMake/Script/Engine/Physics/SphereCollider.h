@@ -10,9 +10,8 @@ public:
 
 	void SetRadius(float _radius);
 
-	inline float GetRadius() { return *radius; };
+	inline float GetRadius() { return bounds.radius; };
 private:
 	virtual void UpdatePhysics() override;
 	virtual void Start() override;
-	float* radius;
 };
