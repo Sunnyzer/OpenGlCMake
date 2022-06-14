@@ -4,14 +4,13 @@
 class SphereCollider;
 
 class BoxCollider : public Collider
-{
+{ 
 public:
 	BoxCollider();
 	virtual bool CheckCollision(Collider* _collider) override;
-	virtual void CollisionResult(Collider* _collider) override;
+	virtual void CollisionResult(HitResult _result) override;
 
-	void SetBox(glm::vec3 _radius);
+	void SetBox(glm::vec3 _box) { bounds.extends = _box; }
 private:
-	virtual void Start() override;
 	virtual void UpdatePhysics() override;
 };

@@ -26,7 +26,6 @@ private:
 	}
 	static size_t amountCollision;
 	static size_t amountBody;
-	static QuadTree tree;
 	static std::vector<Collider*> physicsCollision;
 	static std::vector<RigidBody*> physicsBody;
 };

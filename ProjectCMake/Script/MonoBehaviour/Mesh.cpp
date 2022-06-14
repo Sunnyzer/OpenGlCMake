@@ -39,9 +39,9 @@ void Mesh::MeshDraw()
 void Mesh::Update(float deltaTime)
 {
 	vec3 _cameraF = Camera::currentCamera->forward;
-	vec3 _objectF = normalize(gameObject->GetTransform()->position - Camera::currentCamera->GetPosition());
+	vec3 _objectF = gameObject->GetTransform()->position - Camera::currentCamera->GetPosition();
 	float _angle = dot(_cameraF, _objectF);
-	if (_angle < 0.3) return;
+	if (_angle < 0.1) return;
 	MeshDraw();
 }
 void Mesh::SetMatrix(mat4* _modelMatrix)

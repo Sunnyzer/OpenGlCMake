@@ -24,6 +24,26 @@ public:
 		});
 		actions.push_back(_func);
 	}
+	/*template<class object>
+	void Remove(object* _object, void (object::* func)(args...))
+	{
+		size_t _size = actions.size();
+		typename std::vector<std::function<void(args...)>>::iterator it;
+		std::function<void(args...)> _func([&_object, func](args... _args)
+		{
+			std::invoke(func, _object, _args...);
+		});
+		for (it = actions.begin(); it != actions.end(); it++)
+		{
+			const type_info& func1 = _func.target_type();
+			const type_info& func2 = (*it).target_type();
+			if (func1 == func2)
+			{
+				actions.erase(it);
+				return;
+			}
+		}
+	}*/
 	void operator +=(std::function<void(args...)> _add)
 	{
 		actions.push_back(_add);
@@ -67,4 +87,3 @@ public:
 private:
 	std::vector<std::function<void(args...)>> actions;
 };
-

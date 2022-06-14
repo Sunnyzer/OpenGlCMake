@@ -6,23 +6,28 @@
 Collider::Collider()
 {
 	rigidBody = nullptr;
+	bounds;
 	formCollider = FormCollider::None;
 	Physics::AddCollider(this);
 }
-void Collider::AddRigidbody(RigidBody* _rb)
+void Collider::AddRigidbody(MonoBehaviour* _rb)
 {
 	if (rigidBody || !_rb)
+	{
+		gameObject->OnAddMonoBehaviour -= func;
+		func = nullptr;
 		return;
-	rigidBody = _rb;
+	}
+	rigidBody = dynamic_cast<RigidBody*>(_rb);
+	if (rigidBody)
+	{
+		gameObject->OnAddMonoBehaviour -= func;
+		func = nullptr;
+	}
 }
 void Collider::Start()
 {
 	rigidBody = gameObject->GetComponent<RigidBody>();
-	gameObject->OnAddMonoBehaviour += [&](MonoBehaviour* _rb)
-	{
-		if (rigidBody)return;
-		RigidBody* _rbD = dynamic_cast<RigidBody*>(_rb);
-		if (!_rbD)return;
-		AddRigidbody(_rbD);
-	};
+	func = [this](MonoBehaviour* _t) { AddRigidbody(_t); };
+	gameObject->OnAddMonoBehaviour += func;
 }

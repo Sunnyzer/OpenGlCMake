@@ -10,6 +10,8 @@ struct Box
 	std::vector<Collider*> contains;
 };
 
+class OcteeTreeFils;
+
 class QuadTree
 {
 public:
@@ -19,6 +21,25 @@ public:
 	void RemoveObject(Collider* _collider);
 	std::vector<Collider*> GetColliders(glm::vec3 _position);
 private:
-	Box quadTree[100][100][100];
+	OcteeTreeFils* quadTree;
 	float offset = 5;
 };
+
+class OcteeTreeFils
+{
+public:
+	OcteeTreeFils();
+	~OcteeTreeFils();
+
+private:
+	OcteeTreeFils* fils;
+	std::vector<Collider*> contains;
+};
+
+OcteeTreeFils::OcteeTreeFils()
+{
+}
+
+OcteeTreeFils::~OcteeTreeFils()
+{
+}
