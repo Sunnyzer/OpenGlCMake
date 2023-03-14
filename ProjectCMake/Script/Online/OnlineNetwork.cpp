@@ -22,6 +22,12 @@ OnlineNetwork::OnlineNetwork()
 	networkLayer = nullptr;
 }
 
+OnlineNetwork::~OnlineNetwork()
+{
+	delete networkLayer;
+	OnNetworkSet.Clear();
+}
+
 void OnlineNetwork::LoadClient()
 {
 	networkLayer = new ClientENet("127.0.0.1", 1234);

@@ -15,6 +15,7 @@ public:
 	void Update();
 	void LoadClient();
 	void LoadServer();
+	~OnlineNetwork();
 private:
 	OnlineNetwork();
 };

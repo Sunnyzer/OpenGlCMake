@@ -32,41 +32,7 @@ void MarbleControl::Start()
 
 	SetMarble();
 	SetWall();
-
-	OnlineNetwork::onlineNetwork->OnNetworkSet += [this]()
-	{
-		OnlineNetwork::onlineNetwork->networkLayer->OnReceive += [this](ENetPacket* _receive)
-		{
-			JSON myJson;
-			myJson = myJson.Load((char*)_receive->data);
-			size_t _size = marbles.size();
-			JSON _velocity;
-			switch (_receive->flags)
-			{
-			case 0:
-				_velocity = myJson["velocity"];
-				vec3 vel(_velocity["x"].ToFloat(), _velocity["y"].ToFloat(), _velocity["z"].ToFloat());
-				whiteMarble->GetRididBody()->AddImpulse(vel);
-				shoot = false;
-				break;
-			case 2:
-				for (size_t i = 0; i < _size; i++)
-				{
-					glm::vec3 _pos;
-					size_t _size = 3;
-					for (size_t j = 0; j < _size; j++)
-					{
-						float _posValue = (float)myJson[name][marbles[i]->GetName()]["position"].at((unsigned int)j).ToFloat();
-						_pos[(length_t)j] = _posValue;
-					}
-					marbles[i]->gameObject->GetTransform()->SetPosition(_pos);
-				}
-				break;
-			default:
-				break;
-			}
-		};
-	};
+	OnlineNetwork::onlineNetwork->OnNetworkSet.Add(this, &MarbleControl::AddReceiveInfoToOnReceive);
 }
 void MarbleControl::Update(float deltaTime)
 {
@@ -109,6 +75,12 @@ void MarbleControl::SetMarble()
 		}
 	}
 }
+
+void MarbleControl::AddReceiveInfoToOnReceive()
+{
+	OnlineNetwork::onlineNetwork->networkLayer->OnReceive.Add(this, &MarbleControl::ReceiveInfo); 
+}
+
 void MarbleControl::SetWall()
 {
 	BoxCollider* _boxCollider = GameObject::Instanciate<BoxCollider>();
@@ -131,6 +103,39 @@ void MarbleControl::SetWall()
 	_boxCollider->SetBox(vec3(100, 1, 5));
 	_boxCollider->gameObject->GetTransform()->SetPosition(vec3(0, 0, -21));
 }
+
+void MarbleControl::ReceiveInfo(ENetPacket* _receive)
+{
+	JSON myJson;
+	myJson = myJson.Load((char*)_receive->data);
+	size_t _size = marbles.size();
+	JSON _velocity;
+	switch (_receive->flags)
+	{
+	case 0:
+		_velocity = myJson["velocity"];
+		vec3 vel(_velocity["x"].ToFloat(), _velocity["y"].ToFloat(), _velocity["z"].ToFloat());
+		whiteMarble->GetRididBody()->AddImpulse(vel);
+		shoot = false;
+		break;
+	case 2:
+		for (size_t i = 0; i < _size; i++)
+		{
+			glm::vec3 _pos;
+			size_t _size = 3;
+			for (size_t j = 0; j < _size; j++)
+			{
+				float _posValue = (float)myJson[name][marbles[i]->GetName()]["position"].at((unsigned int)j).ToFloat();
+				_pos[(length_t)j] = _posValue;
+			}
+			marbles[i]->gameObject->GetTransform()->SetPosition(_pos);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 bool MarbleControl::VerifAllMarbleStop(JSON& json)
 {
 	for (size_t i = 0; i < amountMarble; i++)

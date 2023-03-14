@@ -1,4 +1,5 @@
 #pragma once
+#include "ClientENet.h"
 #include "MonoBehaviour.h"
 #include "json.hpp"
 
@@ -16,7 +17,9 @@ protected:
 	virtual void Update(float deltaTime) override;
 private:
 	void SetMarble();
+	void AddReceiveInfoToOnReceive();
 	void SetWall();
+	void ReceiveInfo(ENetPacket* _receive);
 	bool VerifAllMarbleStop(json::JSON& json);
 	bool shoot = true;
 	int currentIndex;

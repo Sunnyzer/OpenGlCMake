@@ -8,11 +8,15 @@
 #include <time.h>
 #include "GameObject.h"
 #include "Transform.h"
+#include <OnlineNetwork.h>
 
 using namespace glm;
 
+
 int main()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	
 	srand((unsigned int)time(0));
 	
 	if (!glfwInit())
@@ -46,13 +50,16 @@ int main()
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-	GameObject _pool;
-	_pool.GetTransform()->SetPosition(vec3(0, -0.5f, 0));
-	MarbleControl* _marbleControl = _pool.AddComponent<MarbleControl>();
-	Mesh* _mesh = _pool.AddComponent<Mesh>();
+	GameObject* _pool = new GameObject();
+	_pool->GetTransform()->SetPosition(vec3(0, -0.5f, 0));
+	MarbleControl* _marbleControl = _pool->AddComponent<MarbleControl>();
+	Mesh* _mesh = _pool->AddComponent<Mesh>();
 	_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	World::world->Update();
 	
+	delete World::world;
+	delete OnlineNetwork::onlineNetwork;
+
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glfwTerminate();
 	return 0;

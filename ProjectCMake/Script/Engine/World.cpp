@@ -6,10 +6,12 @@
 #include <Windows.h>
 #include <iostream>
 
+
 #define NK_ZERO_COMMAND_MEMORY
 #define NK_IMPLEMENTATION
 #include <external/glfw-3.3.2/deps/nuklear.h>
 #include <external/glfw-3.3.2/deps/nuklear_glfw_gl2.h>
+
 World* World::world = new World();
 
 World::World()
@@ -20,8 +22,11 @@ World::World()
 }
 World::~World()
 {
-	for (size_t i = 0; i < gameObjectAmount; i++)
+	size_t _size = objects.size();
+	size_t i = 0;
+	for (; i < _size; i++)
 		delete objects[i];
+	objects.clear();
 }
 
 void World::Update()
@@ -30,6 +35,7 @@ void World::Update()
 	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
 	matrixID = glGetUniformLocation(programID, "MVP");
 	GLuint textureID = glGetUniformLocation(programID, "myTextureSampler");
+
 	Input::BindInput(GLFW_KEY_ESCAPE, InputType::Pressed, [&]() { _exit = true; });
 	Input::BindInput(GLFW_KEY_1, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadClient);
 	Input::BindInput(GLFW_KEY_2, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadServer);
@@ -85,4 +91,13 @@ void World::AddObject(GameObject* _object)
 
 void World::RemoveObject(GameObject* _object)
 {
+	std::vector<GameObject*>::iterator it;
+	for (; it != objects.end(); ++it)
+	{
+		if (*it == _object)
+		{
+			objects.erase(it);
+			return;
+		}
+	}
 }

@@ -14,14 +14,14 @@ void Collider::AddRigidbody(MonoBehaviour* _rb)
 {
 	if (rigidBody || !_rb)
 	{
-		gameObject->OnAddMonoBehaviour -= func;
+		//gameObject->OnAddMonoBehaviour -= func;
 		func = nullptr;
 		return;
 	}
 	rigidBody = dynamic_cast<RigidBody*>(_rb);
 	if (rigidBody)
 	{
-		gameObject->OnAddMonoBehaviour -= func;
+		//gameObject->OnAddMonoBehaviour -= func;
 		func = nullptr;
 	}
 }
@@ -29,5 +29,5 @@ void Collider::Start()
 {
 	rigidBody = gameObject->GetComponent<RigidBody>();
 	func = [this](MonoBehaviour* _t) { AddRigidbody(_t); };
-	gameObject->OnAddMonoBehaviour += func;
+	gameObject->OnAddMonoBehaviour.Add(this, &Collider::AddRigidbody);
 }

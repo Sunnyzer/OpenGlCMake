@@ -48,7 +48,7 @@ public:
 	}
 	Action<MonoBehaviour*> OnAddMonoBehaviour;
 
-	inline Transform* GetTransform() const { return transform; };
+	Transform* GetTransform() const { return transform; };
 protected:
 	static int amountMonoCreate;
 	virtual void Update(float deltaTime);

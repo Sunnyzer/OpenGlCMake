@@ -8,7 +8,7 @@ int GameObject::amountMonoCreate = 0;
 
 GameObject::GameObject()
 {
-	name = "GameObject" + World::world->gameObjectAmount;
+	name = "GameObject " + World::world->gameObjectAmount;
 	transform = new Transform();
 	World::world->AddObject(this);
 	amountMonoBehaviour = 0;
@@ -16,17 +16,19 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	OnDestroy();
-	OnAddMonoBehaviour = nullptr;
+	OnAddMonoBehaviour.Clear();
 	delete transform;
-	for (size_t i = 0; i < amountMonoBehaviour; i++)
+	for (size_t i = 0; i < amountMonoBehaviour; ++i)
 		delete monoBehaviours[i];
+	monoBehaviours.clear();
 }
 
 void GameObject::Update(float deltaTime)
 {
-	for (size_t i = 0; i < amountMonoBehaviour; i++)
+	for (size_t i = 0; i < amountMonoBehaviour; ++i)
 	{
 		MonoBehaviour* _mono = monoBehaviours[i];
+		//if (!_mono)continue;
 		_mono->Update(deltaTime);
 	}
 }

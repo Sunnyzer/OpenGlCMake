@@ -10,7 +10,23 @@ struct Box
 	std::vector<Collider*> contains;
 };
 
-class OcteeTreeFils;
+class OcteeTreeFils
+{
+public:
+	OcteeTreeFils()
+	{
+	}
+	~OcteeTreeFils()
+	{
+	}
+	OcteeTreeFils* operator[](int _index)
+	{
+		return fils;
+	}
+	std::vector<Collider*> contains;
+private:
+	OcteeTreeFils* fils;
+};
 
 class QuadTree
 {
@@ -25,21 +41,3 @@ private:
 	float offset = 5;
 };
 
-class OcteeTreeFils
-{
-public:
-	OcteeTreeFils();
-	~OcteeTreeFils();
-
-private:
-	OcteeTreeFils* fils;
-	std::vector<Collider*> contains;
-};
-
-OcteeTreeFils::OcteeTreeFils()
-{
-}
-
-OcteeTreeFils::~OcteeTreeFils()
-{
-}

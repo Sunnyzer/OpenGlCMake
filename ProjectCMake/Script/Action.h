@@ -3,87 +3,121 @@
 #include <functional>
 
 template<typename ...args>
+struct Delegate
+{
+public:
+	void* adressFunc;
+	virtual void Invoke(args ...params)
+	{}
+};
+
+template<typename ...args>
+struct StaticDelegate : public Delegate<args...>
+{
+	typedef void (*Func)(args...);
+public:
+	Func func;
+	StaticDelegate(Func _func)
+	{
+		func = _func;
+		adressFunc = (void*&)func;
+	}
+	void Invoke(args ...params) override
+	{
+		func(params...);
+	}
+};
+
+template<class Class, typename ...args>
+struct ConstDelegate : public Delegate<args...>
+{
+	typedef void (Class::*Func)(args...) const;
+public:
+	Class* owner;
+	Func func;
+	ConstDelegate(Class* _owner, Func _func)
+	{
+		owner = _owner;
+		func = _func;
+		adressFunc = (void*&)func;
+	}
+	void Invoke(args ...params) override
+	{
+		(owner->*func)(params...);
+	}
+};
+
+template<class Class, typename ...args>
+struct MethodDelegate : public Delegate<args...>
+{
+	typedef void (Class::*Func)(args...);
+public:
+	Class* owner;
+	Func func;
+	MethodDelegate(Class* _owner, Func _func)
+	{
+		owner = _owner;
+		func = _func;
+		adressFunc = (void*&)func;
+	}
+	void Invoke(args ...params) override
+	{
+		(owner->*func)(params...);
+	}
+};
+
+template<typename ...args>
 class Action
 {
 public:
+	~Action()
+	{
+		for (size_t i = 0; i < delegates.size(); ++i)
+		{
+			delete delegates[i];
+		}
+		delegates.clear();
+	}
 	template<class object>
-	void Add(object*& _object, void (object::*func)(args...))
+	void Add(object* _object, void (object::*func)(args...))
 	{
-		std::function<void(args...)> _func([&_object, func](args... _args)
-		{
-			std::invoke(func, _object, _args...);
-		});
-		actions.push_back(_func);
+		delegates.push_back(new MethodDelegate<object, args...>(_object, func));
 	}
 	template<class object>
-	void Add(object* _object, void (object::* func)(args...))
+	void Add(object* _object, void (object::*func)(args...) const)
 	{
-		std::function<void(args...)> _func([_object, func](args... _args)
-		{
-			std::invoke(func, _object, _args...);
-		});
-		actions.push_back(_func);
+		delegates.push_back(new ConstDelegate<object, args...>(_object, func));
 	}
-	/*template<class object>
-	void Remove(object* _object, void (object::* func)(args...))
+	void Add(void (*func)(args...))
 	{
-		size_t _size = actions.size();
-		typename std::vector<std::function<void(args...)>>::iterator it;
-		std::function<void(args...)> _func([&_object, func](args... _args)
-		{
-			std::invoke(func, _object, _args...);
-		});
-		for (it = actions.begin(); it != actions.end(); it++)
-		{
-			const type_info& func1 = _func.target_type();
-			const type_info& func2 = (*it).target_type();
-			if (func1 == func2)
-			{
-				actions.erase(it);
-				return;
-			}
-		}
-	}*/
-	void operator +=(std::function<void(args...)> _add)
-	{
-		actions.push_back(_add);
+		delegates.push_back(new StaticDelegate<args...>(func));
 	}
-	void operator -=(std::function<void(args...)> _remove)
+	template<class object>
+	void Remove(object* _object, void (object::*func)(args...))
 	{
-		size_t _size = actions.size();
-		typename std::vector<std::function<void(args...)>>::iterator it;
-		for (it = actions.begin(); it != actions.end(); it++)
+		std::vector<Delegate<args...>*>::iterator it;
+		for (it = delegates.begin(); it != delegates.end(); ++it)
 		{
-			const type_info& func1 = _remove.target_type();
-			const type_info& func2 = (*it).target_type();
-			if(func1 == func2)
+			if((*it)->adressFunc == (void*&)func)
 			{
-				actions.erase(it);
-				return;
+				delegates.erase(it);
+				return;	
 			}
 		}
 	}
-	void operator  =(Action<args...>* _action)
+	void Clear()
 	{
-		if (!_action)
-		{
-			size_t _size = actions.size();
-			for (size_t i = 0; i < _size; i++)
-			{
-				actions.pop_back();
-			}
-		}
-			return;
-		*this = *_action;
+		size_t _size = delegates.size();
+		for (int i = 0; i < _size; ++i)
+			delete delegates[i];
+		delegates.clear();
 	}
 	void Invoke(args ...ar)
 	{
-		size_t _size = actions.size();
-		for (size_t i = 0; i < _size; i++)
-		{
-			actions[i](ar...);
-		}
+		size_t _size = delegates.size();
+		for (size_t i = 0; i < _size; ++i)
+			delegates[i]->Invoke(ar...);
 	}
 private:
-	std::vector<std::function<void(args...)>> actions;
+	std::vector<Delegate<args...>*> delegates; 
 };
