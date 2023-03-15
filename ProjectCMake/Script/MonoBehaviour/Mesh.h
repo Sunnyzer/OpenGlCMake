@@ -16,7 +16,7 @@ public:
 	void ScaleVertex(glm::vec3 _scale);
 protected:
 	void SetMatrix(glm::mat4* _modelMatrix);
-	void Update(float deltaTime) override;
+	virtual void Update(float deltaTime) override;
 	void SetOwner(GameObject* _gameObject) override;
 	GLuint texture;
 	GLuint vertexbuffer;

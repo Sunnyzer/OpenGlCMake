@@ -1,5 +1,4 @@
 #include "MonoBehaviour.h"
-#include "World.h"
 
 MonoBehaviour::~MonoBehaviour()
 {

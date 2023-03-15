@@ -1,5 +1,6 @@
 #pragma once
 #include "MonoBehaviour.h"
+//#include <typeinfo>
 
 class World;
 class Mesh;
@@ -14,15 +15,11 @@ public:
 	template<class T>
 	T* AddComponent()
 	{
+		static_assert(std::is_base_of<MonoBehaviour, T>());
 		T* _behaviour = new T();
-		MonoBehaviour* _monoBehaviour = dynamic_cast<MonoBehaviour*>(_behaviour);
-		if (!_monoBehaviour)
-		{
-			std::cout << "impossible de cast en monobehaviour" << std::endl;
-			return nullptr;
-		}
+		MonoBehaviour* _monoBehaviour = static_cast<MonoBehaviour*>(_behaviour);
 		_monoBehaviour->name = "Mono" + std::to_string(amountMonoCreate);
-		amountMonoCreate++;
+		++amountMonoCreate;
 		_monoBehaviour->SetOwner(this);
 		monoBehaviours.push_back(_monoBehaviour);
 		++amountMonoBehaviour;
@@ -32,30 +29,52 @@ public:
 	template<class T>
 	T* GetComponent()
 	{
-		for (size_t i = 0; i < amountMonoBehaviour; i++)
+		static_assert(std::is_base_of<MonoBehaviour, T>());
+		T* _component = nullptr;
+		for (size_t i = 0; i < amountMonoBehaviour; ++i)
 		{
-			T* _component = dynamic_cast<T*>(monoBehaviours[i]);
-			if (_component) return _component;
+			/*if (typeid(*monoBehaviours[i]) != typeid(T))
+				continue;*/
+			_component = dynamic_cast<T*>(monoBehaviours[i]);
+			if (!_component)
+				continue;
+			break;
 		}
-		return nullptr;
+		return _component;
 	}
 	template<class T>
 	static T* Instanciate()
 	{
+		static_assert(std::is_base_of<MonoBehaviour, T>());
 		GameObject* _gameObject = new GameObject();
 		T* _behaviour = _gameObject->AddComponent<T>();
 		return _behaviour;
 	}
-	Action<MonoBehaviour*> OnAddMonoBehaviour;
+	static void Destroy(GameObject* _gameObject);
+	static void Destroy(MonoBehaviour* _mono)
+	{
+		std::vector<MonoBehaviour*> _monoBehaviours = _mono->gameObject->monoBehaviours;
+		std::vector<MonoBehaviour*>::iterator it = _monoBehaviours.begin();
+		for (; it != _monoBehaviours.end(); ++it)
+		{
+			if (*it != _mono)continue;
+			_mono->gameObject->monoBehaviours.erase(it);
+			return;
+		}
+		delete _mono;
+	}
 
 	Transform* GetTransform() const { return transform; };
+
+	Action<MonoBehaviour*> OnAddMonoBehaviour;
+
+	std::string name;
 protected:
 	static int amountMonoCreate;
 	virtual void Update(float deltaTime);
 	virtual void OnDestroy();
 private:
 	size_t amountMonoBehaviour;
-	std::string name;
 	Transform* transform;
 	std::vector<MonoBehaviour*> monoBehaviours;
 };

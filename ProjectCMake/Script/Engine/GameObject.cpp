@@ -23,12 +23,18 @@ GameObject::~GameObject()
 	monoBehaviours.clear();
 }
 
+void GameObject::Destroy(GameObject* _gameObject)
+{
+	if (!_gameObject) return;
+	World::world->RemoveObject(_gameObject);
+	delete _gameObject;
+}
+
 void GameObject::Update(float deltaTime)
 {
 	for (size_t i = 0; i < amountMonoBehaviour; ++i)
 	{
 		MonoBehaviour* _mono = monoBehaviours[i];
-		//if (!_mono)continue;
 		_mono->Update(deltaTime);
 	}
 }

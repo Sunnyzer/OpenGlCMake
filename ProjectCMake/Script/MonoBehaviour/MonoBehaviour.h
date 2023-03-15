@@ -9,7 +9,7 @@
 
 class GameObject;
 
-class MonoBehaviour
+class MonoBehaviour abstract
 {
 	friend GameObject;
 public:
@@ -17,9 +17,9 @@ public:
 	
 	std::string GetName() { return name; }
 protected:
-	virtual void Start(){}
-	virtual void Update(float deltaTime){}
-	virtual void Destroy(){}
+	virtual void Start() {};
+	virtual void Update(float deltaTime) {};
+	virtual void Destroy() {};
 	std::string name = "";
 	virtual ~MonoBehaviour();
 private:

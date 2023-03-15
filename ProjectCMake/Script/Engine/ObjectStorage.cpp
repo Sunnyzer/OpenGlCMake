@@ -7,7 +7,7 @@ std::vector<ObjectStorage::TextureData> ObjectStorage::textureDatas;
 ObjectStorage::MeshData ObjectStorage::LoadObject(const char* _path)
 {
 	size_t _size = meshDatas.size();
-	for (size_t i = 0; i < _size; i++)
+	for (size_t i = 0; i < _size; ++i)
 		if(meshDatas[i].pathName == _path)
 			return meshDatas[i];
 	MeshData _meshOut;
@@ -20,7 +20,7 @@ ObjectStorage::MeshData ObjectStorage::LoadObject(const char* _path)
 ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture, bool _uvmap)
 {
 	size_t _size = textureDatas.size();
-	for (size_t i = 0; i < _size; i++)
+	for (size_t i = 0; i < _size; ++i)
 		if (textureDatas[i].pathName == _texture)
 			return textureDatas[i];
 	ObjectStorage::TextureData _textureOut;

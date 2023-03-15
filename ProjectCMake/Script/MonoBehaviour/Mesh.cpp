@@ -44,11 +44,13 @@ void Mesh::Update(float deltaTime)
 	if (_angle < 0.1) return;
 	MeshDraw();
 }
+
 void Mesh::SetMatrix(mat4* _modelMatrix)
 {
 	delete modelMatrix;
 	modelMatrix = _modelMatrix;
 }
+
 void Mesh::LoadMesh(const char* _path, const char* _texturePath, bool _uvmap)
 {
 	ObjectStorage::MeshData _mesh = ObjectStorage::LoadObject(_path);// loadOBJ(_mesh, vertices, uvs, normals);
