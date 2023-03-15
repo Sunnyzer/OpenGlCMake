@@ -15,11 +15,13 @@ public:
 	void Update();
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
-	float deltaTime;
+	float GetDeltaTime() const { return deltaTime; }
 protected:
 	World();
 	void AddObject(GameObject* _object);
 	void RemoveObject(GameObject* _object);
+
+	float deltaTime;
 	GLuint matrixID;
 	size_t gameObjectAmount;
 	std::vector<GameObject*> objects;

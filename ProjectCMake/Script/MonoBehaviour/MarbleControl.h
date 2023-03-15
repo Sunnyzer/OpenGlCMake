@@ -2,12 +2,14 @@
 #include "ClientENet.h"
 #include "MonoBehaviour.h"
 #include "json.hpp"
+#include <SphereCollider.h>
 
 class Marble;
 class ServerENet;
 
 class MarbleControl : public MonoBehaviour
 {
+
 public:
 	MarbleControl();
 	void AddBall(Marble* _object);
@@ -17,6 +19,9 @@ protected:
 	virtual void Update(float deltaTime) override;
 private:
 	void SetMarble();
+
+	void DestroyMarble(Collider::HitResult _hitResult);
+	
 	void AddReceiveInfoToOnReceive();
 	void SetWall();
 	void ReceiveInfo(ENetPacket* _receive);

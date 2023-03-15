@@ -6,6 +6,7 @@ class RigidBody : public PhysicComponent
 {
 public:
 	RigidBody();
+	virtual ~RigidBody();
 	inline glm::vec3 GetVelocity() { return velocity; };
 	void AddImpulse(glm::vec3 _velocity);
 	void AddRImpulse(glm::vec3 _velocity);

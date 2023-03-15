@@ -10,6 +10,11 @@ Collider::Collider()
 	formCollider = FormCollider::None;
 	Physics::AddCollider(this);
 }
+Collider::~Collider()
+{
+	Physics::RemoveCollider(this);
+}
+
 void Collider::AddRigidbody(MonoBehaviour* _rb)
 {
 	if (rigidBody || !_rb)

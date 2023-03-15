@@ -23,22 +23,24 @@ class Collider : public PhysicComponent
 	friend Physics;
 public:
 	struct HitResult
-{
-	glm::vec3 impactPoint;
-	glm::vec3 impactNormal;
-	Collider* colliderHit;
-	HitResult()
 	{
+		glm::vec3 impactPoint;
+		glm::vec3 impactNormal;
+		Collider* colliderHit;
+		HitResult()
+		{
 
-	}
-	HitResult(Collider* _collider, glm::vec3 _impactPoint, glm::vec3 _impactNormal)
-	{
-		colliderHit = _collider;
-		impactPoint = _impactPoint;
-		impactNormal = _impactNormal;
-	}
-};
+		}
+		HitResult(Collider* _collider, glm::vec3 _impactPoint, glm::vec3 _impactNormal)
+		{
+			colliderHit = _collider;
+			impactPoint = _impactPoint;
+			impactNormal = _impactNormal;
+		}
+	};
 	Collider();
+	virtual ~Collider();
+
 	virtual bool CheckCollision(Collider* _collider) = 0;
 	virtual void CollisionResult(HitResult _result) = 0;
 

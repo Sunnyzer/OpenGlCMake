@@ -8,6 +8,7 @@
 #include <OnlineNetwork.h>
 #include "ENet.h"
 
+
 using namespace glm;
 using json::JSON;
 
@@ -25,6 +26,7 @@ void MarbleControl::Start()
 	glm::vec3 _basePos(1, _scale.y, 0);
 	whiteMarble = GameObject::Instanciate<Marble>();
 	whiteMarble->gameObject->GetTransform()->SetPosition(_basePos + vec3(-10, 0, 0));
+	whiteMarble->GetCollider()->OnActorBeginOverlap.Add(this, &MarbleControl::DestroyMarble);
 	AddBall(whiteMarble);
 	Marble* _marble = GameObject::Instanciate<Marble>();
 	_marble->gameObject->GetTransform()->SetPosition(_basePos);
@@ -42,6 +44,11 @@ void MarbleControl::Update(float deltaTime)
 	ServerReplicated(OnlineNetwork::onlineNetwork->networkLayer);
 	if(_verif)
 		OnlineNetwork::onlineNetwork->SendPacket(NetType::Server, 2, myJson.dump());
+}
+
+void MarbleControl::DestroyMarble(Collider::HitResult _hitResult)
+{
+	GameObject::Destroy(_hitResult.colliderHit->gameObject);
 }
 
 void MarbleControl::AddBall(Marble* _object)
@@ -138,9 +145,11 @@ void MarbleControl::ReceiveInfo(ENetPacket* _receive)
 
 bool MarbleControl::VerifAllMarbleStop(JSON& json)
 {
-	for (size_t i = 0; i < amountMarble; i++)
+	for (size_t i = 0; i < amountMarble; ++i)
 	{
 		Marble* _marble = marbles[i];
+		if (!_marble) continue;
+		//TODO
 		if (length(_marble->GetRididBody()->GetVelocity()) > 0.005f)
 		{
 			shoot = false;

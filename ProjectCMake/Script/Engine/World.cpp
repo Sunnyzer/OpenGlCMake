@@ -46,15 +46,16 @@ void World::Update()
 	
 	do 
 	{
+		lastTime = currentTime;
 		currentTime = glfwGetTime();
-		deltaTime = float(currentTime - lastTime) * 500;
+		deltaTime = float(currentTime - lastTime);
 		waitTime += deltaTime;
 		bool _tick = waitTime >= PERIOD;
 
 		if (_tick)
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			camera.ComputeMatricesFromInputs();
+			camera.ComputeMatricesFromInputs(deltaTime);
 			glUseProgram(programID);
 			OnlineNetwork::onlineNetwork->Update();
 			for (size_t i = 0; i < gameObjectAmount; ++i)
@@ -76,7 +77,7 @@ void World::Update()
 			glfwSwapBuffers(WindowGL::window);
 			waitTime = 0;
 		}
-		lastTime = glfwGetTime();
+		//lastTime = glfwGetTime();
 		//if(period > deltaTime)
 		//	Sleep(DWORD((period - deltaTime) * 1000.0));
 	}
@@ -91,13 +92,12 @@ void World::AddObject(GameObject* _object)
 
 void World::RemoveObject(GameObject* _object)
 {
-	std::vector<GameObject*>::iterator it;
+	std::vector<GameObject*>::iterator it = objects.begin();
 	for (; it != objects.end(); ++it)
 	{
-		if (*it == _object)
-		{
-			objects.erase(it);
-			return;
-		}
+		if (*it != _object) continue;
+		objects.erase(it);
+		--gameObjectAmount;
+		return;
 	}
 }

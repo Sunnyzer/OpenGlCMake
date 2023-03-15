@@ -7,6 +7,10 @@ RigidBody::RigidBody()
 	velocity = glm::vec3(0, 0, 0);
 	Physics::AddRigidBody(this);
 }
+RigidBody::~RigidBody()
+{
+	Physics::RemoveRigidbody(this);
+}
 
 void RigidBody::AddImpulse(glm::vec3 _velocity)
 {
