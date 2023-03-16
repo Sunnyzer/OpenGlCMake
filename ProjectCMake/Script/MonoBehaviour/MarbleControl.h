@@ -12,16 +12,19 @@ class MarbleControl : public MonoBehaviour
 
 public:
 	MarbleControl();
+	~MarbleControl() override;
 	void AddBall(Marble* _object);
+	void RemoveMarble(Marble* _object);
 	void Shoot();
 protected:
 	virtual void Start() override;
 	virtual void Update(float deltaTime) override;
+	virtual void Destroy() override;
 private:
 	void SetMarble();
 
 	void DestroyMarble(Collider::HitResult _hitResult);
-	
+	void RemoveMarbleMono(MonoBehaviour* _mono);
 	void AddReceiveInfoToOnReceive();
 	void SetWall();
 	void ReceiveInfo(ENetPacket* _receive);

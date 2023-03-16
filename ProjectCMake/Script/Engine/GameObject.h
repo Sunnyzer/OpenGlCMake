@@ -18,7 +18,7 @@ public:
 		static_assert(std::is_base_of<MonoBehaviour, T>());
 		T* _behaviour = new T();
 		MonoBehaviour* _monoBehaviour = static_cast<MonoBehaviour*>(_behaviour);
-		_monoBehaviour->name = "Mono" + std::to_string(amountMonoCreate);
+		_monoBehaviour->name = typeid(T).name() + std::to_string(amountMonoCreate);
 		++amountMonoCreate;
 		_monoBehaviour->SetOwner(this);
 		monoBehaviours.push_back(_monoBehaviour);
@@ -72,7 +72,6 @@ public:
 protected:
 	static int amountMonoCreate;
 	virtual void Update(float deltaTime);
-	virtual void OnDestroy();
 private:
 	size_t amountMonoBehaviour;
 	Transform* transform;

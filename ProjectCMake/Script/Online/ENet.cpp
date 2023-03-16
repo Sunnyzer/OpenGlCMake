@@ -5,6 +5,7 @@ using namespace std;
 
 ENet::~ENet()
 {
+    OnReceive.Clear();
     enet_host_destroy(host);
 }
 

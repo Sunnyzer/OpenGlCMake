@@ -19,6 +19,11 @@ MarbleControl::MarbleControl()
 	server = nullptr;
 	amountMarble = 0;
 }
+MarbleControl::~MarbleControl()
+{
+	Destroy();
+}
+
 void MarbleControl::Start()
 {
 	Input::BindInput(GLFW_KEY_SPACE, InputType::Pressed, this, &MarbleControl::Shoot);
@@ -28,13 +33,11 @@ void MarbleControl::Start()
 	whiteMarble->gameObject->GetTransform()->SetPosition(_basePos + vec3(-10, 0, 0));
 	whiteMarble->GetCollider()->OnActorBeginOverlap.Add(this, &MarbleControl::DestroyMarble);
 	AddBall(whiteMarble);
-	Marble* _marble = GameObject::Instanciate<Marble>();
-	_marble->gameObject->GetTransform()->SetPosition(_basePos);
-	AddBall(_marble);
 
 	SetMarble();
 	SetWall();
 	OnlineNetwork::onlineNetwork->OnNetworkSet.Add(this, &MarbleControl::AddReceiveInfoToOnReceive);
+	//Marble* _oui = new Marble();
 }
 void MarbleControl::Update(float deltaTime)
 {
@@ -46,15 +49,41 @@ void MarbleControl::Update(float deltaTime)
 		OnlineNetwork::onlineNetwork->SendPacket(NetType::Server, 2, myJson.dump());
 }
 
+void MarbleControl::Destroy()
+{
+	size_t _size = marbles.size();
+	for (int i = 0; i < _size; ++i)
+	{
+		marbles[i]->OnDestroy.Remove(this, &MarbleControl::RemoveMarbleMono);
+	}
+}
+
 void MarbleControl::DestroyMarble(Collider::HitResult _hitResult)
 {
+	if (!_hitResult.colliderHit->gameObject->GetComponent<Marble>())return;
 	GameObject::Destroy(_hitResult.colliderHit->gameObject);
+}
+
+void MarbleControl::RemoveMarbleMono(MonoBehaviour* _mono)
+{
+	RemoveMarble(static_cast<Marble*>(_mono));
 }
 
 void MarbleControl::AddBall(Marble* _object)
 {
 	marbles.push_back(_object);
-	amountMarble++;
+	++amountMarble;
+}
+void MarbleControl::RemoveMarble(Marble* _object)
+{
+	std::vector<Marble*>::iterator it = marbles.begin();
+	for (; it != marbles.end(); ++it)
+	{
+		if(*it != _object)continue;
+		marbles.erase(it);
+		--amountMarble;
+		return;
+	}
 }
 void MarbleControl::Shoot()
 {
@@ -72,12 +101,17 @@ void MarbleControl::SetMarble()
 {
 	glm::vec3 _scale(0.75);
 	glm::vec3 _basePos(1, _scale.y, 0);
-	for (size_t i = 2; i < 6; i++)
+	Marble* _marble = GameObject::Instanciate<Marble>();
+	_marble->gameObject->GetTransform()->SetPosition(_basePos);
+	_marble->OnDestroy.Add(this, &MarbleControl::RemoveMarbleMono);
+	AddBall(_marble);
+	for (size_t i = 2; i < 6; ++i)
 	{
-		for (size_t j = 0; j < i; j++)
+		for (size_t j = 0; j < i; ++j)
 		{
-			Marble* _marble = GameObject::Instanciate<Marble>();
+			_marble = GameObject::Instanciate<Marble>();
 			_marble->gameObject->GetTransform()->SetPosition(_basePos + vec3((i - 2) * _scale.y * 2 + _scale.y * 2, 0, ((i - 1) * -_scale.y) + _scale.y * 2 * j));
+			_marble->OnDestroy.Add(this, &MarbleControl::RemoveMarbleMono);
 			AddBall(_marble);
 		}
 	}
@@ -162,3 +196,4 @@ bool MarbleControl::VerifAllMarbleStop(JSON& json)
 	shoot = true;
 	return true;
 }
+

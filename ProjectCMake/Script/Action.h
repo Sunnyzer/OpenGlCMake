@@ -43,6 +43,7 @@ public:
 	}
 	void Invoke(args ...params) override
 	{
+		if (!owner) return;
 		(owner->*func)(params...);
 	}
 };
@@ -62,7 +63,28 @@ public:
 	}
 	void Invoke(args ...params) override
 	{
+		if (!owner)return;
 		(owner->*func)(params...);
+	}
+};
+
+template<class Class, typename ...args>
+struct FunctionDelegate : public Delegate<args...>
+{
+public:
+	Class* owner;
+	std::function<void(args...)> func;
+
+	FunctionDelegate(Class* _owner, std::function<void(args...)> _func)
+	{
+		owner = _owner;
+		func = _func;
+		adressFunc = (void*&)func;
+	}
+	void Invoke(args ...params) override
+	{
+		if (!owner)return;
+		func(params...);
 	}
 };
 
@@ -72,21 +94,24 @@ class Action
 public:
 	~Action()
 	{
-		for (size_t i = 0; i < delegates.size(); ++i)
-		{
-			delete delegates[i];
-		}
-		delegates.clear();
+		Clear();
 	}
 	template<class object>
 	void Add(object* _object, void (object::*func)(args...))
 	{
+		int _size = sizeof(MethodDelegate<object, args...>);
+		//here TODO
 		delegates.push_back(new MethodDelegate<object, args...>(_object, func));
 	}
 	template<class object>
 	void Add(object* _object, void (object::*func)(args...) const)
 	{
 		delegates.push_back(new ConstDelegate<object, args...>(_object, func));
+	}
+	template<class object>
+	void Add(object* _object, std::function<void(args...)> func)
+	{
+		delegates.push_back(new FunctionDelegate<object, args...>(_object, func));
 	}
 	void Add(void (*func)(args...))
 	{

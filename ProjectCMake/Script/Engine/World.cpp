@@ -22,10 +22,14 @@ World::World()
 }
 World::~World()
 {
-	size_t _size = objects.size();
 	size_t i = 0;
-	for (; i < _size; i++)
-		delete objects[i];
+	size_t _size = objects.size();
+	for (; i < _size; ++i)
+	{
+		GameObject* _gameObject = objects[i];
+		objects[i] = nullptr;
+		delete _gameObject;
+	}
 	objects.clear();
 }
 
@@ -41,7 +45,7 @@ void World::Update()
 	Input::BindInput(GLFW_KEY_2, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadServer);
 	Camera camera;
 	double waitTime = 0;
-	double lastTime = glfwGetTime();
+	double lastTime = 0;
 	double currentTime = 0;
 	
 	do 

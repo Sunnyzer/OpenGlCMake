@@ -8,14 +8,13 @@ int GameObject::amountMonoCreate = 0;
 
 GameObject::GameObject()
 {
-	name = "GameObject " + World::world->gameObjectAmount;
+	name = typeid(this).name() + World::world->gameObjectAmount;
 	transform = new Transform();
 	World::world->AddObject(this);
 	amountMonoBehaviour = 0;
 }
 GameObject::~GameObject()
 {
-	OnDestroy();
 	OnAddMonoBehaviour.Clear();
 	delete transform;
 	for (size_t i = 0; i < amountMonoBehaviour; ++i)
@@ -37,8 +36,4 @@ void GameObject::Update(float deltaTime)
 		MonoBehaviour* _mono = monoBehaviours[i];
 		_mono->Update(deltaTime);
 	}
-}
-
-void GameObject::OnDestroy()
-{
 }

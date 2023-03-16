@@ -16,6 +16,11 @@ Marble::Marble()
 	marbleInstance++;
 }
 
+Marble::~Marble()
+{
+
+}
+
 void Marble::Start()
 {
 	mesh = gameObject->AddComponent<Mesh>();
@@ -33,8 +38,4 @@ void Marble::Start()
 	mesh->LoadMesh("les2.obj", _ball.c_str(), false);
 	collider->SetRadius(0.75);
 	gameObject->GetTransform()->SetScale(glm::vec3(0.75f));
-}
-void Marble::Destroy()
-{
-
 }

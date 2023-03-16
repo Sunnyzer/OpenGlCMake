@@ -12,6 +12,8 @@ Collider::Collider()
 }
 Collider::~Collider()
 {
+	OnActorBeginOverlap.Clear();
+	OnActorEndOverlap.Clear();
 	Physics::RemoveCollider(this);
 }
 

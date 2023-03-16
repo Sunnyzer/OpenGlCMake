@@ -24,8 +24,8 @@ OnlineNetwork::OnlineNetwork()
 
 OnlineNetwork::~OnlineNetwork()
 {
-	delete networkLayer;
 	OnNetworkSet.Clear();
+	delete networkLayer;
 }
 
 void OnlineNetwork::LoadClient()
