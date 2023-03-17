@@ -187,7 +187,8 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
         return NULL;
 
     window = calloc(1, sizeof(_GLFWwindow));
-    window->next = _glfw.windowListHead;
+    #pragma warning (disable : 6011)
+        window->next = _glfw.windowListHead;
     _glfw.windowListHead = window;
 
     window->videoMode.width       = width;
@@ -211,7 +212,7 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
     window->maxheight   = GLFW_DONT_CARE;
     window->numer       = GLFW_DONT_CARE;
     window->denom       = GLFW_DONT_CARE;
-
+    #pragma warning (default : 6011)
     // Open the actual window and create its context
     if (!_glfwPlatformCreateWindow(window, &wndconfig, &ctxconfig, &fbconfig))
     {
