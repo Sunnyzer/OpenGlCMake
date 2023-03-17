@@ -2,11 +2,13 @@
 #include "Mesh.h"
 #include "Marble.h"
 #include "RigidBody.h"
-#include "BoxCollider.h"
 #include "World.h"
 #include "GameObject.h"
 #include <OnlineNetwork.h>
 #include "ENet.h"
+#include <Camera.h>
+#include <SphereCollider.h>
+#include <BoxCollider.h>
 
 
 using namespace glm;
@@ -16,7 +18,6 @@ MarbleControl::MarbleControl()
 {
 	currentIndex = 0;
 	whiteMarble = nullptr;
-	server = nullptr;
 	amountMarble = 0;
 }
 MarbleControl::~MarbleControl()
@@ -44,9 +45,9 @@ void MarbleControl::Update(float deltaTime)
 	if (shoot) return;
 	JSON myJson;
 	bool _verif = VerifAllMarbleStop(myJson);
-	ServerReplicated(OnlineNetwork::onlineNetwork->networkLayer);
-	if(_verif)
-		OnlineNetwork::onlineNetwork->SendPacket(NetType::Server, 2, myJson.dump());
+	ServerReplicated(OnlineNetwork::onlineNetwork->GetNetwork());
+	if (!_verif)return;
+	OnlineNetwork::onlineNetwork->SendPacket(NetType::Server, 2, myJson.dump());
 }
 
 void MarbleControl::Destroy()
@@ -89,10 +90,10 @@ void MarbleControl::Shoot()
 {
 	if(!shoot) return;
 	shoot = false;
-	vec3 _impulse = normalize(vec3(Camera::currentCamera->forward.x, 0, Camera::currentCamera->forward.z));
+	vec3 _impulse = normalize(vec3(Camera::currentCamera->GetForward().x, 0, Camera::currentCamera->GetForward().z));
 	_impulse = vec3(_impulse.x, 0, _impulse.z) * float(75.0f * PERIOD);
 	whiteMarble->GetRididBody()->AddImpulse(_impulse);
-	BothReplicated(OnlineNetwork::onlineNetwork->networkLayer);
+	BothReplicated(OnlineNetwork::onlineNetwork->GetNetwork());
 	JSON myJson({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
 	OnlineNetwork::onlineNetwork->SendPacket(NetType::Both, 0, myJson.dump());
 }
@@ -119,7 +120,7 @@ void MarbleControl::SetMarble()
 
 void MarbleControl::AddReceiveInfoToOnReceive()
 {
-	OnlineNetwork::onlineNetwork->networkLayer->OnReceive.Add(this, &MarbleControl::ReceiveInfo); 
+	OnlineNetwork::onlineNetwork->GetNetwork()->OnReceive.Add(this, &MarbleControl::ReceiveInfo);
 }
 
 void MarbleControl::SetWall()

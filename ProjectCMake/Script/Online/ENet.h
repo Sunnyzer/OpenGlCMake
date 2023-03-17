@@ -5,9 +5,9 @@
 #include "../Action.h"
 //#include "World.h"
 
-#define ServerReplicated(Net) if(Net) if(Net->netType == NetType::Client) return;
-#define ClientReplicated(Net) if(Net) if(Net->netType == NetType::Server) return; 
-#define BothReplicated(Net) if(Net) if(Net->netType == NetType::None) return; 
+#define ServerReplicated(Net) if(Net) if(Net->GetNetType() == NetType::Client) return;
+#define ClientReplicated(Net) if(Net) if(Net->GetNetType() == NetType::Server) return; 
+#define BothReplicated(Net) if(Net) if(Net->GetNetType() == NetType::None) return; 
 
 enum class NetType
 {
@@ -20,12 +20,14 @@ enum class NetType
 class ENet
 {
 public:
-    ~ENet();
+    virtual ~ENet();
     static int Initialize();
     virtual void Update() = 0;
     virtual void SendBroadcastPacket(bool _reliable, NetType _send, int _flags, const char* _dataStr) = 0;
-    ENetHost* host = nullptr;
+    NetType GetNetType() const { return netType; }
     Action<ENetPacket*> OnReceive;
+protected:
+    ENetHost* host = nullptr;
     ENetEvent event = ENetEvent();
     NetType netType;
 };

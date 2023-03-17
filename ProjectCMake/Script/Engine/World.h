@@ -12,7 +12,7 @@ class World
 	friend GameObject;
 public:
 	~World();
-	void Update();
+	void GameLoop();
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
 	float GetDeltaTime() const { return deltaTime; }

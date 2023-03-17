@@ -8,13 +8,17 @@ ServerENet::ServerENet(int _port)
     netType = NetType::Server;
     SetupServer(_port);
 }
+ServerENet::~ServerENet()
+{
+    enet_host_destroy(host);
+}
 
 void ServerENet::SetupServer(int _port)
 {
     ENetAddress address;
     address.host = ENET_HOST_ANY;
     address.port = _port;
-    host = enet_host_create(&address, 32, 2, 0, 0);
+    host = enet_host_create(&address, 32 , 2, 0, 0);
     if (host == NULL)
         cout << "An error occurred while trying to create a server host" << endl;
     else
@@ -47,7 +51,6 @@ void ServerENet::Update()
         {
         case 0:
             OnReceive.Invoke(event.packet);
-            enet_packet_destroy(event.packet);
             break;
         case 1:
             ServerENet::Profil _profil;
@@ -61,7 +64,6 @@ void ServerENet::Update()
             break;
         case 2:
             OnReceive.Invoke(event.packet);
-            enet_packet_destroy(event.packet);
             break;
         }
         break;
@@ -76,9 +78,11 @@ void ServerENet::Update()
                 BroadcastPacket(false, 0, _messageDisconnected.c_str());
             }
         }
+        delete event.peer->data;
         event.peer->data = NULL;
         break;
     }
+    enet_packet_destroy(event.packet);
 }
 
 void ServerENet::SendBroadcastPacket(bool _reliable, NetType _send,  int _flags, const char* _dataStr)

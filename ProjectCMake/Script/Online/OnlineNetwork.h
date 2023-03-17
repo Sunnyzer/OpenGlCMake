@@ -1,21 +1,25 @@
 #pragma once
-#include "Action.h"
 #include <string>
+#include "Action.h"
 
 class ENet;
 enum class NetType;
 
 class OnlineNetwork
 {
+private:
+	OnlineNetwork();
 public:
+	~OnlineNetwork();
 	static OnlineNetwork* onlineNetwork;
 	Action<> OnNetworkSet;
-	ENet* networkLayer;
+	
 	void SendPacket(NetType _netType, int flags, std::string _dataStr);
 	void Update();
 	void LoadClient();
 	void LoadServer();
-	~OnlineNetwork();
+
+	inline ENet* GetNetwork() const { return networkLayer; }
 private:
-	OnlineNetwork();
+	ENet* networkLayer;
 };

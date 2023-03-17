@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "QuadTree.h"
 
 class Collider;
 class RigidBody;

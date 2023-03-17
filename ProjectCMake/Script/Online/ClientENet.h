@@ -5,6 +5,7 @@ class ClientENet : public ENet
 {
 public:
 	ClientENet(const char* _ip, int _port);
+	~ClientENet();
 	void SendPseudo(bool _reliable, const char* _pseudo);
 	void SendBroadcastPacket(bool _reliable, NetType _send, int _flags, const char* _pseudo);
 private:

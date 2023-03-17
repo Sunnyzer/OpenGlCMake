@@ -1,6 +1,6 @@
 #include "WindowGL.h"
-#include <cstdio>
 #include <GLFW\glfw3.h>
+#include <cstdio>
 
 GLFWwindow* WindowGL::window = nullptr;
 int WindowGL::width = 0;
@@ -13,7 +13,11 @@ WindowGL::WindowGL()
 
 bool WindowGL::CreateMyWindow(const char* _name, int _width, int _height)
 {
-	if (window) return false;
+	if (window)
+	{
+		fprintf(stderr, "Failed to create window !!!\n Window already create !!!\n");
+		return false;
+	}
 	width = _width;
 	height = _height;
 	glfwWindowHint(GLFW_SAMPLES, 4);
@@ -25,8 +29,10 @@ bool WindowGL::CreateMyWindow(const char* _name, int _width, int _height)
 	window = glfwCreateWindow(width, height, _name, NULL, NULL);
 	if (window == NULL) 
 	{
-		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
+		fprintf(stderr, "Failed to open GLFW window. Intel GPU are not 3.3 compatible.\n");
+		#pragma warning( disable : 6031)
 		getchar();
+		#pragma warning( default : 6031)
 		glfwTerminate();
 		return false;
 	}

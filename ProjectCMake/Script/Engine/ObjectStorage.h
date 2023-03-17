@@ -1,8 +1,9 @@
 #pragma once
-#include <GL\glew.h>
 #include <vector>
 #include <glm\ext\vector_float3.hpp>
 #include <glm\ext\vector_float2.hpp>
+
+typedef unsigned int GLuint;
 
 bool LoadOBJ(const char* path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec2>& out_uvs, std::vector<glm::vec3>& out_normals);
 GLuint LoadBMP_custom(const char* imagepath);

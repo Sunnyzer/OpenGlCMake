@@ -2,6 +2,8 @@
 #include <vector>
 #include <functional>
 
+class MonoBehaviour;
+
 template<typename ...args>
 struct Delegate
 {
@@ -99,8 +101,6 @@ public:
 	template<class object>
 	void Add(object* _object, void (object::*func)(args...))
 	{
-		int _size = sizeof(MethodDelegate<object, args...>);
-		//here TODO
 		delegates.push_back(new MethodDelegate<object, args...>(_object, func));
 	}
 	template<class object>
@@ -125,7 +125,9 @@ public:
 		{
 			if((*it)->adressFunc == (void*&)func)
 			{
+				Delegate<args...>* _delegate = *it;
 				delegates.erase(it);
+				delete _delegate;
 				return;	
 			}
 		}
@@ -134,7 +136,9 @@ public:
 	{
 		size_t _size = delegates.size();
 		for (int i = 0; i < _size; ++i)
+		{
 			delete delegates[i];
+		}
 		delegates.clear();
 	}
 	void Invoke(args ...ar)

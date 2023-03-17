@@ -10,9 +10,9 @@ std::vector<RigidBody*> Physics::physicsBody;
 Physics::~Physics()
 {
 	size_t i = 0;
-	for (; i < amountCollision; i++)
+	for (; i < amountCollision; ++i)
 		delete physicsCollision[i];
-	for (i = 0; i < amountBody; i++)
+	for (i = 0; i < amountBody; ++i)
 		delete physicsBody[i];
 }
 

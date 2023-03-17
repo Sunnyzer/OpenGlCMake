@@ -7,6 +7,7 @@ class ServerENet : public ENet
 {
 public:
     ServerENet(int _port);
+    virtual ~ServerENet();
     virtual void Update() override;
     virtual void SendBroadcastPacket(bool _reliable, NetType _send,int _flags, const char* _dataStr) override;
 	void BroadcastPacket(bool _reliable, int _flags, const char* _dataStr);

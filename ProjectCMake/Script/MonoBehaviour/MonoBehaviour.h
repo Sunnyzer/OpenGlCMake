@@ -1,11 +1,9 @@
 #pragma once
-#include <string>
 #include <GL\glew.h>
-#include "Input.h"
-#include "Action.h"
-#include "Camera.h"
-#include "Transform.h"
-#include "TimerManager.h"
+#include <string>
+#include <Action.h>
+#include <Transform.h>
+#include <Input.h>
 
 class GameObject;
 
@@ -17,6 +15,7 @@ public:
 	
 	std::string GetName() { return name; }
 	Action<MonoBehaviour*> OnDestroy;
+	static int instanceMonoBehaviour;
 protected:
 	virtual void Start() {};
 	virtual void Update(float deltaTime) {};
@@ -25,6 +24,5 @@ protected:
 	virtual ~MonoBehaviour();
 	MonoBehaviour();
 private:
-	static int instanceMono;
 	virtual void SetOwner(GameObject* _gameObject);
 };

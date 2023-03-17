@@ -1,5 +1,4 @@
 #include "Transform.h"
-#include <iostream>
 
 Transform::Transform()
 {

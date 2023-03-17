@@ -43,36 +43,36 @@ public:
 		for (size_t i = 0; i < size; i++)
 		{
 
-			InputAction _input = actionKey[i];
-			switch (_input.inputType)
+			InputAction* _input = &actionKey[i];
+			switch (_input->inputType)
 			{
 			case InputType::Pressed:
-				if (!_input.pressed && KeyPressed(_input.keyInput))
+				if (!_input->pressed && KeyPressed(_input->keyInput))
 				{
-					_input.pressed = true;
-					_input.funcInvoke();
+					_input->pressed = true;
+					_input->funcInvoke();
 					return;
 				}
-				else if (KeyReleased(_input.keyInput))
+				else if (KeyReleased(_input->keyInput))
 				{
-					_input.pressed = false;
+					_input->pressed = false;
 				}
 				break;
 			case InputType::Released:
-				if (KeyReleased(_input.keyInput))
+				if (KeyReleased(_input->keyInput))
 				{
-					_input.funcInvoke();
+					_input->funcInvoke();
 				}
 				break;
 			case InputType::Repeat:
-				if (_input.pressed || KeyPressed(_input.keyInput))
+				if (_input->pressed || KeyPressed(_input->keyInput))
 				{
-					_input.pressed = true;
-					_input.funcInvoke();
+					_input->pressed = true;
+					_input->funcInvoke();
 				}
-				if (KeyReleased(_input.keyInput))
+				if (KeyReleased(_input->keyInput))
 				{
-					_input.pressed = false;
+					_input->pressed = false;
 				}
 				break;
 			}

@@ -1,4 +1,5 @@
 #include "ObjectStorage.h"
+#include <GL\glew.h>
 #include <string>
 
 std::vector<ObjectStorage::MeshData> ObjectStorage::meshDatas;
@@ -51,7 +52,7 @@ bool LoadOBJ(const char* path,	std::vector<glm::vec3>& out_vertices, std::vector
 		return false;
 	}
 
-	while (1) {
+	while (true) {
 
 		char lineHeader[128] = { '\0' };
 		// read the first word of the line
@@ -105,7 +106,8 @@ bool LoadOBJ(const char* path,	std::vector<glm::vec3>& out_vertices, std::vector
 	}
 
 	// For each vertex of each triangle
-	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
+	size_t _size = vertexIndices.size();
+	for (unsigned int i = 0; i < _size; ++i) {
 
 		// Get the indices of its attributes
 		unsigned int vertexIndex = vertexIndices[i];

@@ -3,6 +3,7 @@
 #include "RigidBody.h"
 #include "BoxCollider.h"
 #include "Physics.h"
+#include <iostream>
 
 using namespace glm;
 
@@ -74,27 +75,27 @@ glm::vec3 SphereCollider::CalcNormal(Collider* _collider)
 {
 	switch (_collider->GetFormCollider())
 	{
-	case FormCollider::None:
-		break;
-	case FormCollider::Sphere:
-		return normalize(_collider->gameObject->GetTransform()->position - gameObject->GetTransform()->position);
-		break;
-	case FormCollider::Box:
-		vec3 _impactNormal(0);
-		BoxCollider* _box = (BoxCollider*)_collider;
-		vec3 _pos = gameObject->GetTransform()->position;
-		vec3 _boxPos = _collider->gameObject->GetTransform()->position;
-		if (_pos.x < -_box->GetBounds().extends.x)
-			_impactNormal.x = -1;
-		else if (_pos.x > _box->GetBounds().extends.x)
-			_impactNormal.x = 1;
-		if (_pos.z < -_box->GetBounds().extends.z)
-			_impactNormal.z = -1;
-		else if (_pos.z  > _box->GetBounds().extends.z)
-			_impactNormal.z = 1;
-		std::cout << _impactNormal.x << " " << _impactNormal.z << std::endl;
-		return _impactNormal;
+		case FormCollider::None:
+			break;
+		case FormCollider::Sphere:
+			return normalize(_collider->gameObject->GetTransform()->position - gameObject->GetTransform()->position);
+		case FormCollider::Box:
+			vec3 _impactNormal(0);
+			BoxCollider* _box = (BoxCollider*)_collider;
+			vec3 _pos = gameObject->GetTransform()->position;
+			vec3 _boxPos = _collider->gameObject->GetTransform()->position;
+			if (_pos.x < -_box->GetBounds().extends.x)
+				_impactNormal.x = -1;
+			else if (_pos.x > _box->GetBounds().extends.x)
+				_impactNormal.x = 1;
+			if (_pos.z < -_box->GetBounds().extends.z)
+				_impactNormal.z = -1;
+			else if (_pos.z  > _box->GetBounds().extends.z)
+				_impactNormal.z = 1;
+			std::cout << _impactNormal.x << " " << _impactNormal.z << std::endl;
+			return _impactNormal;
 	}
+	return glm::vec3(0);
 }
 
 void SphereCollider::Start()

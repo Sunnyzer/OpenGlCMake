@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 #include <functional>
-#include <limits>
-#include <iostream>
 
 class TimerManager
 {
@@ -15,23 +13,31 @@ public:
 		float duration = 0;
 		float time = 0;
 		bool repeat = false;
-		std::function<void(void)> funcInvoke;
+		std::function<void()> funcInvoke;
 	};
+	~TimerManager()
+	{
+		size_t _size = actionKey.size();
+		for (size_t i = 0; i < _size; ++i)
+		{
+			delete actionKey[i];
+		}
+		actionKey.clear();
+	}
 	static void UpdateTimer(float _deltaTime)
 	{
-		for (size_t i = 0; i < size; i++)
+		for (size_t i = 0; i < size; ++i)
 		{
 			Timer* _timer = actionKey[i];
 			_timer->time += _deltaTime;
-			bool _execute = _timer->haveExecuteStart ? _timer->time >= _timer->duration : _timer->time >= _timer->startTime;
-			if (_execute)
-			{
-				_timer->funcInvoke();
-				_timer->time = 0;
-				_timer->haveExecuteStart = true;
-				if (!_timer->repeat)
-					RemoveTimer(_timer);
-			}
+			//bool _execute = _timer->haveExecuteStart ? _timer->time >= _timer->duration : _timer->time >= _timer->startTime;
+			bool _execute = _timer->time >= (_timer->haveExecuteStart ? _timer->duration : _timer->startTime);
+			if (!_execute)continue;
+			_timer->funcInvoke();
+			_timer->time = 0;
+			_timer->haveExecuteStart = true;
+			if (_timer->repeat)continue;
+			RemoveTimer(_timer);
 		}
 	}
 	template<class object,typename ...args>
@@ -47,7 +53,7 @@ public:
 		};
 		_timer->funcInvoke = _func;
 		actionKey.push_back(_timer);
-		size++;
+		++size;
 	}
 	static void SetTimer(float _startTime, float _duration, bool _repeat, std::function<void(void)> _function)
 	{
@@ -57,18 +63,19 @@ public:
 		_timer->startTime = _startTime;
 		_timer->funcInvoke = _function;
 		actionKey.push_back(_timer);
-		size++;
+		++size;
 	}
 	static void RemoveTimer(Timer* _timer)
 	{
-		for (std::vector<Timer*>::iterator _it = actionKey.begin(); _it != actionKey.end(); _it++)
+		std::vector<Timer*>::iterator it = actionKey.begin();
+		for (; it != actionKey.end(); ++it)
 		{
-			if (*_it == _timer)
-			{
-				actionKey.erase(_it);
-				--size;
-				return;
-			}
+			if (*it != _timer)continue;
+			Timer* _timer = *it;
+			actionKey.erase(it);
+			delete _timer;
+			--size;
+			return;
 		}
 	}
 private:

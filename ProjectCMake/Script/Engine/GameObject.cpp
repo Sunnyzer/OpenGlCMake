@@ -4,8 +4,6 @@
 
 using namespace glm;
 
-int GameObject::amountMonoCreate = 0;
-
 GameObject::GameObject()
 {
 	name = typeid(this).name() + World::world->gameObjectAmount;

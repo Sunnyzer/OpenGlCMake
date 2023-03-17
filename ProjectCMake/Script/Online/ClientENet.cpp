@@ -9,6 +9,12 @@ ClientENet::ClientENet(const char* _ip, int _port)
     SetupClient();
     ConnectClient(_ip, _port);
 }
+
+ClientENet::~ClientENet()
+{
+    //enet_host_destroy(host);
+}
+
 void ClientENet::SetupClient()
 {
     host = enet_host_create(NULL, 1, 2, 0, 0);

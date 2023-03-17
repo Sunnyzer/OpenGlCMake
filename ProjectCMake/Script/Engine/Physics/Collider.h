@@ -27,9 +27,12 @@ public:
 		glm::vec3 impactPoint;
 		glm::vec3 impactNormal;
 		Collider* colliderHit;
+
 		HitResult()
 		{
-
+			impactPoint = glm::vec3(0);
+			impactNormal = glm::vec3(0);
+			colliderHit = nullptr;
 		}
 		HitResult(Collider* _collider, glm::vec3 _impactPoint, glm::vec3 _impactNormal)
 		{

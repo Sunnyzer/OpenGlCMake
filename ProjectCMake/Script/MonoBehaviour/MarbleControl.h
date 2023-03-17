@@ -1,8 +1,8 @@
 #pragma once
-#include "ClientENet.h"
 #include "MonoBehaviour.h"
+#include "ENet.h"
 #include "json.hpp"
-#include <SphereCollider.h>
+#include <Collider.h>
 
 class Marble;
 class ServerENet;
@@ -32,7 +32,6 @@ private:
 	bool shoot = true;
 	int currentIndex;
 	size_t amountMarble;
-	ServerENet* server;
 	Marble* whiteMarble;
 	std::vector<Marble*> marbles;
 };

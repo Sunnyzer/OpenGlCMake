@@ -15,6 +15,7 @@ class OcteeTreeFils
 public:
 	OcteeTreeFils()
 	{
+		fils = nullptr;
 	}
 	~OcteeTreeFils()
 	{

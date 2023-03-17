@@ -1,14 +1,18 @@
 #include "MonoBehaviour.h"
+#include "Action.h"
+#include "Camera.h"
+#include "TimerManager.h"
+
+int MonoBehaviour::instanceMonoBehaviour = 0;
 
 MonoBehaviour::MonoBehaviour()
 {
+	++instanceMonoBehaviour;
 }
 
 MonoBehaviour::~MonoBehaviour()
 {
 	Destroy();
-	OnDestroy;
-	//OnDestroy.Clear();
 }
 
 void MonoBehaviour::SetOwner(GameObject* _gameObject)
