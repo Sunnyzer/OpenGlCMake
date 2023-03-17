@@ -478,7 +478,7 @@ namespace json
         void consume_ws( const string &str, size_t &offset ) {
             while( isspace( str[offset] ) ) ++offset;
         }
-
+        #pragma warning( disable : 26479)
         JSON parse_object( const string &str, size_t &offset ) {
             JSON Object = JSON::Make( JSON::Class::Object );
 
@@ -674,6 +674,5 @@ namespace json
             return JSON();
         }
     }
-
-
+    #pragma warning(default : 26479)
 } // End Namespace json
