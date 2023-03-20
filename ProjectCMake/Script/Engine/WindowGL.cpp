@@ -1,6 +1,7 @@
 #include "WindowGL.h"
 #include <GLFW\glfw3.h>
 #include <cstdio>
+#include <Debug.h>
 
 GLFWwindow* WindowGL::window = nullptr;
 int WindowGL::width = 0;
@@ -15,7 +16,8 @@ bool WindowGL::CreateMyWindow(const char* _name, int _width, int _height)
 {
 	if (window)
 	{
-		fprintf(stderr, "Failed to create window !!!\n Window already create !!!\n");
+		Debug::Log("Failed to create window !!!");
+		Debug::Log("Window already create !!!");
 		return false;
 	}
 	width = _width;
@@ -29,10 +31,8 @@ bool WindowGL::CreateMyWindow(const char* _name, int _width, int _height)
 	window = glfwCreateWindow(width, height, _name, NULL, NULL);
 	if (window == NULL) 
 	{
-		fprintf(stderr, "Failed to open GLFW window. Intel GPU are not 3.3 compatible.\n");
-		#pragma warning( disable : 6031)
-		getchar();
-		#pragma warning( default : 6031)
+		Debug::Log("Failed to open GLFW window. Intel GPU are not 3.3 compatible.");
+		int _i = getchar();
 		glfwTerminate();
 		return false;
 	}

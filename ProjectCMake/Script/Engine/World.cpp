@@ -52,9 +52,8 @@ void World::GameLoop()
 		bool _tick = waitTime >= PERIOD;
 
 		TimerManager::UpdateTimer(deltaTime);
-		glfwPollEvents();
 		Input::UpdateInput();
-		if (!_tick)continue;
+		if (!_tick) continue;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs(deltaTime);
 		glUseProgram(programID);
@@ -65,9 +64,9 @@ void World::GameLoop()
 			_object->Update(deltaTime);
 		}
 		Physics::UpdatePhysics();
-		glUniform1i(textureID, 0);
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		//glUniform1i(textureID, 0);
+		//glDisableVertexAttribArray(0);
+		//glDisableVertexAttribArray(1);
 		glfwSwapBuffers(WindowGL::window);
 		waitTime = 0;
 	}

@@ -120,16 +120,14 @@ public:
 	template<class object>
 	void Remove(object* _object, void (object::*func)(args...))
 	{
-		std::vector<Delegate<args...>*>::iterator it;
-		for (it = delegates.begin(); it != delegates.end(); ++it)
+		std::vector<Delegate<args...>*>::iterator it = delegates.begin();
+		for (; it != delegates.end(); ++it)
 		{
-			if((*it)->adressFunc == (void*&)func)
-			{
-				Delegate<args...>* _delegate = *it;
-				delegates.erase(it);
-				delete _delegate;
-				return;	
-			}
+			if ((*it)->adressFunc != (void*&)func) continue;
+			Delegate<args...>* _delegate = *it;
+			delegates.erase(it);
+			delete _delegate;
+			return;
 		}
 	}
 	void Clear()

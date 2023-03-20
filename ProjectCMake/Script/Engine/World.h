@@ -4,7 +4,7 @@
 typedef unsigned int GLuint;
 class GameObject;
 
-#define MAXFPS 60.0
+#define MAXFPS 120.0
 #define PERIOD 1.0 / MAXFPS
 
 class World

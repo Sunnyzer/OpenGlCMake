@@ -40,9 +40,9 @@ public:
 	}
 	static void UpdateInput()
 	{
-		for (size_t i = 0; i < size; i++)
+		glfwPollEvents();
+		for (size_t i = 0; i < size; ++i)
 		{
-
 			InputAction* _input = &actionKey[i];
 			switch (_input->inputType)
 			{

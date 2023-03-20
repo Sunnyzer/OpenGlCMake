@@ -3,6 +3,7 @@
 #include "World.h"
 #include "WindowGL.h"
 #include "Input.h"
+#include <Cursor.h>
 
 Camera* Camera::currentCamera = nullptr;
 
@@ -31,10 +32,9 @@ Camera::Camera()
 
 void Camera::ComputeMatricesFromInputs(float _deltaTime)
 {
-	double xpos, ypos;
-	glfwGetCursorPos(WindowGL::window, &xpos, &ypos);
-	horizontalAngle += mouseSpeed/1000 * float(lastCursorPosition.x - xpos);
-	verticalAngle += mouseSpeed/1000 * float(lastCursorPosition.y - ypos);
+	glm::vec2 _cursorPosition = Cursor::GetCursorPosition();
+	horizontalAngle += mouseSpeed/1000 * float(lastCursorPosition.x - _cursorPosition.x);
+	verticalAngle += mouseSpeed/1000 * float(lastCursorPosition.y - _cursorPosition.y);
 	float _angle = cos(verticalAngle);
 	forward = glm::vec3(_angle * sin(horizontalAngle), sin(verticalAngle), _angle * cos(horizontalAngle));
 	right = glm::vec3(sin(horizontalAngle - 3.14f / 2.0f), 0, cos(horizontalAngle - 3.14f / 2.0f));
@@ -44,6 +44,5 @@ void Camera::ComputeMatricesFromInputs(float _deltaTime)
 	// Camera matrix
 	viewMatrix = glm::lookAt(position,/*Camera position*/position + forward, /*and looks here plus "direction"*/ up/*Head is up*/);
 	//store last cursor position
-	lastCursorPosition.x = (float)xpos;
-	lastCursorPosition.y = (float)ypos;
+	lastCursorPosition = _cursorPosition;
 }

@@ -8,39 +8,43 @@
 #include "Mesh.h"
 #include "MarbleControl.h"
 #include "ENet.h"
+#include <Debug.h>
+#include <Cursor.h>
 
 using namespace glm;
 
 
 int main()
 {
-	//TODO 
-	// - Create DebugManager with Debug function Print etc...
+	//TODO
 	// - Create CursorManager to lock and change visibility etc...
 
 	//Leak Memory debug
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	/*
 	Break Point To Alloc 
-	_CrtSetBreakAlloc(7381);
+	_CrtSetBreakAlloc();
 	*/  
-	//Random all
+	//Random with timer
 	srand((unsigned int)time(NULL));
 	
 	if (!glfwInit())
 	{
-		fprintf(stderr, "Failed to initialize GLFW\n");
+		Debug::LogError("Failed to initialize GLFW !!!");
 		char _r = getchar();
+		glfwTerminate();
 		return -1;
 	}
 	//CreateWindow 
 	WindowGL windowGL;
 	windowGL.CreateMyWindow("Ma Game", 1080, 720);
-	
+	//windowGL.CreateMyWindow("Ma Game2", 1080, 720);
+	Debug::LogWarning(10);
+	Debug::LogError(10);
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
-		fprintf(stderr, "Failed to initialize GLEW\n");
+		Debug::LogError("Failed to initialize GLEW !!!");
 		char _r = getchar();
 		glfwTerminate();
 		return -1;
@@ -49,7 +53,7 @@ int main()
 	ENet::Initialize();
 
 	glfwSetInputMode(WindowGL::window, GLFW_STICKY_KEYS, GL_TRUE);
-	glfwSetInputMode(WindowGL::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	Cursor::Lock();
 
 	glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
 
@@ -78,6 +82,7 @@ int main()
 	delete OnlineNetwork::onlineNetwork;
 
 	glDeleteVertexArrays(1, &VertexArrayID);
+
 	//Destroy all remaining glfw resources
 	glfwTerminate();
 	return 0;
