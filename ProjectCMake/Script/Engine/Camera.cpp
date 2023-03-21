@@ -21,18 +21,23 @@ Camera::Camera()
 	up = glm::vec3(0);
 	lastCursorPosition = glm::vec3(0);
 	currentCamera = this;
-	Input::BindInput(GLFW_KEY_W, InputType::Repeat, [&] { position += forward * World::world->GetDeltaTime() * speed; });
-	Input::BindInput(GLFW_KEY_S, InputType::Repeat, [&] { position -= forward * World::world->GetDeltaTime() * speed; });
-	Input::BindInput(GLFW_KEY_D, InputType::Repeat, [&] { position += right * World::world->GetDeltaTime() * speed; });
-	Input::BindInput(GLFW_KEY_A, InputType::Repeat, [&] { position -= right * World::world->GetDeltaTime() * speed; });
-	Input::BindInput(GLFW_KEY_E, InputType::Repeat, [&] { position += up * World::world->GetDeltaTime() * speed; });
-	Input::BindInput(GLFW_KEY_Q, InputType::Repeat, [&] { position -= up * World::world->GetDeltaTime() * speed; });
+	Input::BindInput(GLFW_MOUSE_BUTTON_RIGHT, InputType::Pressed, [] { currentCamera->canMove = true; Cursor::Lock(); });
+	Input::BindInput(GLFW_MOUSE_BUTTON_RIGHT, InputType::Released, [] { currentCamera->canMove = false;  Cursor::Enable(); });
+
+	Input::BindInput(GLFW_KEY_W, InputType::Repeat, [&] { if (canMove) position += forward * World::world->GetDeltaTime() * speed; });
+	Input::BindInput(GLFW_KEY_S, InputType::Repeat, [&] { if (canMove) position -= forward * World::world->GetDeltaTime() * speed; });
+	Input::BindInput(GLFW_KEY_D, InputType::Repeat, [&] { if (canMove) position += right * World::world->GetDeltaTime() * speed; });
+	Input::BindInput(GLFW_KEY_A, InputType::Repeat, [&] { if (canMove) position -= right * World::world->GetDeltaTime() * speed; });
+	Input::BindInput(GLFW_KEY_E, InputType::Repeat, [&] { if (canMove) position += up * World::world->GetDeltaTime() * speed; });
+	Input::BindInput(GLFW_KEY_Q, InputType::Repeat, [&] { if (canMove) position -= up * World::world->GetDeltaTime() * speed; });
 	glfwSetScrollCallback(WindowGL::window, scroll_callback);
 }
 
 void Camera::ComputeMatricesFromInputs(float _deltaTime)
 {
-	glm::vec2 _cursorPosition = Cursor::GetCursorPosition();
+	glm::vec2 _cursorPosition = lastCursorPosition;
+	if (canMove)
+		_cursorPosition = Cursor::GetCursorPosition();
 	horizontalAngle += mouseSpeed/1000 * float(lastCursorPosition.x - _cursorPosition.x);
 	verticalAngle += mouseSpeed/1000 * float(lastCursorPosition.y - _cursorPosition.y);
 	float _angle = cos(verticalAngle);
@@ -44,5 +49,5 @@ void Camera::ComputeMatricesFromInputs(float _deltaTime)
 	// Camera matrix
 	viewMatrix = glm::lookAt(position,/*Camera position*/position + forward, /*and looks here plus "direction"*/ up/*Head is up*/);
 	//store last cursor position
-	lastCursorPosition = _cursorPosition;
+	lastCursorPosition = canMove ? _cursorPosition : Cursor::GetCursorPosition();
 }

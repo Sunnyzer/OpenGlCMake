@@ -13,6 +13,7 @@ class World
 public:
 	~World();
 	void GameLoop();
+	void WindowTest();
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
 	float GetDeltaTime() const { return deltaTime; }
@@ -25,4 +26,5 @@ protected:
 	GLuint matrixID;
 	size_t gameObjectAmount;
 	std::vector<GameObject*> objects;
+	//std::vector<> objects;
 };

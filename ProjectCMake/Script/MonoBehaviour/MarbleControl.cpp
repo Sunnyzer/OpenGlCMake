@@ -27,6 +27,9 @@ MarbleControl::~MarbleControl()
 
 void MarbleControl::Start()
 {
+	Mesh* _mesh = gameObject->AddComponent<Mesh>();
+	//Load Mesh
+	_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	Input::BindInput(GLFW_KEY_SPACE, InputType::Pressed, this, &MarbleControl::Shoot);
 	glm::vec3 _scale(0.75);
 	glm::vec3 _basePos(1, _scale.y, 0);

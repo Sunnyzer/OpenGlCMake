@@ -28,4 +28,5 @@ private:
 	glm::vec3 position = glm::vec3(-10, 3, 0);
 	glm::mat4 projectionMatrix;
 	glm::mat4 viewMatrix;
+	bool canMove = false;
 };

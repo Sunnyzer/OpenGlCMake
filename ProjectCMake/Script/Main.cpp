@@ -76,14 +76,14 @@ int main(int, char**)
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	//Create first gameObject to instanciate the other gameObject
+	////Create first gameObject to instanciate the other gameObject
 	GameObject* _pool = new GameObject();
 	_pool->GetTransform()->SetPosition(vec3(0, -0.5f, 0));
-	//Add Component Mesh and MarbleControl to gameObject
+	////Add Component Mesh and MarbleControl to gameObject
 	MarbleControl* _marbleControl = _pool->AddComponent<MarbleControl>();
-	Mesh* _mesh = _pool->AddComponent<Mesh>();
-	//Load Mesh
-	_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
+	//Mesh* _mesh = _pool->AddComponent<Mesh>();
+	////Load Mesh
+	//_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	
 	//Start Loop
 	World::world->GameLoop();

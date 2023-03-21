@@ -5,8 +5,11 @@
 #include <GLFW\glfw3.h>
 #include <Action.h>
 
-#define KeyPressed(glfwKey) glfwGetKey(WindowGL::window, glfwKey) == GLFW_PRESS
-#define KeyReleased(glfwKey) glfwGetKey(WindowGL::window, glfwKey) == GLFW_RELEASE
+#define KeyPressed(glfwKey) \
+glfwKey >= 32 ? glfwGetKey(WindowGL::window, glfwKey) == GLFW_PRESS : glfwGetMouseButton(WindowGL::window, glfwKey) == GLFW_PRESS \
+
+#define KeyReleased(glfwKey) \
+glfwKey >= 32 ? glfwGetKey(WindowGL::window, glfwKey) == GLFW_RELEASE : glfwGetMouseButton(WindowGL::window, glfwKey) == GLFW_RELEASE \
 
 enum class InputType
 {
@@ -47,11 +50,10 @@ public:
 			switch (_input->inputType)
 			{
 			case InputType::Pressed:
-				if (!_input->pressed && KeyPressed(_input->keyInput))
+				if (KeyPressed(_input->keyInput) && _input->pressed == false)
 				{
 					_input->pressed = true;
 					_input->funcInvoke();
-					return;
 				}
 				else if (KeyReleased(_input->keyInput))
 				{
@@ -59,9 +61,14 @@ public:
 				}
 				break;
 			case InputType::Released:
-				if (KeyReleased(_input->keyInput))
+				if (KeyReleased(_input->keyInput) && _input->pressed == true)
 				{
+					_input->pressed = false;
 					_input->funcInvoke();
+				}
+				else if (!_input->pressed && KeyPressed(_input->keyInput))
+				{
+					_input->pressed = true;
 				}
 				break;
 			case InputType::Repeat:

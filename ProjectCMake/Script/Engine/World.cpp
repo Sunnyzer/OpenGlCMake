@@ -6,10 +6,11 @@
 #include <TimerManager.h>
 #include <Camera.h>
 #include "OnlineNetwork.h"
+#include "Cursor.h"
 #include "imgui.h"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "Cursor.h"
+#include <Marble.h>
 
 World* World::world = new World();
 
@@ -28,6 +29,26 @@ World::~World()
 		delete objects[i];
 	}
 	objects.clear();
+}
+
+void World::WindowTest()
+{
+	ImGui::Begin("WorldTest", 0);
+	if (ImGui::Button("Spawn GameObject"))
+	{
+		//Create first gameObject to instanciate the other gameObject
+		GameObject* _pool = new GameObject();
+		_pool->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
+		//Add Component Mesh and MarbleControl to gameObject
+		
+		_pool->AddComponent<Marble>();
+		
+	}
+	//for (size_t i = 0; i < length; i++)
+	{
+
+	}
+	ImGui::End();
 }
 
 void World::GameLoop()
@@ -65,13 +86,11 @@ void World::GameLoop()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::Begin("hello" ,0);
-		ImGui::Text("This is some useful text.");
-		ImGui::End();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs(deltaTime);
 		glUseProgram(programID);
 		OnlineNetwork::onlineNetwork->Update();
+		WindowTest();
 		for (size_t i = 0; i < gameObjectAmount; ++i)
 		{
 			GameObject* _object = objects[i];
