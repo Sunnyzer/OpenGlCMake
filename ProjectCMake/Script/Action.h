@@ -8,7 +8,7 @@ template<typename ...args>
 struct Delegate
 {
 public:
-	void* adressFunc;
+	virtual void* GetAdressFunc() const { return nullptr; }
 	virtual void Invoke(args ...params)
 	{}
 };
@@ -19,10 +19,11 @@ struct StaticDelegate : public Delegate<args...>
 	typedef void (*Func)(args...);
 public:
 	Func func;
+	virtual void* GetAdressFunc() const override { return (void*&)func; };
 	StaticDelegate(Func _func)
 	{
 		func = _func;
-		adressFunc = (void*&)func;
+		//adressFunc = (void*&)func;
 	}
 	void Invoke(args ...params) override
 	{
@@ -37,11 +38,11 @@ struct ConstDelegate : public Delegate<args...>
 public:
 	Class* owner;
 	Func func;
+	virtual void* GetAdressFunc() const override { return (void*&)func; };
 	ConstDelegate(Class* _owner, Func _func)
 	{
 		owner = _owner;
 		func = _func;
-		adressFunc = (void*&)func;
 	}
 	void Invoke(args ...params) override
 	{
@@ -57,11 +58,11 @@ struct MethodDelegate : public Delegate<args...>
 public:
 	Class* owner;
 	Func func;
+	virtual void* GetAdressFunc() const override { return (void*&)func; };
 	MethodDelegate(Class* _owner, Func _func)
 	{
 		owner = _owner;
 		func = _func;
-		adressFunc = (void*&)func;
 	}
 	void Invoke(args ...params) override
 	{
@@ -76,12 +77,11 @@ struct FunctionDelegate : public Delegate<args...>
 public:
 	Class* owner;
 	std::function<void(args...)> func;
-
+	virtual void* GetAdressFunc() const override { return (void*&)func; };
 	FunctionDelegate(Class* _owner, std::function<void(args...)> _func)
 	{
 		owner = _owner;
 		func = _func;
-		adressFunc = (void*&)func;
 	}
 	void Invoke(args ...params) override
 	{
@@ -120,10 +120,10 @@ public:
 	template<class object>
 	void Remove(object* _object, void (object::*func)(args...))
 	{
-		std::vector<Delegate<args...>*>::iterator it = delegates.begin();
+		auto it = delegates.begin();
 		for (; it != delegates.end(); ++it)
 		{
-			if ((*it)->adressFunc != (void*&)func) continue;
+			if ((*it)->GetAdressFunc() != (void*&)func) continue;
 			Delegate<args...>* _delegate = *it;
 			delegates.erase(it);
 			delete _delegate;

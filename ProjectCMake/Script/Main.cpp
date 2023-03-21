@@ -1,3 +1,7 @@
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <GL/glew.h>
 #include <time.h>
 #include "WindowGL.h"
@@ -13,8 +17,7 @@
 
 using namespace glm;
 
-
-int main()
+int main(int, char**)
 {
 	//TODO
 	// - Create CursorManager to lock and change visibility etc...
@@ -38,9 +41,7 @@ int main()
 	//CreateWindow 
 	WindowGL windowGL;
 	windowGL.CreateMyWindow("Ma Game", 1080, 720);
-	//windowGL.CreateMyWindow("Ma Game2", 1080, 720);
-	Debug::LogWarning(10);
-	Debug::LogError(10);
+
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
@@ -49,6 +50,16 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+	const char* glsl_version = "#version 330";
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	io.MouseDrawCursor = true;
+	ImGui_ImplGlfw_InitForOpenGL(WindowGL::window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+	ImGui::StyleColorsDark();
 
 	ENet::Initialize();
 
@@ -85,5 +96,8 @@ int main()
 
 	//Destroy all remaining glfw resources
 	glfwTerminate();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 	return 0;
 }

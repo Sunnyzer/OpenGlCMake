@@ -11,6 +11,7 @@ include_directories(
 	external/glm/
 	external/glew-2.1.0/include/
 	external/enet-1.3.17/include/
+	Script/ImGui/
 	Script/Engine/
 	Script/Engine/Physics/
 	Script/MonoBehaviour/
@@ -42,6 +43,7 @@ file(GLOB ENGINE Script/Engine/*)
 file(GLOB MONOBEHAVIOUR Script/MonoBehaviour/*)
 file(GLOB ONLINE Script/Online/*)
 file(GLOB PHYSICS Script/Engine/Physics/*)
+file(GLOB IMGUI Script/ImGui/*)
 add_executable(MyProject 
 	${COMMON}
 	${SCRIPT}
@@ -49,6 +51,7 @@ add_executable(MyProject
 	${MONOBEHAVIOUR}
 	${ONLINE}
 	${PHYSICS}
+	${IMGUI}
 
 	Object/TransformVertexShader.vertexshader
 	Object/TextureFragmentShader.fragmentshader)
@@ -60,3 +63,4 @@ SOURCE_GROUP(Script/Engine REGULAR_EXPRESSION ".*/Script/Engine/.*" )
 SOURCE_GROUP(Script/MonoBehaviour REGULAR_EXPRESSION ".*/Script/MonoBehaviour/.*")
 SOURCE_GROUP(Script/Online REGULAR_EXPRESSION ".*/Script/Online/.*")
 SOURCE_GROUP(Script/Engine/Physics REGULAR_EXPRESSION ".*/Script/Engine/Physics/.*")
+SOURCE_GROUP(Script/ImGui REGULAR_EXPRESSION ".*/Script/ImGui/.*")

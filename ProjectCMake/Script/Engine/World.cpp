@@ -6,6 +6,10 @@
 #include <TimerManager.h>
 #include <Camera.h>
 #include "OnlineNetwork.h"
+#include "imgui.h"
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include "Cursor.h"
 
 World* World::world = new World();
 
@@ -41,19 +45,29 @@ void World::GameLoop()
 	double waitTime = 0;
 	double lastTime = 0;
 	double currentTime = 0;
-	
+	Cursor::Enable();
 	do 
 	{
+
 		lastTime = currentTime;
 		currentTime = glfwGetTime();
-
+		
 		deltaTime = float(currentTime - lastTime);
 		waitTime += deltaTime;
 		bool _tick = waitTime >= PERIOD;
 
 		TimerManager::UpdateTimer(deltaTime);
 		Input::UpdateInput();
+
 		if (!_tick) continue;
+		
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("hello" ,0);
+		ImGui::Text("This is some useful text.");
+		ImGui::End();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.ComputeMatricesFromInputs(deltaTime);
 		glUseProgram(programID);
@@ -64,9 +78,10 @@ void World::GameLoop()
 			_object->Update(deltaTime);
 		}
 		Physics::UpdatePhysics();
-		//glUniform1i(textureID, 0);
-		//glDisableVertexAttribArray(0);
-		//glDisableVertexAttribArray(1);
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	
+		
 		glfwSwapBuffers(WindowGL::window);
 		waitTime = 0;
 	}
