@@ -11,6 +11,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <Marble.h>
+#include <Debug.h>
 
 World* World::world = new World();
 
@@ -37,16 +38,29 @@ void World::WindowTest()
 	if (ImGui::Button("Spawn GameObject"))
 	{
 		//Create first gameObject to instanciate the other gameObject
-		GameObject* _pool = new GameObject();
-		_pool->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
+		pool = new GameObject();
+		pool->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
 		//Add Component Mesh and MarbleControl to gameObject
-		
-		_pool->AddComponent<Marble>();
-		
+		FACTORY(MonoBehaviour).printRegisteredClasses();
+		//_pool->AddComponent<Marble>();
 	}
-	//for (size_t i = 0; i < length; i++)
+	if (!pool)
 	{
-
+		ImGui::End();
+		return;
+	}
+	ImGui::SeparatorText("Component");
+	auto _factory = FACTORY(MonoBehaviour).GetFactory();
+	size_t _size = _factory.size();
+	for (auto _item : _factory)
+	{
+		if (ImGui::Button(_item.first.c_str()))
+		{
+			MonoBehaviour* _mono = _item.second;
+			pool->AddComponent(_mono);
+			//pool->AddComponent<std::remove_pointer_t<decltype(_item.second)>>();
+			Debug::LogWarning("Add " + _item.first);
+		}
 	}
 	ImGui::End();
 }
@@ -90,7 +104,9 @@ void World::GameLoop()
 		camera.ComputeMatricesFromInputs(deltaTime);
 		glUseProgram(programID);
 		OnlineNetwork::onlineNetwork->Update();
+
 		WindowTest();
+
 		for (size_t i = 0; i < gameObjectAmount; ++i)
 		{
 			GameObject* _object = objects[i];
@@ -98,10 +114,8 @@ void World::GameLoop()
 		}
 		Physics::UpdatePhysics();
 
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	
-		
-		glfwSwapBuffers(WindowGL::window);
+		Render();
+
 		waitTime = 0;
 	}
 	while (!_exit && glfwWindowShouldClose(WindowGL::window) == 0);
@@ -123,4 +137,12 @@ void World::RemoveObject(GameObject* _object)
 		--gameObjectAmount;
 		return;
 	}
+}
+
+void World::Render()
+{
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	glfwSwapBuffers(WindowGL::window);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "MonoBehaviour.h"
+#include "Factory.h"
 
 class RigidBody;
 class SphereCollider;
@@ -19,4 +20,10 @@ private:
 	RigidBody* rigidbody;
 	SphereCollider* collider;
 	static int marbleInstance;
+	virtual MonoBehaviour* Clone() override
+	{
+		return new Marble(*this);
+	}
 };
+
+REGISTERFACTORY(MonoBehaviour, Marble);

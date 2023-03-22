@@ -1,5 +1,4 @@
 #include <iostream>
-#include <source_location>
 #include <string>
 
 #define BLACK 30
@@ -17,15 +16,6 @@
 #define BOLDBRIGHTOFF 21
 #define UNDERLINEOFF 24
 #define INVERSEOFF 27
-
-class DebugException : std::exception
-{
-public:
-	DebugException(const char* _msg, const std::source_location _location = std::source_location::current())
-	{
-
-	}
-};
 
 void SetColor(int _color = 37, int additionally = 1);
 
@@ -49,7 +39,7 @@ public:
 	{
 		Log(_object, RED);
 		if (abordError)
-			throw std::exception("FINIE LE YOUEN");
+			throw std::exception("ERROR");
 	}
 	template<typename ...params>
 	static void LogError(std::string _debug, params... _params)
@@ -59,14 +49,14 @@ public:
 		printf(_debug.c_str(), _params...);
 		SetColor(WHITE);
 		if (abordError)
-			throw std::exception("FINIE LE YOUEN");
+			throw std::exception("ERROR");
 	}
 	template<typename T>
 	static void LogWarning(T _object)
 	{
 		Log(_object, YELLOW);
 		if (abordWarning)
-			throw DebugException("");
+			throw std::exception("WARNING");
 	}
 	template<typename ...params>
 	static void LogWarning(std::string _debug, params... _params)
@@ -76,7 +66,7 @@ public:
 		printf(_debug.c_str(), _params...);
 		SetColor(WHITE);
 		if (abordWarning)
-			throw DebugException("");
+			throw std::exception("WARNING");
 	}
 	static bool abordError;
 	static bool abordWarning;

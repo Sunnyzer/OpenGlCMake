@@ -1,4 +1,5 @@
 #pragma once
+#include "Factory.h"
 #include "MonoBehaviour.h"
 #include "ENet.h"
 #include "json.hpp"
@@ -34,4 +35,9 @@ private:
 	size_t amountMarble;
 	Marble* whiteMarble;
 	std::vector<Marble*> marbles;
+	MonoBehaviour* Clone()
+	{
+		return new MarbleControl(*this);
+	}
 };
+REGISTERFACTORY(MonoBehaviour, MarbleControl);

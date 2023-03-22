@@ -14,6 +14,15 @@ public:
 protected:
 	virtual void Update(float deltaTime);
 public:
+	void AddComponent(MonoBehaviour* behaviour)
+	{
+		MonoBehaviour* _monoBehaviour = behaviour->Clone();
+		_monoBehaviour->name = typeid(behaviour).name() + std::to_string(MonoBehaviour::instanceMonoBehaviour);
+		_monoBehaviour->SetOwner(this);
+		monoBehaviours.push_back(_monoBehaviour);
+		++amountMonoBehaviour;
+		OnAddMonoBehaviour.Invoke(_monoBehaviour);
+	}
 	template<class T>
 	T* AddComponent()
 	{

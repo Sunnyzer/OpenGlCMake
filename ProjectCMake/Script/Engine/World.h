@@ -21,10 +21,10 @@ protected:
 	World();
 	void AddObject(GameObject* _object);
 	void RemoveObject(GameObject* _object);
-
+	void Render();
 	float deltaTime;
 	GLuint matrixID;
 	size_t gameObjectAmount;
 	std::vector<GameObject*> objects;
-	//std::vector<> objects;
+	GameObject* pool = nullptr;
 };

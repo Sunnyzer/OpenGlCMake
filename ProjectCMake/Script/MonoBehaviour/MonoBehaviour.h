@@ -7,7 +7,7 @@
 
 class GameObject;
 
-class MonoBehaviour abstract
+class MonoBehaviour 
 {
 	friend GameObject;
 public:
@@ -16,13 +16,17 @@ public:
 	std::string GetName() { return name; }
 	Action<MonoBehaviour*> OnDestroy;
 	static int instanceMonoBehaviour;
+	virtual ~MonoBehaviour();
 protected:
+	MonoBehaviour();
 	virtual void Start() {};
 	virtual void Update(float deltaTime) {};
 	virtual void Destroy();
 	std::string name = "";
-	virtual ~MonoBehaviour();
-	MonoBehaviour();
 private:
 	virtual void SetOwner(GameObject* _gameObject);
+	virtual MonoBehaviour* Clone()
+	{
+		return new MonoBehaviour(*this);
+	}
 };
