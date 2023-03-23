@@ -1,6 +1,5 @@
 #pragma once
 #include "MonoBehaviour.h"
-#include "Factory.h"
 
 class RigidBody;
 class SphereCollider;
@@ -8,6 +7,7 @@ class Mesh;
 
 class Marble : public MonoBehaviour
 {
+    CLONE(Marble);
 public:
 	Marble();
 	~Marble() override;
@@ -15,15 +15,11 @@ public:
 	inline Mesh* GetMesh() { return mesh; };
 	inline RigidBody* GetRididBody() { return rigidbody; };
 	inline SphereCollider* GetCollider() { return collider; };
+	virtual void OnGUI() override;
 private:
 	Mesh* mesh;
 	RigidBody* rigidbody;
 	SphereCollider* collider;
 	static int marbleInstance;
-	virtual MonoBehaviour* Clone() override
-	{
-		return new Marble(*this);
-	}
 };
-
-REGISTERFACTORY(MonoBehaviour, Marble);
+REGISTERFACTORY(MonoBehaviour,Marble)

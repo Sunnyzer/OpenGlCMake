@@ -26,5 +26,5 @@ protected:
 	GLuint matrixID;
 	size_t gameObjectAmount;
 	std::vector<GameObject*> objects;
-	GameObject* pool = nullptr;
+	GameObject* gameObjectSelect = nullptr;
 };

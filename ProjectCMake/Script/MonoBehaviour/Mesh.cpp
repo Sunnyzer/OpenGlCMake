@@ -13,7 +13,7 @@ Mesh::Mesh()
 	texture = 0;
 	uvbuffer = 0;
 	vertexbuffer = 0;
-	modelMatrix = new mat4(1);
+	modelMatrix = nullptr;
 }
 Mesh::~Mesh()
 {
@@ -43,6 +43,11 @@ void Mesh::Update(float deltaTime)
 	float _angle = dot(_cameraF, _objectF);
 	//if (_angle < 0.1) return;
 	MeshDraw();
+}
+
+void Mesh::OnGUI()
+{
+
 }
 
 void Mesh::SetMatrix(mat4* _modelMatrix)

@@ -77,6 +77,7 @@ public:
 
 	Transform* GetTransform() const { return transform; };
 
+	virtual void OnGUI();
 	Action<MonoBehaviour*> OnAddMonoBehaviour;
 	std::string name;
 	

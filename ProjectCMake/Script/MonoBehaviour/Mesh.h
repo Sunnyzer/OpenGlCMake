@@ -7,6 +7,7 @@
 
 class Mesh : public MonoBehaviour
 {
+    CLONE(Mesh);
 public:
 	Mesh();
 	~Mesh();
@@ -14,6 +15,7 @@ public:
 	void LoadMesh(const char* _path, const char* _texturePath, bool _uvmap = true);
 	void MoveVertex(glm::vec3 _pos);
 	void ScaleVertex(glm::vec3 _scale);
+	virtual void OnGUI() override;
 protected:
 	void SetMatrix(glm::mat4* _modelMatrix);
 	virtual void Update(float deltaTime) override;
@@ -26,3 +28,4 @@ protected:
 	std::vector<glm::vec3> normals;
 	glm::mat4* modelMatrix;
 };
+REGISTERFACTORY(MonoBehaviour,Mesh)

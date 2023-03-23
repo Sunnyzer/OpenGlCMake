@@ -1,5 +1,4 @@
 #pragma once
-#include "Factory.h"
 #include "MonoBehaviour.h"
 #include "ENet.h"
 #include "json.hpp"
@@ -10,6 +9,7 @@ class ServerENet;
 
 class MarbleControl : public MonoBehaviour
 {
+    CLONE(MarbleControl);
 
 public:
 	MarbleControl();
@@ -18,13 +18,14 @@ public:
 	void RemoveMarble(Marble* _object);
 	void Shoot();
 protected:
+	virtual void OnGUI() override;
 	virtual void Start() override;
 	virtual void Update(float deltaTime) override;
 	virtual void Destroy() override;
 private:
 	void SetMarble();
 
-	void DestroyMarble(Collider::HitResult _hitResult);
+	void DestroyMarble(HitResult _hitResult);
 	void RemoveMarbleMono(MonoBehaviour* _mono);
 	void AddReceiveInfoToOnReceive();
 	void SetWall();
@@ -35,9 +36,5 @@ private:
 	size_t amountMarble;
 	Marble* whiteMarble;
 	std::vector<Marble*> marbles;
-	MonoBehaviour* Clone()
-	{
-		return new MarbleControl(*this);
-	}
 };
-REGISTERFACTORY(MonoBehaviour, MarbleControl);
+REGISTERFACTORY(MonoBehaviour,MarbleControl)

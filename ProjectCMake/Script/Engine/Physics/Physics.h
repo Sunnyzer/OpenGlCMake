@@ -1,16 +1,39 @@
 #pragma once
 #include <vector>
+#include <glm/vec3.hpp>
 
 class Collider;
 class RigidBody;
+
+struct HitResult
+{
+	glm::vec3 impactPoint;
+	glm::vec3 impactNormal;
+	Collider* colliderHit;
+
+	HitResult()
+	{
+		impactPoint = glm::vec3(0);
+		impactNormal = glm::vec3(0);
+		colliderHit = nullptr;
+	}
+	HitResult(Collider* _collider, glm::vec3 _impactPoint, glm::vec3 _impactNormal)
+	{
+		colliderHit = _collider;
+		impactPoint = _impactPoint;
+		impactNormal = _impactNormal;
+	}
+};
 
 class Physics
 {
 	friend RigidBody;
 	friend Collider;
+
 public:
 	~Physics();
 	static void UpdatePhysics();
+	static bool Raycast(glm::vec3 _position, glm::vec3 _direction, HitResult& _hitResult);
 	inline static std::vector<Collider*> GetColliders() { return physicsCollision; };
 private:
 	inline static void AddCollider(Collider* _collider)

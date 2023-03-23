@@ -39,3 +39,10 @@ void Marble::Start()
 	collider->SetRadius(0.75);
 	gameObject->GetTransform()->SetScale(glm::vec3(0.75f));
 }
+
+void Marble::OnGUI()
+{
+	// mesh->OnGUI();
+	rigidbody->OnGUI();
+	//collider->OnGUI();
+}

@@ -9,6 +9,8 @@ class PhysicComponent : public MonoBehaviour
 public:
 	PhysicComponent();
 	~PhysicComponent();
+
+	virtual void OnGUI() override { }
 protected:
 	virtual void UpdatePhysics() = 0;
 };

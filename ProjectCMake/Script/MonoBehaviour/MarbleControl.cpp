@@ -7,9 +7,9 @@
 #include <OnlineNetwork.h>
 #include "ENet.h"
 #include <Camera.h>
+#include <Physics.h>
 #include <SphereCollider.h>
 #include <BoxCollider.h>
-
 
 using namespace glm;
 using json::JSON;
@@ -23,6 +23,10 @@ MarbleControl::MarbleControl()
 MarbleControl::~MarbleControl()
 {
 	Destroy();
+}
+
+void MarbleControl::OnGUI()
+{
 }
 
 void MarbleControl::Start()
@@ -62,7 +66,7 @@ void MarbleControl::Destroy()
 	}
 }
 
-void MarbleControl::DestroyMarble(Collider::HitResult _hitResult)
+void MarbleControl::DestroyMarble(HitResult _hitResult)
 {
 	if (!_hitResult.colliderHit->gameObject->GetComponent<Marble>())return;
 	GameObject::Destroy(_hitResult.colliderHit->gameObject);

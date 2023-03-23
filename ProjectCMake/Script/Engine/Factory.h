@@ -53,4 +53,3 @@ public:
 #define REGISTERFACTORY(base_class, derived_class) \
 __declspec(selectany) \
 Creator<base_class, derived_class> s_##derived_class##Creator(#derived_class); \
-//#define REGISTERFACTORY(base_class, derived_class) Creator<base_class, derived_class> s_##derived_class##Creator("a");

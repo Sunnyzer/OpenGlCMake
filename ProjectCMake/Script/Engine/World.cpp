@@ -12,6 +12,7 @@
 #include <imgui_impl_opengl3.h>
 #include <Marble.h>
 #include <Debug.h>
+#include <Collider.h>
 
 World* World::world = new World();
 
@@ -38,18 +39,19 @@ void World::WindowTest()
 	if (ImGui::Button("Spawn GameObject"))
 	{
 		//Create first gameObject to instanciate the other gameObject
-		pool = new GameObject();
-		pool->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
+		gameObjectSelect = new GameObject();
+		gameObjectSelect->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
 		//Add Component Mesh and MarbleControl to gameObject
 		FACTORY(MonoBehaviour).printRegisteredClasses();
 		//_pool->AddComponent<Marble>();
 	}
-	if (!pool)
+	if (!gameObjectSelect)
 	{
 		ImGui::End();
 		return;
 	}
 	ImGui::SeparatorText("Component");
+	gameObjectSelect->OnGUI();
 	auto _factory = FACTORY(MonoBehaviour).GetFactory();
 	size_t _size = _factory.size();
 	for (auto _item : _factory)
@@ -57,7 +59,7 @@ void World::WindowTest()
 		if (ImGui::Button(_item.first.c_str()))
 		{
 			MonoBehaviour* _mono = _item.second;
-			pool->AddComponent(_mono);
+			gameObjectSelect->AddComponent(_mono);
 			//pool->AddComponent<std::remove_pointer_t<decltype(_item.second)>>();
 			Debug::LogWarning("Add " + _item.first);
 		}
@@ -75,6 +77,19 @@ void World::GameLoop()
 	Input::BindInput(GLFW_KEY_ESCAPE, InputType::Pressed, [&]() { _exit = true; });
 	Input::BindInput(GLFW_KEY_1, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadClient);
 	Input::BindInput(GLFW_KEY_2, InputType::Pressed, OnlineNetwork::onlineNetwork, &OnlineNetwork::LoadServer);
+	Input::BindInput(GLFW_MOUSE_BUTTON_LEFT, InputType::Repeat, [&] 
+		{ 
+			HitResult _hitResult;
+			if (Physics::Raycast(Camera::currentCamera->GetPosition(), Camera::currentCamera->GetForward(), _hitResult))
+			{
+				//Debug::LogWarning("Hit " + _hitResult.colliderHit->gameObject->name);
+				gameObjectSelect = _hitResult.colliderHit->gameObject;
+			}
+			else
+			{
+				Debug::LogWarning("Nothing Hit");
+			}
+		});
 
 	Camera camera;
 	double waitTime = 0;

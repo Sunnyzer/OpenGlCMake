@@ -71,6 +71,10 @@ void SphereCollider::CollisionResult(HitResult _result)
 		return;
 	}
 }
+bool SphereCollider::IntersectPoint(glm::vec3 _point)
+{
+	return glm::length(gameObject->GetTransform()->position - _point) < GetRadius();
+}
 glm::vec3 SphereCollider::CalcNormal(Collider* _collider)
 {
 	switch (_collider->GetFormCollider())

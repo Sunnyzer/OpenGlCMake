@@ -1,15 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace PostBuildExe
 {
     static class Program
     {
-        static void Main()
+        static void Main(string[] _args)
         {
-            string _directory = Directory.GetCurrentDirectory() + "\\MonoBehaviour";
+            string _directory = _args[0] + "\\MonoBehaviour";
             string[] _files = Directory.GetFiles(_directory);
             for (int i = 0; i < _files.Length; ++i)
             {
@@ -44,6 +43,7 @@ namespace PostBuildExe
                 {
                     _fileText = Regex.Replace(_fileText, @"(([ ]{0,})(CLONE ([ ]{0,})\((\w+)([ ]{0,})\)([ ]{0,});))", "");
                 }
+
                 if (_fileText.Contains("REGISTERFACTORY(" + parentClassName + "," + className + ")"))
                 {
                     File.WriteAllText(_filePath, _fileText);

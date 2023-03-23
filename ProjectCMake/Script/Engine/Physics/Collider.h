@@ -3,6 +3,7 @@
 
 class RigidBody;
 class Physics;
+struct HitResult;
 
 enum class FormCollider
 {
@@ -22,30 +23,12 @@ class Collider : public PhysicComponent
 {
 	friend Physics;
 public:
-	struct HitResult
-	{
-		glm::vec3 impactPoint;
-		glm::vec3 impactNormal;
-		Collider* colliderHit;
-
-		HitResult()
-		{
-			impactPoint = glm::vec3(0);
-			impactNormal = glm::vec3(0);
-			colliderHit = nullptr;
-		}
-		HitResult(Collider* _collider, glm::vec3 _impactPoint, glm::vec3 _impactNormal)
-		{
-			colliderHit = _collider;
-			impactPoint = _impactPoint;
-			impactNormal = _impactNormal;
-		}
-	};
 	Collider();
 	virtual ~Collider();
 
 	virtual bool CheckCollision(Collider* _collider) = 0;
 	virtual void CollisionResult(HitResult _result) = 0;
+	virtual bool IntersectPoint(glm::vec3 _point) = 0;
 
 	inline RigidBody* GetRigidBody() const { return rigidBody; };
 	inline FormCollider GetFormCollider() const { return formCollider; };

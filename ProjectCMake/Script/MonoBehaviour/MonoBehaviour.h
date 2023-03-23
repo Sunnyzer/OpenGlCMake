@@ -4,6 +4,9 @@
 #include <Action.h>
 #include <Transform.h>
 #include <Input.h>
+#include "Factory.h"
+
+#define CLONE(Class) virtual MonoBehaviour* Clone() override { return new Class(*this); }
 
 class GameObject;
 
@@ -23,10 +26,11 @@ protected:
 	virtual void Update(float deltaTime) {};
 	virtual void Destroy();
 	std::string name = "";
-private:
+	virtual void OnGUI() = 0;
+protected:
 	virtual void SetOwner(GameObject* _gameObject);
 	virtual MonoBehaviour* Clone()
 	{
-		return new MonoBehaviour(*this);
+		return this;
 	}
 };

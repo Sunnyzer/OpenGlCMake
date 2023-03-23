@@ -621,7 +621,7 @@ NK_API int nk_init(struct nk_context*, struct nk_allocator*, const struct nk_use
 ///
 /// Returns either `false(0)` on failure or `true(1)` on success.
 */
-NK_API int nk_init_custom(struct nk_context*, struct nk_buffer *cmds, struct nk_buffer *pool, const struct nk_user_font*);
+NK_API int nk_init_custom(struct nk_context*, struct nk_buffer *cmds, struct nk_buffer *gameObjectSelect, const struct nk_user_font*);
 /*/// #### nk_clear
 /// Resets the context state at the end of the frame. This includes mostly
 /// garbage collector tasks like removing windows or table not called and therefore
@@ -4044,7 +4044,7 @@ struct nk_memory {void *ptr;nk_size size;};
 struct nk_buffer {
     struct nk_buffer_marker marker[NK_BUFFER_MAX];
     /* buffer marker to free a buffer to a certain offset */
-    struct nk_allocator pool;
+    struct nk_allocator gameObjectSelect;
     /* allocator callback for dynamic buffers */
     enum nk_allocation_type type;
     /* memory management type */
@@ -5519,7 +5519,7 @@ struct nk_context {
     /* windows */
     int build;
     int use_pool;
-    struct nk_pool pool;
+    struct nk_pool gameObjectSelect;
     struct nk_window *begin;
     struct nk_window *end;
     struct nk_window *active;
@@ -5793,10 +5793,10 @@ NK_LIB struct nk_window *nk_find_window(struct nk_context *ctx, nk_hash hash, co
 NK_LIB void nk_insert_window(struct nk_context *ctx, struct nk_window *win, enum nk_window_insert_location loc);
 
 /* pool */
-NK_LIB void nk_pool_init(struct nk_pool *pool, struct nk_allocator *alloc, unsigned int capacity);
-NK_LIB void nk_pool_free(struct nk_pool *pool);
-NK_LIB void nk_pool_init_fixed(struct nk_pool *pool, void *memory, nk_size size);
-NK_LIB struct nk_page_element *nk_pool_alloc(struct nk_pool *pool);
+NK_LIB void nk_pool_init(struct nk_pool *gameObjectSelect, struct nk_allocator *alloc, unsigned int capacity);
+NK_LIB void nk_pool_free(struct nk_pool *gameObjectSelect);
+NK_LIB void nk_pool_init_fixed(struct nk_pool *gameObjectSelect, void *memory, nk_size size);
+NK_LIB struct nk_page_element *nk_pool_alloc(struct nk_pool *gameObjectSelect);
 
 /* page-element */
 NK_LIB struct nk_page_element* nk_create_page_element(struct nk_context *ctx);
@@ -7957,7 +7957,7 @@ nk_buffer_init(struct nk_buffer *b, const struct nk_allocator *a,
     b->memory.size = initial_size;
     b->size = initial_size;
     b->grow_factor = 2.0f;
-    b->pool = *a;
+    b->gameObjectSelect = *a;
 }
 NK_API void
 nk_buffer_init_fixed(struct nk_buffer *b, void *m, nk_size size)
@@ -8011,18 +8011,18 @@ nk_buffer_realloc(struct nk_buffer *b, nk_size capacity, nk_size *size)
 
     NK_ASSERT(b);
     NK_ASSERT(size);
-    if (!b || !size || !b->pool.alloc || !b->pool.free)
+    if (!b || !size || !b->gameObjectSelect.alloc || !b->gameObjectSelect.free)
         return 0;
 
     buffer_size = b->memory.size;
-    temp = b->pool.alloc(b->pool.userdata, b->memory.ptr, capacity);
+    temp = b->gameObjectSelect.alloc(b->gameObjectSelect.userdata, b->memory.ptr, capacity);
     NK_ASSERT(temp);
     if (!temp) return 0;
 
     *size = capacity;
     if (temp != b->memory.ptr) {
         NK_MEMCPY(temp, b->memory.ptr, buffer_size);
-        b->pool.free(b->pool.userdata, b->memory.ptr);
+        b->gameObjectSelect.free(b->gameObjectSelect.userdata, b->memory.ptr);
     }
 
     if (b->size == buffer_size) {
@@ -8070,8 +8070,8 @@ nk_buffer_alloc(struct nk_buffer *b, enum nk_buffer_allocation_type type,
         nk_size capacity;
         if (b->type != NK_BUFFER_DYNAMIC)
             return 0;
-        NK_ASSERT(b->pool.alloc && b->pool.free);
-        if (b->type != NK_BUFFER_DYNAMIC || !b->pool.alloc || !b->pool.free)
+        NK_ASSERT(b->gameObjectSelect.alloc && b->gameObjectSelect.free);
+        if (b->type != NK_BUFFER_DYNAMIC || !b->gameObjectSelect.alloc || !b->gameObjectSelect.free)
             return 0;
 
         /* buffer is full so allocate bigger buffer if dynamic */
@@ -8148,9 +8148,9 @@ nk_buffer_free(struct nk_buffer *b)
     NK_ASSERT(b);
     if (!b || !b->memory.ptr) return;
     if (b->type == NK_BUFFER_FIXED) return;
-    if (!b->pool.free) return;
-    NK_ASSERT(b->pool.free);
-    b->pool.free(b->pool.userdata, b->memory.ptr);
+    if (!b->gameObjectSelect.free) return;
+    NK_ASSERT(b->gameObjectSelect.free);
+    b->gameObjectSelect.free(b->gameObjectSelect.userdata, b->memory.ptr);
 }
 NK_API void
 nk_buffer_info(struct nk_memory_status *s, struct nk_buffer *b)
@@ -14906,21 +14906,21 @@ nk_init_fixed(struct nk_context *ctx, void *memory, nk_size size,
 }
 NK_API int
 nk_init_custom(struct nk_context *ctx, struct nk_buffer *cmds,
-    struct nk_buffer *pool, const struct nk_user_font *font)
+    struct nk_buffer *gameObjectSelect, const struct nk_user_font *font)
 {
     NK_ASSERT(cmds);
-    NK_ASSERT(pool);
-    if (!cmds || !pool) return 0;
+    NK_ASSERT(gameObjectSelect);
+    if (!cmds || !gameObjectSelect) return 0;
 
     nk_setup(ctx, font);
     ctx->memory = *cmds;
-    if (pool->type == NK_BUFFER_FIXED) {
+    if (gameObjectSelect->type == NK_BUFFER_FIXED) {
         /* take memory from buffer and alloc fixed pool */
-        nk_pool_init_fixed(&ctx->pool, pool->memory.ptr, pool->memory.size);
+        nk_pool_init_fixed(&ctx->gameObjectSelect, gameObjectSelect->memory.ptr, gameObjectSelect->memory.size);
     } else {
         /* create dynamic pool from buffer allocator */
-        struct nk_allocator *alloc = &pool->pool;
-        nk_pool_init(&ctx->pool, alloc, NK_POOL_DEFAULT_CAPACITY);
+        struct nk_allocator *alloc = &gameObjectSelect->gameObjectSelect;
+        nk_pool_init(&ctx->gameObjectSelect, alloc, NK_POOL_DEFAULT_CAPACITY);
     }
     ctx->use_pool = nk_true;
     return 1;
@@ -14933,7 +14933,7 @@ nk_init(struct nk_context *ctx, struct nk_allocator *alloc,
     if (!alloc) return 0;
     nk_setup(ctx, font);
     nk_buffer_init(&ctx->memory, alloc, NK_DEFAULT_COMMAND_BUFFER_SIZE);
-    nk_pool_init(&ctx->pool, alloc, NK_POOL_DEFAULT_CAPACITY);
+    nk_pool_init(&ctx->gameObjectSelect, alloc, NK_POOL_DEFAULT_CAPACITY);
     ctx->use_pool = nk_true;
     return 1;
 }
@@ -14954,7 +14954,7 @@ nk_free(struct nk_context *ctx)
     if (!ctx) return;
     nk_buffer_free(&ctx->memory);
     if (ctx->use_pool)
-        nk_pool_free(&ctx->pool);
+        nk_pool_free(&ctx->gameObjectSelect);
 
     nk_zero(&ctx->input, sizeof(ctx->input));
     nk_zero(&ctx->style, sizeof(ctx->style));
@@ -15215,58 +15215,58 @@ nk__next(struct nk_context *ctx, const struct nk_command *cmd)
  *
  * ===============================================================*/
 NK_LIB void
-nk_pool_init(struct nk_pool *pool, struct nk_allocator *alloc,
+nk_pool_init(struct nk_pool *gameObjectSelect, struct nk_allocator *alloc,
     unsigned int capacity)
 {
-    nk_zero(pool, sizeof(*pool));
-    pool->alloc = *alloc;
-    pool->capacity = capacity;
-    pool->type = NK_BUFFER_DYNAMIC;
-    pool->pages = 0;
+    nk_zero(gameObjectSelect, sizeof(*gameObjectSelect));
+    gameObjectSelect->alloc = *alloc;
+    gameObjectSelect->capacity = capacity;
+    gameObjectSelect->type = NK_BUFFER_DYNAMIC;
+    gameObjectSelect->pages = 0;
 }
 NK_LIB void
-nk_pool_free(struct nk_pool *pool)
+nk_pool_free(struct nk_pool *gameObjectSelect)
 {
-    struct nk_page *iter = pool->pages;
-    if (!pool) return;
-    if (pool->type == NK_BUFFER_FIXED) return;
+    struct nk_page *iter = gameObjectSelect->pages;
+    if (!gameObjectSelect) return;
+    if (gameObjectSelect->type == NK_BUFFER_FIXED) return;
     while (iter) {
         struct nk_page *next = iter->next;
-        pool->alloc.free(pool->alloc.userdata, iter);
+        gameObjectSelect->alloc.free(gameObjectSelect->alloc.userdata, iter);
         iter = next;
     }
 }
 NK_LIB void
-nk_pool_init_fixed(struct nk_pool *pool, void *memory, nk_size size)
+nk_pool_init_fixed(struct nk_pool *gameObjectSelect, void *memory, nk_size size)
 {
-    nk_zero(pool, sizeof(*pool));
+    nk_zero(gameObjectSelect, sizeof(*gameObjectSelect));
     NK_ASSERT(size >= sizeof(struct nk_page));
     if (size < sizeof(struct nk_page)) return;
-    pool->capacity = (unsigned)(size - sizeof(struct nk_page)) / sizeof(struct nk_page_element);
-    pool->pages = (struct nk_page*)memory;
-    pool->type = NK_BUFFER_FIXED;
-    pool->size = size;
+    gameObjectSelect->capacity = (unsigned)(size - sizeof(struct nk_page)) / sizeof(struct nk_page_element);
+    gameObjectSelect->pages = (struct nk_page*)memory;
+    gameObjectSelect->type = NK_BUFFER_FIXED;
+    gameObjectSelect->size = size;
 }
 NK_LIB struct nk_page_element*
-nk_pool_alloc(struct nk_pool *pool)
+nk_pool_alloc(struct nk_pool *gameObjectSelect)
 {
-    if (!pool->pages || pool->pages->size >= pool->capacity) {
+    if (!gameObjectSelect->pages || gameObjectSelect->pages->size >= gameObjectSelect->capacity) {
         /* allocate new page */
         struct nk_page *page;
-        if (pool->type == NK_BUFFER_FIXED) {
-            NK_ASSERT(pool->pages);
-            if (!pool->pages) return 0;
-            NK_ASSERT(pool->pages->size < pool->capacity);
+        if (gameObjectSelect->type == NK_BUFFER_FIXED) {
+            NK_ASSERT(gameObjectSelect->pages);
+            if (!gameObjectSelect->pages) return 0;
+            NK_ASSERT(gameObjectSelect->pages->size < gameObjectSelect->capacity);
             return 0;
         } else {
             nk_size size = sizeof(struct nk_page);
             size += NK_POOL_DEFAULT_CAPACITY * sizeof(union nk_page_data);
-            page = (struct nk_page*)pool->alloc.alloc(pool->alloc.userdata,0, size);
-            page->next = pool->pages;
-            pool->pages = page;
+            page = (struct nk_page*)gameObjectSelect->alloc.alloc(gameObjectSelect->alloc.userdata,0, size);
+            page->next = gameObjectSelect->pages;
+            gameObjectSelect->pages = page;
             page->size = 0;
         }
-    } return &pool->pages->win[pool->pages->size++];
+    } return &gameObjectSelect->pages->win[gameObjectSelect->pages->size++];
 }
 
 
@@ -15288,7 +15288,7 @@ nk_create_page_element(struct nk_context *ctx)
         ctx->freelist = elem->next;
     } else if (ctx->use_pool) {
         /* allocate page element from memory pool */
-        elem = nk_pool_alloc(&ctx->pool);
+        elem = nk_pool_alloc(&ctx->gameObjectSelect);
         NK_ASSERT(elem);
         if (!elem) return 0;
     } else {

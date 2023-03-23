@@ -27,7 +27,7 @@ int main(int, char**)
 	Break Point To Alloc 
 	_CrtSetBreakAlloc();
 	*/  
-	//_CrtSetBreakAlloc(174);
+	_CrtSetBreakAlloc(167);
 	//Random with timer
 	srand((unsigned int)time(NULL));
 	
@@ -75,15 +75,6 @@ int main(int, char**)
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-
-	////Create first gameObject to instanciate the other gameObject
-	//GameObject* _pool = new GameObject();
-	//_pool->GetTransform()->SetPosition(vec3(0, -0.5f, 0));
-	////Add Component Mesh and MarbleControl to gameObject
-	//MarbleControl* _marbleControl = _pool->AddComponent<MarbleControl>();
-	//Mesh* _mesh = _pool->AddComponent<Mesh>();
-	////Load Mesh
-	//_mesh->LoadMesh("billard.obj", "Board_UV.bmp", false);
 	
 	//Start Loop
 	World::world->GameLoop();

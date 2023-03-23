@@ -1,6 +1,7 @@
 #include "RigidBody.h"
 #include "GameObject.h"
 #include "Physics.h"
+#include "imgui.h"
 
 RigidBody::RigidBody()
 {
@@ -36,4 +37,13 @@ void RigidBody::UpdatePhysics()
 {
 	gameObject->GetTransform()->AddPosition(velocity);
 	velocity *= 98.0 / 100.0;
+}
+
+void RigidBody::OnGUI()
+{
+	ImGui::Text(std::to_string(velocity.x).c_str());
+	ImGui::SameLine();
+	ImGui::Text(std::to_string(velocity.y).c_str());
+	ImGui::SameLine();
+	ImGui::Text(std::to_string(velocity.z).c_str());
 }

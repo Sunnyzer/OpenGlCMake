@@ -7,6 +7,7 @@ public:
 	SphereCollider();
 	virtual bool CheckCollision(Collider* _collider) override;
 	virtual void CollisionResult(HitResult _result) override;
+	virtual bool IntersectPoint(glm::vec3 _point) override;
 	glm::vec3 CalcNormal(Collider* _collider);
 
 	inline float GetRadius() { return bounds.radius; };

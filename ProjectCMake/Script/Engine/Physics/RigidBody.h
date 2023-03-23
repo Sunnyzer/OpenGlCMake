@@ -13,6 +13,8 @@ public:
 	void SetVelocity(glm::vec3 _velocity);
 	void SetRVelocity(glm::vec3 _velocity);
 	virtual void UpdatePhysics() override;
+public:
+	virtual void OnGUI() override;
 private:
 	glm::vec3 velocity = glm::vec3(0, 0, 0);
 	glm::vec3 rVelocity = glm::vec3(0, 0, 0);
