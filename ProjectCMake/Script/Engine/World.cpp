@@ -16,11 +16,18 @@
 
 World* World::world = new World();
 
+void World::ResetObjectSelect(GameObject* _object)
+{
+	gameObjectSelect = nullptr;
+	
+}
+
 World::World()
 {
 	matrixID = 0;
 	deltaTime = 0;
 	gameObjectAmount = 0;
+	gameObjectName = "";
 }
 World::~World()
 {
@@ -35,15 +42,17 @@ World::~World()
 
 void World::WindowTest()
 {
-	ImGui::Begin("WorldTest", 0);
+	ImGui::Begin("Details", 0);
+	ImGui::Text("Name : ");
+	ImGui::SameLine();
+	ImGui::InputText((gameObjectName + "##0001").c_str(), gameObjectName.data(), 25);
 	if (ImGui::Button("Spawn GameObject"))
 	{
-		//Create first gameObject to instanciate the other gameObject
-		gameObjectSelect = new GameObject();
+		if (std::strncmp(gameObjectName.data(), "", 25) == 0)
+			gameObjectSelect = new GameObject();
+		else
+			gameObjectSelect = new GameObject(gameObjectName);
 		gameObjectSelect->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
-		//Add Component Mesh and MarbleControl to gameObject
-		FACTORY(MonoBehaviour).printRegisteredClasses();
-		//_pool->AddComponent<Marble>();
 	}
 	if (!gameObjectSelect)
 	{
@@ -60,7 +69,6 @@ void World::WindowTest()
 		{
 			MonoBehaviour* _mono = _item.second;
 			gameObjectSelect->AddComponent(_mono);
-			//pool->AddComponent<std::remove_pointer_t<decltype(_item.second)>>();
 			Debug::LogWarning("Add " + _item.first);
 		}
 	}
@@ -82,8 +90,11 @@ void World::GameLoop()
 			HitResult _hitResult;
 			if (Physics::Raycast(Camera::currentCamera->GetPosition(), Camera::currentCamera->GetForward(), _hitResult))
 			{
-				//Debug::LogWarning("Hit " + _hitResult.colliderHit->gameObject->name);
+				if(gameObjectSelect)
+					gameObjectSelect->OnDestroy.Remove(this, &World::ResetObjectSelect);
 				gameObjectSelect = _hitResult.colliderHit->gameObject;
+				if(gameObjectSelect)
+					gameObjectSelect->OnDestroy.Add(this, &World::ResetObjectSelect);
 			}
 			else
 			{

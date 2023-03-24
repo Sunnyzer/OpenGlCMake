@@ -41,9 +41,8 @@ void RigidBody::UpdatePhysics()
 
 void RigidBody::OnGUI()
 {
-	ImGui::Text(std::to_string(velocity.x).c_str());
+	float v[3] = { velocity.x, velocity.y, velocity.z };
+	ImGui::Text("Velocity : ");
 	ImGui::SameLine();
-	ImGui::Text(std::to_string(velocity.y).c_str());
-	ImGui::SameLine();
-	ImGui::Text(std::to_string(velocity.z).c_str());
+	ImGui::InputFloat3("##velocity", v);
 }

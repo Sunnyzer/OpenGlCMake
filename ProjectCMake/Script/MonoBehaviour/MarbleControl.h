@@ -36,5 +36,7 @@ private:
 	size_t amountMarble;
 	Marble* whiteMarble;
 	std::vector<Marble*> marbles;
+	float power = 75.0f;
 };
-REGISTERFACTORY(MonoBehaviour,MarbleControl)
+
+REGISTERFACTORY(MonoBehaviour, MarbleControl)

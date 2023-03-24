@@ -1,4 +1,3 @@
-
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -11,11 +10,9 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "MonoBehaviour.h"
-//#include "MarbleControl.h"
 #include "ENet.h"
 #include <Debug.h>
 #include <Cursor.h>
-//#include "Factory.h"
 
 using namespace glm;
 

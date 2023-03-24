@@ -1,7 +1,6 @@
 #include "MarbleControl.h"
 #include "Mesh.h"
 #include "Marble.h"
-#include "RigidBody.h"
 #include "World.h"
 #include "GameObject.h"
 #include <OnlineNetwork.h>
@@ -10,6 +9,8 @@
 #include <Physics.h>
 #include <SphereCollider.h>
 #include <BoxCollider.h>
+#include <imgui.h>
+#include "RigidBody.h"
 
 using namespace glm;
 using json::JSON;
@@ -27,6 +28,7 @@ MarbleControl::~MarbleControl()
 
 void MarbleControl::OnGUI()
 {
+	ImGui::SliderFloat("Power :", &power, 0, 500);
 }
 
 void MarbleControl::Start()
@@ -69,7 +71,7 @@ void MarbleControl::Destroy()
 void MarbleControl::DestroyMarble(HitResult _hitResult)
 {
 	if (!_hitResult.colliderHit->gameObject->GetComponent<Marble>())return;
-	GameObject::Destroy(_hitResult.colliderHit->gameObject);
+	//GameObject::Destroy(_hitResult.colliderHit->gameObject);
 }
 
 void MarbleControl::RemoveMarbleMono(MonoBehaviour* _mono)
@@ -98,7 +100,7 @@ void MarbleControl::Shoot()
 	if(!shoot) return;
 	shoot = false;
 	vec3 _impulse = normalize(vec3(Camera::currentCamera->GetForward().x, 0, Camera::currentCamera->GetForward().z));
-	_impulse = vec3(_impulse.x, 0, _impulse.z) * float(75.0f * PERIOD);
+	_impulse = vec3(_impulse.x, 0, _impulse.z) * float(power * PERIOD);
 	whiteMarble->GetRididBody()->AddImpulse(_impulse);
 	BothReplicated(OnlineNetwork::onlineNetwork->GetNetwork());
 	JSON myJson({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
@@ -168,11 +170,11 @@ void MarbleControl::ReceiveInfo(ENetPacket* _receive)
 		shoot = false;
 		break;
 	case 2:
-		for (size_t i = 0; i < _size; i++)
+		for (size_t i = 0; i < _size; ++i)
 		{
 			glm::vec3 _pos;
 			size_t _size = 3;
-			for (size_t j = 0; j < _size; j++)
+			for (size_t j = 0; j < _size; ++j)
 			{
 				float _posValue = (float)myJson[name][marbles[i]->GetName()]["position"].at((unsigned int)j).ToFloat();
 				_pos[(length_t)j] = _posValue;
@@ -204,4 +206,3 @@ bool MarbleControl::VerifAllMarbleStop(JSON& json)
 	shoot = true;
 	return true;
 }
-

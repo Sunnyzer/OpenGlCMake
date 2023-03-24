@@ -10,6 +10,7 @@ class GameObject
 	friend World;
 public:
 	GameObject();
+	GameObject(std::string _name);
 	virtual ~GameObject();
 protected:
 	virtual void Update(float deltaTime);
@@ -79,6 +80,7 @@ public:
 
 	virtual void OnGUI();
 	Action<MonoBehaviour*> OnAddMonoBehaviour;
+	Action<GameObject*> OnDestroy;
 	std::string name;
 	
 protected:

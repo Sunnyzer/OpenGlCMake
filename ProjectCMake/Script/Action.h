@@ -85,7 +85,7 @@ public:
 	}
 	void Invoke(args ...params) override
 	{
-		if (!owner)return;
+		//if (!owner)return;
 		func(params...);
 	}
 };

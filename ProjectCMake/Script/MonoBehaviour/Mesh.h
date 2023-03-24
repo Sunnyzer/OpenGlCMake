@@ -4,6 +4,7 @@
 #include <GL\glew.h>
 #include <glm/glm.hpp>
 #include "MonoBehaviour.h"
+#include "Factory.h"
 
 class Mesh : public MonoBehaviour
 {

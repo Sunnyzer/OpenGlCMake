@@ -7,12 +7,20 @@ using namespace glm;
 
 GameObject::GameObject()
 {
-	std::string _test = "GameObject " + std::to_string(World::world->gameObjectAmount);
-	name = _test;
+	name = "GameObject " + std::to_string(World::world->gameObjectAmount);
 	transform = new Transform();
 	World::world->AddObject(this);
 	amountMonoBehaviour = 0;
 }
+
+GameObject::GameObject(std::string _name)
+{
+	name = std::string(_name);
+	transform = new Transform();
+	World::world->AddObject(this);
+	amountMonoBehaviour = 0;
+}
+
 GameObject::~GameObject()
 {
 	OnAddMonoBehaviour.Clear();
@@ -26,15 +34,37 @@ void GameObject::Destroy(GameObject* _gameObject)
 {
 	if (!_gameObject) return;
 	World::world->RemoveObject(_gameObject);
+	_gameObject->OnDestroy.Invoke(_gameObject);
 	delete _gameObject;
 }
 
 void GameObject::OnGUI()
 {
-	ImGui::InputText(name.c_str(), name.data(), 25);
+	float p[3] = { transform->position.x, transform->position.y, transform->position.z };
+	float r[3] = { transform->rotation.x, transform->rotation.y, transform->rotation.z };
+	float s[3] = { transform->scale.x, transform->scale.y, transform->scale.z };
+	
+	ImGui::InputText((name + "##1").c_str(), name.data(), 25);
+
+	ImGui::Text("Position : ");
+	ImGui::SameLine();
+	ImGui::DragFloat3("##gameObjectPosition", p);
+
+	ImGui::Text("Rotation : ");
+	ImGui::SameLine();
+	ImGui::DragFloat3("##gameObjectRotation", r);
+
+	ImGui::Text("Scale : ");
+	ImGui::SameLine();
+	ImGui::DragFloat3("##gameObjectScale", s);
+
+	transform->SetPosition(glm::vec3(p[0], p[1], p[2]));
+	transform->SetRotation(glm::vec3(r[0], r[1], r[2]));
+	transform->SetScale(glm::vec3(s[0], s[1], s[2]));
 	for (size_t i = 0; i < amountMonoBehaviour; ++i)
 	{
 		MonoBehaviour* _mono = monoBehaviours[i];
+		ImGui::SeparatorText(_mono->name.c_str());
 		_mono->OnGUI();
 	}
 }

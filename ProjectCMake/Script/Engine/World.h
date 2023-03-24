@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 typedef unsigned int GLuint;
 class GameObject;
@@ -17,6 +18,7 @@ public:
 	inline GLuint GetMatrixID() { return matrixID; }
 	static World* world;
 	float GetDeltaTime() const { return deltaTime; }
+	void ResetObjectSelect(GameObject* _object);
 protected:
 	World();
 	void AddObject(GameObject* _object);
@@ -27,4 +29,5 @@ protected:
 	size_t gameObjectAmount;
 	std::vector<GameObject*> objects;
 	GameObject* gameObjectSelect = nullptr;
+	std::string gameObjectName;
 };

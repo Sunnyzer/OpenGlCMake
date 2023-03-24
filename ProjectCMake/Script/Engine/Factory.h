@@ -5,19 +5,19 @@
 #include <iostream>
 
 template<class B>
-class Factory {
+class Factory 
+{
     std::map<std::string, B*> s_creators;
 
 public:
     ~Factory()
     {
         for (auto _item : s_creators)
-        {
             delete _item.second;
-        }
         s_creators.clear();
     }
-    inline static Factory<B>& getInstance() {
+    inline static Factory<B>& getInstance()
+    {
         static Factory<B> s_instance;
         return s_instance;
     }
@@ -25,11 +25,15 @@ public:
     template<class T>
     inline void registerClass(const std::string& name)
     {
-        s_creators.insert(
-            { name, new T() });
+        s_creators.insert({ name, new T() });
     }
 
-    inline B* create(const std::string& name);
+    inline B* create(const std::string& name)
+    {
+        const auto it = s_creators.find(name);
+        if (it == s_creators.end()) return nullptr; // not a derived class
+        return (it->second)();
+    }
 
     void printRegisteredClasses()
     {
@@ -52,4 +56,4 @@ public:
 };
 #define REGISTERFACTORY(base_class, derived_class) \
 __declspec(selectany) \
-Creator<base_class, derived_class> s_##derived_class##Creator(#derived_class); \
+Creator<base_class, derived_class> s_##derived_class##Creator(#derived_class); 

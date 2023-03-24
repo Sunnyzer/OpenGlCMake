@@ -42,7 +42,5 @@ void Marble::Start()
 
 void Marble::OnGUI()
 {
-	// mesh->OnGUI();
-	rigidbody->OnGUI();
-	//collider->OnGUI();
+	
 }
