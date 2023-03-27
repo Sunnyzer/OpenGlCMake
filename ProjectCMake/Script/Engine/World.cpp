@@ -21,6 +21,14 @@ void World::ResetObjectSelect(GameObject* _object)
 	gameObjectSelect = nullptr;
 	
 }
+void World::SelectObject(GameObject* _object)
+{
+	if (gameObjectSelect)
+		gameObjectSelect->OnDestroy.Remove(this, &World::ResetObjectSelect);
+	gameObjectSelect = _object;
+	if (gameObjectSelect)
+		gameObjectSelect->OnDestroy.Add(this, &World::ResetObjectSelect);
+}
 
 World::World()
 {
@@ -40,7 +48,7 @@ World::~World()
 	objects.clear();
 }
 
-void World::WindowTest()
+void World::DetailsWindow()
 {
 	ImGui::Begin("Details", 0);
 	ImGui::Text("Name : ");
@@ -52,7 +60,8 @@ void World::WindowTest()
 			gameObjectSelect = new GameObject();
 		else
 			gameObjectSelect = new GameObject(gameObjectName);
-		gameObjectSelect->GetTransform()->SetPosition(glm::vec3(0, -0.5f, 0));
+		
+		gameObjectSelect->GetTransform()->SetPosition(glm::vec3(0, 0, 0));
 	}
 	if (!gameObjectSelect)
 	{
@@ -74,6 +83,26 @@ void World::WindowTest()
 	}
 	ImGui::End();
 }
+void World::SceneWindow()
+{
+	ImGui::Begin("Scene", 0);
+	std::vector<const char*> names;
+	int _count = objects.size();
+	for (size_t i = 0; i < _count; ++i)
+	{
+		names.push_back(objects[i]->name.c_str());
+	}
+	if (_count <= 0)
+	{
+		ImGui::End();
+		return;
+	}
+	if (ImGui::ListBox("Objects", &currentSelected, names.data(), _count))
+	{
+		SelectObject(objects[currentSelected]);
+	}
+	ImGui::End();
+}
 
 void World::GameLoop()
 {
@@ -90,11 +119,7 @@ void World::GameLoop()
 			HitResult _hitResult;
 			if (Physics::Raycast(Camera::currentCamera->GetPosition(), Camera::currentCamera->GetForward(), _hitResult))
 			{
-				if(gameObjectSelect)
-					gameObjectSelect->OnDestroy.Remove(this, &World::ResetObjectSelect);
-				gameObjectSelect = _hitResult.colliderHit->gameObject;
-				if(gameObjectSelect)
-					gameObjectSelect->OnDestroy.Add(this, &World::ResetObjectSelect);
+				SelectObject(_hitResult.colliderHit->gameObject);
 			}
 			else
 			{
@@ -131,7 +156,10 @@ void World::GameLoop()
 		glUseProgram(programID);
 		OnlineNetwork::onlineNetwork->Update();
 
-		WindowTest();
+		//Window ImGui Update
+		DetailsWindow();
+		SceneWindow();
+		Debug::OnGui();
 
 		for (size_t i = 0; i < gameObjectAmount; ++i)
 		{
@@ -147,12 +175,13 @@ void World::GameLoop()
 	while (!_exit && glfwWindowShouldClose(WindowGL::window) == 0);
 	glDeleteProgram(programID);
 }
+
 void World::AddObject(GameObject* _object)
 {
 	objects.push_back(_object);
 	++gameObjectAmount;
+	currentSelected = gameObjectAmount - 1;
 }
-
 void World::RemoveObject(GameObject* _object)
 {
 	std::vector<GameObject*>::iterator it = objects.begin();

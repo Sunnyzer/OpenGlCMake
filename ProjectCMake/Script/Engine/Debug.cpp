@@ -1,8 +1,5 @@
 #include "Debug.h"
 
-bool Debug::abordError = false;
-bool Debug::abordWarning = false;
-
 void SetColor(int _color, int additionally)
 {
 	std::string _colorText = "\033[";

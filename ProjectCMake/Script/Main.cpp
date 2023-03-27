@@ -24,7 +24,7 @@ int main(int, char**)
 	Break Point To Alloc 
 	_CrtSetBreakAlloc();
 	*/  
-	_CrtSetBreakAlloc(167);
+	_CrtSetBreakAlloc(446);
 	//Random with timer
 	srand((unsigned int)time(NULL));
 	
@@ -61,8 +61,6 @@ int main(int, char**)
 	ENet::Initialize();
 
 	glfwSetInputMode(WindowGL::window, GLFW_STICKY_KEYS, GL_TRUE);
-	Cursor::Lock();
-
 	glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
@@ -79,7 +77,7 @@ int main(int, char**)
 	//Delete Singleton Manager
 	delete World::world;
 	delete OnlineNetwork::onlineNetwork;
-
+	//Debug::~Debug();
 	glDeleteVertexArrays(1, &VertexArrayID);
 
 	//Destroy all remaining glfw resources

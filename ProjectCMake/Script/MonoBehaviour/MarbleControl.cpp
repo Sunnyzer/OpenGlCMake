@@ -103,7 +103,7 @@ void MarbleControl::Shoot()
 	_impulse = vec3(_impulse.x, 0, _impulse.z) * float(power * PERIOD);
 	whiteMarble->GetRididBody()->AddImpulse(_impulse);
 	BothReplicated(OnlineNetwork::onlineNetwork->GetNetwork());
-	JSON myJson({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
+	JSON myJson = JSON({ "velocity" , { "x" ,_impulse.x , "y", _impulse.y, "z",_impulse.z} });
 	OnlineNetwork::onlineNetwork->SendPacket(NetType::Both, 0, myJson.dump());
 }
 

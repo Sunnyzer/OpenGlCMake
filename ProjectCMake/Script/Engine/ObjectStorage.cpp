@@ -39,7 +39,7 @@ ObjectStorage::TextureData ObjectStorage::LoadTexture(const char* _texture, bool
 
 bool LoadOBJ(const char* path,	std::vector<glm::vec3>& out_vertices, std::vector<glm::vec2>& out_uvs, std::vector<glm::vec3>& out_normals)
 {
-	Debug::Log("Loading OBJ file %s...", path);
+	Debug::Log(std::format("Loading OBJ file %s...", path));
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	std::vector<glm::vec3> temp_vertices;
 	std::vector<glm::vec2> temp_uvs;
@@ -132,7 +132,7 @@ bool LoadOBJ(const char* path,	std::vector<glm::vec3>& out_vertices, std::vector
 
 GLuint LoadBMP_custom(const char* imagepath) {
 
-	Debug::Log("Reading image %s", imagepath);
+	Debug::Log(std::format("Reading image %s", imagepath));
 
 	// Data read from the header of the BMP file
 	unsigned char header[54];
@@ -145,7 +145,7 @@ GLuint LoadBMP_custom(const char* imagepath) {
 	// Open the file
 	FILE* file = fopen(imagepath, "rb");
 	if (!file) {
-		Debug::Log("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !", imagepath);
+		Debug::Log(std::format("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !", imagepath));
 		char _r = getchar();
 		return 0;
 	}
@@ -227,7 +227,7 @@ GLuint LoadDDS(const char* imagepath)
 	/* try to open the file */
 	fp = fopen(imagepath, "rb");
 	if (fp == NULL) {
-		Debug::Log("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !", imagepath);
+		Debug::Log(std::format("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !", imagepath));
 		char _r = getchar();
 		return 0;
 	}
