@@ -53,7 +53,8 @@ void World::DetailsWindow()
 	ImGui::Begin("Details", 0);
 	ImGui::Text("Name : ");
 	ImGui::SameLine();
-	ImGui::InputText((gameObjectName + "##0001").c_str(), gameObjectName.data(), 25);
+	std::string _tempName = gameObjectName + "##0001";
+	ImGui::InputText(_tempName.c_str(), gameObjectName.data(), 25);
 	if (ImGui::Button("Spawn GameObject"))
 	{
 		if (std::strncmp(gameObjectName.data(), "", 25) == 0)

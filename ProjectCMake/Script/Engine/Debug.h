@@ -59,12 +59,12 @@ public:
 	static void Log(const char* _message)
 	{
 		std::cout << _message << "\033[0m" << std::endl;
-		debugMessages.push_back(new DebugPrint(_message));
+		//debugMessages.push_back(new DebugPrint(_message));
 	}
 	static void Log(std::string _message)
 	{
 		std::cout << _message << "\033[0m" << std::endl;
-		debugMessages.push_back(new DebugPrint(_message));
+		//debugMessages.push_back(new DebugPrint(_message));
 	}
 	template<typename T>
 	static void Log(T _object)

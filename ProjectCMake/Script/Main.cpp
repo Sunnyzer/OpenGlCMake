@@ -24,7 +24,7 @@ int main(int, char**)
 	Break Point To Alloc 
 	_CrtSetBreakAlloc();
 	*/  
-	_CrtSetBreakAlloc(446);
+	_CrtSetBreakAlloc(1804);
 	//Random with timer
 	srand((unsigned int)time(NULL));
 	
@@ -82,8 +82,8 @@ int main(int, char**)
 
 	//Destroy all remaining glfw resources
 	glfwTerminate();
-	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
 	return 0;
 }

@@ -43,9 +43,8 @@ void GameObject::OnGUI()
 	float p[3] = { transform->position.x, transform->position.y, transform->position.z };
 	float r[3] = { transform->rotation.x, transform->rotation.y, transform->rotation.z };
 	float s[3] = { transform->scale.x, transform->scale.y, transform->scale.z };
-	
-	ImGui::InputText((name + "##1").c_str(), name.data(), 25);
-
+	std::string _name = name + "##1";
+	ImGui::InputText(_name.c_str(), name.data(), 25);
 	ImGui::Text("Position : ");
 	ImGui::SameLine();
 	ImGui::DragFloat3("##gameObjectPosition", p);
