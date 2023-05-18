@@ -24,7 +24,7 @@ int main(int, char**)
 	Break Point To Alloc 
 	_CrtSetBreakAlloc();
 	*/  
-	_CrtSetBreakAlloc(1804);
+	//_CrtSetBreakAlloc(1804);
 	//Random with timer
 	srand((unsigned int)time(NULL));
 	
